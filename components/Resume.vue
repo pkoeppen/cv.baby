@@ -62,8 +62,8 @@
           <div
             v-for="(skill, index) in skillsCurated.additional"
             :key="index"
-            @click="foo = 1"
             class="text-xs-center"
+            @click="foo = 1"
           >
             {{ skill }}
           </div>
@@ -316,7 +316,7 @@
                           <v-divider />
 
                           <v-list class="pa-0">
-                            <v-template v-if="reference.phone">
+                            <template v-if="reference.phone">
                               <v-list-tile :href="`tel:${reference.phone}`">
                                 <v-list-tile-action>
                                   <v-icon>phone</v-icon>
@@ -331,9 +331,9 @@
                                 </v-list-tile-action>
                               </v-list-tile>
                               <v-divider />
-                            </v-template>
+                            </template>
 
-                            <v-template v-if="reference.email">
+                            <template v-if="reference.email">
                               <v-list-tile :href="`mailto:${reference.email}`">
                                 <v-list-tile-action>
                                   <v-icon>mail</v-icon>
@@ -348,9 +348,9 @@
                                 </v-list-tile-action>
                               </v-list-tile>
                               <v-divider />
-                            </v-template>
+                            </template>
 
-                            <v-template v-if="reference.website">
+                            <template v-if="reference.website">
                               <v-list-tile :href="`${reference.website}`">
                                 <v-list-tile-action>
                                   <v-icon>public</v-icon>
@@ -363,7 +363,7 @@
                                 </v-list-tile-content>
                               </v-list-tile>
                               <v-divider />
-                            </v-template>
+                            </template>
                           </v-list>
 
                           <v-card-actions>
