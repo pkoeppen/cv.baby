@@ -2,13 +2,16 @@
   <v-app>
     <v-content>
       <nuxt />
-      <v-footer height="auto" color="primary lighten-1">
-        <v-layout justify-center row wrap>
-          <v-btn color="white" flat>
-            foobar
-          </v-btn>
-          <v-flex primary lighten-2 py-3 text-xs-center white--text xs12>
+      <v-footer class="mt-5" height="auto" color="primary lighten-2">
+        <v-layout justify-space-between align-center>
+          <v-flex py-3 text-xs-center white--text xs12>
             &copy;2019 — <strong>Peter Koeppen</strong>
+          </v-flex>
+          <v-flex py-3 text-xs-center white--text xs12>
+            <v-btn flat dark>
+              <v-icon class="mr-2">language</v-icon>
+              English
+            </v-btn>
           </v-flex>
         </v-layout>
       </v-footer>

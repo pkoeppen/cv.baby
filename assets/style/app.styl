@@ -1,8 +1,35 @@
 // Import Vuetify styling
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,700')
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700')
 @import url('https://use.fontawesome.com/releases/v5.8.1/css/fontawesome.css')
 @import url('https://use.fontawesome.com/releases/v5.8.1/css/brands.css')
 @require '~vuetify/src/stylus/app.styl'
+@require './variables'
 
 p
   font-family: 'Open Sans', sans-serif !important
+  
+.bluegrass
+  color: $bluegrass !important
+  
+.cv-footer-background
+  background: url('../images/shapes_banner.png') no-repeat center center
+  background-size: contain
+  
+.theme--light
+  .v-input
+    &__slot
+      margin-bottom: 0 !important
+  &.v-text-field
+    &:not(.v-input--has-state) > .v-input__control > .v-input__slot:hover:before
+      border-color: $material-light.text.primary !important
+    &--outline
+      & > .v-input__control > .v-input__slot
+        border: 1px solid #E0E0E0 !important
+      &:not(.v-input--is-focused):not(.v-input--has-state) > .v-input__control > .v-input__slot:hover
+        border: 1px solid $material-light.text.primary !important
+    & > .v-input__control > .v-input__slot
+      background: transparent !important
+      border-radius: 0 !important
+    &.v-input--is-focused, &.v-input--has-state
+      & > .v-input__control > .v-input__slot
+        border: 1px solid currentColor !important
