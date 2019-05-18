@@ -3,7 +3,9 @@
     <v-flex xs12 md8>
       <v-toolbar class="elevation-0">
         <v-toolbar-title class="cv-logo font-weight-black">
-          <span>cv</span><span>baby&nbsp;</span>
+          <nuxt-link to="/" style="text-decoration: none; color: inherit;">
+            <span>cv</span><span>baby&nbsp;</span>
+          </nuxt-link>
         </v-toolbar-title>
       </v-toolbar>
     </v-flex>
@@ -16,6 +18,7 @@
         <div class="cv-logo" style="display: inline;">
           <span>cv</span><span>baby</span>
         </div>
+        pro
       </div>
     </v-flex>
     <v-flex xs12>
@@ -34,7 +37,7 @@
                 <span class="grey--text text--darken-1">cancel any time</span>
               </v-card-title>
               <v-card-text class="text-xs-center py-0">
-                <v-btn color="primary" large>
+                <v-btn color="primary" to="/payment" large>
                   Start Free Trial
                 </v-btn>
                 <v-list class="cv-features pb-4">
@@ -81,7 +84,7 @@
                 <span class="grey--text text--darken-1">cancel any time</span>
               </v-card-title>
               <v-card-text class="text-xs-center py-0">
-                <v-btn color="primary" large>
+                <v-btn color="primary" to="/payment" large>
                   Start Free Trial
                 </v-btn>
                 <v-list class="cv-features pb-4">
@@ -127,7 +130,7 @@
         Trusted by over 20 thousand users every month
       </h2>
     </v-flex>
-    <v-flex class="text-xs-center mt-5 py-5" style="background: white" xs12>
+    <v-flex class="text-xs-center mt-5 pt-5" style="background: white" xs12>
       <v-container grid-list-xl>
         <v-layout justify-center align-center wrap>
           <v-flex xs12>
@@ -274,9 +277,11 @@
           </v-flex>
         </v-layout>
       </v-container>
+    </v-flex>
+    <v-flex style="background: white" xs12>
       <v-divider class="my-5" />
     </v-flex>
-    <v-flex class="text-xs-center pb-5" style="background: white" xs12>
+    <v-flex class="text-xs-center py-5" style="background: white" xs12>
       <div class="cv-footer-background py-4">
         <div class="call-to-action">
           Subscribe to
@@ -291,6 +296,7 @@
           <a href="">Contact us</a>
         </div>
       </div>
+      <div class="mb-5" />
     </v-flex>
   </v-layout>
 </template>

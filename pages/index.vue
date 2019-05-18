@@ -3,7 +3,9 @@
     <v-flex style="position: relative;" xs12 md8>
       <v-toolbar class="cv-toolbar elevation-0">
         <v-toolbar-title class="cv-logo font-weight-black">
-          <span>cv</span><span>baby&nbsp;</span>
+          <nuxt-link to="/" style="text-decoration: none; color: inherit;">
+            <span>cv</span><span>baby&nbsp;</span>
+          </nuxt-link>
         </v-toolbar-title>
         <v-spacer />
         <v-dialog v-model="loginDialog" max-width="400px">

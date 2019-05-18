@@ -8,6 +8,9 @@
 p
   font-family: 'Open Sans', sans-serif !important
   
+.open-sans
+  font-family: 'Open Sans', sans-serif !important
+  
 .bluegrass
   color: $bluegrass !important
   
@@ -27,9 +30,10 @@ p
         border: 1px solid #E0E0E0 !important
       &:not(.v-input--is-focused):not(.v-input--has-state) > .v-input__control > .v-input__slot:hover
         border: 1px solid $material-light.text.primary !important
+      &.v-input--is-focused, &.v-input--has-state
+        & > .v-input__control > .v-input__slot
+          border: 1px solid currentColor !important
     & > .v-input__control > .v-input__slot
       background: transparent !important
       border-radius: 0 !important
-    &.v-input--is-focused, &.v-input--has-state
-      & > .v-input__control > .v-input__slot
-        border: 1px solid currentColor !important
+    

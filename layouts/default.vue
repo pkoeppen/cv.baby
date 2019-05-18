@@ -2,7 +2,7 @@
   <v-app>
     <v-content>
       <nuxt />
-      <v-footer class="mt-5" height="auto" color="primary lighten-2">
+      <v-footer height="auto" color="primary lighten-2">
         <v-layout justify-space-between align-center>
           <v-flex py-3 text-xs-center white--text xs12>
             &copy;2019 — <strong>Peter Koeppen</strong>
