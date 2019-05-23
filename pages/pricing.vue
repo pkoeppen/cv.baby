@@ -16,9 +16,8 @@
       <div class="cv-trial-text text-xs-center font-weight-black">
         Free 14-day trial for
         <div class="cv-logo" style="display: inline;">
-          <span>cv</span><span>baby</span>
+          <span>cv</span><span>baby</span> pro
         </div>
-        pro
       </div>
     </v-flex>
     <v-flex xs12>

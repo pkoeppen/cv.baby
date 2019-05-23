@@ -23,7 +23,7 @@
             offset-x
           >
             <template v-slot:activator="{ on }">
-              <v-btn v-on="on" dark icon>
+              <v-btn dark icon v-on="on">
                 <v-avatar color="indigo" size="36">
                   <v-icon dark>account_circle</v-icon>
                 </v-avatar>
@@ -90,7 +90,7 @@
               <v-tabs v-model="tabs" @input="$emit('input', $event)">
                 <v-tab>Profile</v-tab>
                 <v-tab>Password</v-tab>
-                <v-tab>Billing & Subscription</v-tab>
+                <v-tab>Billing &amp; Subscription</v-tab>
                 <v-tab>Invoices</v-tab>
                 <v-tab>Email Notifications</v-tab>
               </v-tabs>
@@ -128,7 +128,7 @@
                 </v-container>
               </v-tab-item>
               <v-tab-item>
-                <v-container class="pa-5" style="margin: 0; max-width: 600px">
+                <v-container class="pa-5" style="margin: 0; max-width: 600px;">
                   <div style="display: flex; align-items: center;">
                     <h2>Subscription</h2>
                     <v-icon class="bluegrass ml-2" style="font-size: 16px;">
@@ -171,10 +171,59 @@
                     class="mt-5"
                     style="display: flex; align-items: center; justify-content: space-between;"
                   >
-                    <h2>Paymend method</h2>
-                    <v-btn class="ma-0" color="primary" small depressed>
-                      Change
-                    </v-btn>
+                    <h2>Payment method</h2>
+                    <div>
+                      <v-dialog v-model="loginDialog" max-width="400px">
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            class="ma-0"
+                            color="primary"
+                            small
+                            depressed
+                            v-on="on"
+                          >
+                            Change
+                          </v-btn>
+                        </template>
+                        <v-card>
+                          <v-card-title
+                            class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
+                          >
+                            <span class="cv-dialog-header headline">
+                              Update payment method
+                            </span>
+                          </v-card-title>
+                          <v-card-text>
+                            <v-card class="cv-payment elevation-0 ma-3">
+                              <v-tabs v-model="activePaymentTypeTab" grow>
+                                <v-tab ripple>Debit/Credit Card</v-tab>
+                                <v-tab-item>
+                                  <v-container>
+                                    credit card fields go here
+                                  </v-container>
+                                </v-tab-item>
+                                <v-tab ripple>PayPal</v-tab>
+                                <v-tab-item>
+                                  <v-container>
+                                    <div class="cv-billing-detail">
+                                      <div class="font-weight-black">
+                                        You will be redirected to PayPal to
+                                        finish your payment.
+                                      </div>
+                                    </div>
+                                  </v-container>
+                                </v-tab-item>
+                              </v-tabs>
+                            </v-card>
+                          </v-card-text>
+                          <v-card-actions class="justify-center pb-4">
+                            <v-btn color="primary" @click="loginDialog = false">
+                              Update now
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    </div>
                   </div>
                   <v-divider class="mt-2 mb-3" />
                   <div
@@ -184,62 +233,50 @@
                     <div class="open-sans">PayPal</div>
                     <v-icon>lock</v-icon>
                   </div>
-                </v-container>
-              </v-tab-item>
-              <v-tab-item>
-                <v-container>
-                  <div class="cv-billing-detail mb-2">
-                    <div class="font-weight-black">
-                      First 14 days
-                    </div>
-                    <div class="font-weight-black text-xs-right">
-                      FREE
-                    </div>
-                  </div>
-                  <div class="cv-billing-detail mb-2">
-                    <div>
-                      Price per month
-                    </div>
-                    <div class="text-xs-right">
-                      USD 9/month
-                    </div>
-                  </div>
-                  <div class="cv-billing-detail mb-2">
-                    <div>
-                      Billed monthly
-                    </div>
-                    <div class="text-xs-right">
-                      USD 9
-                    </div>
+                  <div
+                    style="display: flex; align-items: center; justify-content: space-between;"
+                    class="mt-4 mb-2"
+                  >
+                    <v-spacer />
+                    <div class="red--text caption">Cancel subscription</div>
                   </div>
                 </v-container>
               </v-tab-item>
               <v-tab-item>
-                <v-container>
-                  <div class="cv-billing-detail mb-2">
-                    <div class="font-weight-black">
-                      First 14 days
-                    </div>
-                    <div class="font-weight-black text-xs-right">
-                      FREE
-                    </div>
-                  </div>
-                  <div class="cv-billing-detail mb-2">
-                    <div>
-                      Price per month
-                    </div>
-                    <div class="text-xs-right">
-                      USD 9/month
-                    </div>
-                  </div>
-                  <div class="cv-billing-detail mb-2">
-                    <div>
-                      Billed monthly
-                    </div>
-                    <div class="text-xs-right">
-                      USD 9
-                    </div>
-                  </div>
+                <v-container class="pa-5" style="margin: 0; max-width: 600px;">
+                  <h2>Invoices</h2>
+                  <v-list two-line>
+                    <v-divider />
+                    <v-list-tile>
+                      <v-list-tile-content>
+                        <v-list-tile-title v-html="'blah'" />
+                        <v-list-tile-sub-title v-html="'blah'" />
+                      </v-list-tile-content>
+                      <v-list-tile-avatar icon>
+                        <v-icon>lock</v-icon>
+                      </v-list-tile-avatar>
+                    </v-list-tile>
+                    <v-divider />
+                    <v-list-tile>
+                      <v-list-tile-content>
+                        <v-list-tile-title v-html="'blah'" />
+                        <v-list-tile-sub-title v-html="'blah'" />
+                      </v-list-tile-content>
+                      <v-list-tile-avatar icon>
+                        <v-icon>lock</v-icon>
+                      </v-list-tile-avatar>
+                    </v-list-tile>
+                  </v-list>
+                </v-container>
+              </v-tab-item>
+              <v-tab-item>
+                <v-container class="pa-5" style="margin: 0; max-width: 600px;">
+                  <h2>Email notifications</h2>
+                  <v-switch
+                    v-model="switch1"
+                    :label="`Switch 1: foobar`"
+                    color="primary"
+                  ></v-switch>
                 </v-container>
               </v-tab-item>
             </v-tabs-items>
@@ -271,7 +308,8 @@ export default {
     letter-spacing: -.03em
   span:nth-child(2)
     color: #2196f3
-
+.cv-payment
+  border: 1px solid #E0E0E0
 .vertical-tabs
   overflow: hidden;
   height: 240px

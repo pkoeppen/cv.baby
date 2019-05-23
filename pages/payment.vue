@@ -6,7 +6,9 @@
           class="cv-logo font-weight-black"
           style="font-size: 28px"
         >
-          <span>cv</span><span>baby&nbsp;</span>
+          <nuxt-link to="/" style="text-decoration: none; color: inherit;">
+            <span>cv</span><span>baby&nbsp;</span>
+          </nuxt-link>
         </v-toolbar-title>
       </v-toolbar>
     </v-flex>
@@ -17,9 +19,8 @@
       <div class="cv-trial-text text-xs-center font-weight-black">
         Free 14-day trial for
         <div class="cv-logo" style="display: inline;">
-          <span>cv</span><span>baby</span>
+          <span>cv</span><span>baby</span> pro
         </div>
-        pro
       </div>
     </v-flex>
     <v-flex xs12>
