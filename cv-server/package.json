@@ -1,0 +1,22 @@
+{
+  "name": "cv-server",
+  "version": "1.0.0",
+  "description": "Serverless backend for cv.baby",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pkoeppen/cv.baby.git"
+  },
+  "author": "Peter Koeppen",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/pkoeppen/cv.baby/issues"
+  },
+  "homepage": "https://github.com/pkoeppen/cv.baby#readme",
+  "dependencies": {
+    "graphql": "^14.3.1"
+  }
+}
