@@ -1,15 +1,9 @@
-import { AuthQuery } from './auth");
+import { TestQuery } from './test';
 
-export default {
+export const queries = {
+  test: TestQuery.test
+};
 
-  queries: {
+export const mutations = {
 
-    // SharedQuery
-
-    resolveSlug: SharedQuery.resolveSlug,
-  },
-
-  mutations: {
-
-  }
 };

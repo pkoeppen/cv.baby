@@ -1,11 +1,11 @@
-service: cv-server
+service: cvbaby-server
 
 provider:
   name: aws
   runtime: nodejs10.x
   region: us-east-1
   stage: ${opt:stage, "dev"}
-  environment: ${file(./env.yml):${opt:stage, "dev"}}
+  environment: ${file(./config.json)}
   timeout: 30
   iamRoleStatements:
     - Effect: Allow
@@ -34,8 +34,8 @@ provider:
 plugins:
   - serverless-offline
   - serverless-webpack
-  - serverless-domain-manager
-  - serverless-s3-local
+  #- serverless-domain-manager
+  #- serverless-s3-local
 
 custom:
   serverless-offline:
@@ -43,48 +43,47 @@ custom:
   s3:
     host: 0.0.0.0
     port: 8000
-    directory: /tmp
+    directory: ./tmp
     cors: ./cors.xml
   webpack:
     webpackConfig: ./webpack.config.js
-  customDomain:
-    domainName: ${opt:domain, "api.cv.baby"}
-    basePath: ''
-    stage: ${opt:stage, "dev"}
-    createRoute53Record: true
-    # endpointType: 'regional'
+    includeModules:
+      forceExclude:
+        - aws-sdk
+  # customDomain:
+  #   domainName: ${opt:domain, "api.cv.baby"}
+  #   basePath: ''
+  #   stage: ${opt:stage, "dev"}
+  #   createRoute53Record: true
+  #   # endpointType: 'regional'
 
 
 functions:
 
-  ### Authentication
-
+  # Authentication
   auth:
     handler: auth/handler.authorizer
 
-  ### GQL Public
-
+  # GQL Public
   public:
-    handler: handler.public
+    handler: handler.handlerPublic
     events:
       - http:
-          path: /api/public
+          path: /gql/public
           method: post
           cors: true
 
-  ### GQL Private
-
+  # GQL Private
   private:
-    handler: handler.private
+    handler: handler.handlerPrivate
     events:
       - http:
-          path: /api/private
+          path: /gql/private
           method: post
           authorizer: auth
           cors: true
 
-  ### Stripe Webhook
-
+  # Stripe Webhook
   stripe:
     handler: handler.stripe
     events:
@@ -93,15 +92,54 @@ functions:
           method: post
           cors: true
 
+  # Cognito hooks
+  confirmUser:
+    handler: cognito/handler.confirmUser
+  createUser:
+    handler: cognito/handler.createUser
+
 resources:
+  Outputs:
+
+    # Output the ID generated for the Cognito user pool.
+    UserPoolId:
+      Value:
+        Ref: CognitoUserPool
+    UserPoolClientId:
+      Value:
+        Ref: CognitoUserPoolClient
+
   Resources:
 
-    ### S3 Bucket (Preprocess)
+    # Cognito User Pool
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        # Generate a name based on the stage
+        UserPoolName: cvbaby-user-pool-${opt:stage, "dev"}
+        # Set email as an alias
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
 
+    # Cognito User Pool Client
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        # Generate an app client name based on the stage
+        ClientName: cvbaby-user-pool-client-${opt:stage, "dev"}
+        UserPoolId:
+          Ref: CognitoUserPool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false
+
+    # S3 Bucket (Preprocess)
     BucketPreprocess:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.environment.CVBABY_BUCKET_PRE}
+        BucketName: ${self:provider.environment.CVBABY_BUCKET_PRE}-${opt:stage, "dev"}
         CorsConfiguration:
           CorsRules:
             -
@@ -113,12 +151,11 @@ resources:
                 - PUT
               MaxAge: 3000
 
-    ### S3 Bucket (Postprocess)
-
+    # S3 Bucket (Postprocess)
     BucketPostprocess:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.environment.CVBABY_BUCKET_POST}
+        BucketName: ${self:provider.environment.CVBABY_BUCKET_POST}-${opt:stage, "dev"}
         CorsConfiguration:
           CorsRules:
             -
@@ -130,8 +167,7 @@ resources:
                 - GET
               MaxAge: 3000
 
-    ### DynamoDB Users Table
-
+    # DynamoDB Users Table
     UsersTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -142,10 +178,9 @@ resources:
         - AttributeName: user_id
           KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-        TableName: "${self:provider.environment.CVBABY_TABLE_USERS}"
+        TableName: ${self:provider.environment.CVBABY_TABLE_USERS}-${opt:stage, "dev"}
 
-    ### DynamoDB Slugs Table
-
+    # DynamoDB Slugs Table
     SlugsTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -159,17 +194,16 @@ resources:
           KeyType: HASH
         GlobalSecondaryIndexes:
           # GSI to query a slug by user_id.
-        - IndexName: "${self:provider.environment.CVBABY_TABLE_SLUGS}-GSI"
+        - IndexName: ${self:provider.environment.CVBABY_TABLE_SLUGS}-${opt:stage, "dev"}-GSI
           KeySchema:
           - AttributeName: user_id
             KeyType: HASH
           Projection:
             ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
-        TableName: "${self:provider.environment.CVBABY_TABLE_SLUGS}"
+        TableName: ${self:provider.environment.CVBABY_TABLE_SLUGS}-${opt:stage, "dev"}
 
-    ### DynamoDB Invites Table
-
+    # DynamoDB Invites Table
     InvitationsTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -186,14 +220,14 @@ resources:
           KeyType: RANGE
         GlobalSecondaryIndexes:
           # GSI to query invitations by invite_id.
-        - IndexName: "${self:provider.environment.CVBABY_TABLE_INVITES}-GSI"
+        - IndexName: ${self:provider.environment.CVBABY_TABLE_INVITES}-${opt:stage, "dev"}-GSI
           KeySchema:
           - AttributeName: invite_id
             KeyType: HASH
           Projection:
             ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
-        TableName: "${self:provider.environment.CVBABY_TABLE_INVITES}"
+        TableName: ${self:provider.environment.CVBABY_TABLE_INVITES}-${opt:stage, "dev"}
 
     # This response is needed for custom authorizer failures CORS support.
     # https://docs.aws.amazon.com/apigateway/latest/developerguide/customize-gateway-responses.html

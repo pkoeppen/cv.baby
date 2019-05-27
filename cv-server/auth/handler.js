@@ -3,7 +3,7 @@ import jose from 'node-jose';
 import find from 'lodash/find';
 
 const AWS_REGION = 'us-east-1';
-const AWS_COGNITO_USER_POOL_ID = 'us-east-1_dXbfCFBHt';
+const AWS_COGNITO_USER_POOL_ID = 'us-east-1_TpMjcoz7g';
 const AWS_ISSUER = `https://cognito-idp.${AWS_REGION}.amazonaws.com/${AWS_COGNITO_USER_POOL_ID}`;
 const AWS_KEYS_URL = `${AWS_ISSUER}/.well-known/jwks.json`;
 
@@ -30,7 +30,7 @@ export const authorizer = async event => {
   const token = event.authorizationToken;
 
   if (!token) {
-    throw new Error('Unauthorized');
+    throw new Error('Unauthorized.');
   }
 
   const sections = token.split('.');

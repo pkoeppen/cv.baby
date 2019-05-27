@@ -2,80 +2,7 @@
   <v-layout style="min-height: 100vh;" row column wrap>
     <v-flex xs12>
       <v-container class="pa-0">
-        <v-toolbar class="cv-toolbar elevation-0">
-          <v-toolbar-title
-            class="cv-logo font-weight-black"
-            style="font-size: 28px"
-          >
-            <nuxt-link to="/" style="text-decoration: none; color: inherit;">
-              <span>cv</span><span>baby&nbsp;</span>
-            </nuxt-link>
-          </v-toolbar-title>
-          <v-spacer />
-          <v-btn class="mr-3" color="primary" flat depressed outline small>
-            Renew Subscription
-          </v-btn>
-          <v-menu
-            bottom
-            left
-            :close-on-content-click="false"
-            :nudge-width="200"
-            offset-x
-          >
-            <template v-slot:activator="{ on }">
-              <v-btn dark icon v-on="on">
-                <v-avatar color="indigo" size="36">
-                  <v-icon dark>account_circle</v-icon>
-                </v-avatar>
-              </v-btn>
-            </template>
-            <v-card>
-              <v-list>
-                <v-list-tile avatar>
-                  <v-list-tile-avatar>
-                    <img
-                      src="https://cdn.vuetifyjs.com/images/john.jpg"
-                      alt="John"
-                    />
-                  </v-list-tile-avatar>
-                  <v-list-tile-content>
-                    <v-list-tile-title>Some Person</v-list-tile-title>
-                    <v-list-tile-sub-title>
-                      User Of This Site
-                    </v-list-tile-sub-title>
-                  </v-list-tile-content>
-
-                  <v-list-tile-action>
-                    <v-btn class="red--text" icon>
-                      <v-icon>favorite</v-icon>
-                    </v-btn>
-                  </v-list-tile-action>
-                </v-list-tile>
-              </v-list>
-              <v-divider></v-divider>
-              <v-list>
-                <v-list-tile to="/settings">
-                  <v-list-tile-avatar>
-                    <v-icon>account_box</v-icon>
-                  </v-list-tile-avatar>
-                  <v-list-tile-title>Account</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile @click="alert()">
-                  <v-list-tile-avatar>
-                    <v-icon>assignment_late</v-icon>
-                  </v-list-tile-avatar>
-                  <v-list-tile-title>Help</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile @click="alert()">
-                  <v-list-tile-avatar>
-                    <v-icon>exit_to_app</v-icon>
-                  </v-list-tile-avatar>
-                  <v-list-tile-title>Logout</v-list-tile-title>
-                </v-list-tile>
-              </v-list>
-            </v-card>
-          </v-menu>
-        </v-toolbar>
+        <navbar />
       </v-container>
     </v-flex>
     <v-flex xs12>
@@ -87,7 +14,7 @@
           <v-flex style="border-right: 1px solid #E0E0E0;" shrink>
             <h2 class="mt-5 mb-4">Account</h2>
             <div class="vertical-tabs vertical-tabs--horizontal-text">
-              <v-tabs v-model="tabs" @input="$emit('input', $event)">
+              <v-tabs v-model="tabs" @change="$emit('input', $event)">
                 <v-tab>Profile</v-tab>
                 <v-tab>Password</v-tab>
                 <v-tab>Billing &amp; Subscription</v-tab>
@@ -104,25 +31,35 @@
               <v-tab-item>
                 <v-container class="pa-5" style="margin: 0; max-width: 600px">
                   <h2>Change password</h2>
+                  <v-btn @click="test">Test</v-btn>
                   <v-text-field
+                    v-model="password.currentPassword"
                     prepend-icon="lock"
                     label="Old password"
                     type="password"
                     required
                   />
                   <v-text-field
+                    v-model="password.newPassword"
                     prepend-icon="lock"
                     label="New password"
                     type="password"
                     required
                   />
                   <v-text-field
+                    v-model="password.newPasswordConfirm"
                     prepend-icon="lock"
                     label="Repeat password"
                     type="password"
                     required
                   />
-                  <v-btn class="mt-4" color="primary" depressed>
+                  <v-btn
+                    :loading="password.loading"
+                    class="mt-4"
+                    color="primary"
+                    depressed
+                    @click="changePassword"
+                  >
                     Save changes
                   </v-btn>
                 </v-container>
@@ -173,7 +110,7 @@
                   >
                     <h2>Payment method</h2>
                     <div>
-                      <v-dialog v-model="loginDialog" max-width="400px">
+                      <v-dialog v-model="payment.dialog" max-width="400px">
                         <template v-slot:activator="{ on }">
                           <v-btn
                             class="ma-0"
@@ -195,7 +132,7 @@
                           </v-card-title>
                           <v-card-text>
                             <v-card class="cv-payment elevation-0 ma-3">
-                              <v-tabs v-model="activePaymentTypeTab" grow>
+                              <v-tabs v-model="payment.tabs" grow>
                                 <v-tab ripple>Debit/Credit Card</v-tab>
                                 <v-tab-item>
                                   <v-container>
@@ -249,8 +186,12 @@
                     <v-divider />
                     <v-list-tile>
                       <v-list-tile-content>
-                        <v-list-tile-title v-html="'blah'" />
-                        <v-list-tile-sub-title v-html="'blah'" />
+                        <v-list-tile-title>
+                          blah
+                        </v-list-tile-title>
+                        <v-list-tile-sub-title>
+                          blah
+                        </v-list-tile-sub-title>
                       </v-list-tile-content>
                       <v-list-tile-avatar icon>
                         <v-icon>lock</v-icon>
@@ -259,8 +200,12 @@
                     <v-divider />
                     <v-list-tile>
                       <v-list-tile-content>
-                        <v-list-tile-title v-html="'blah'" />
-                        <v-list-tile-sub-title v-html="'blah'" />
+                        <v-list-tile-title>
+                          blah
+                        </v-list-tile-title>
+                        <v-list-tile-sub-title>
+                          blah
+                        </v-list-tile-sub-title>
                       </v-list-tile-content>
                       <v-list-tile-avatar icon>
                         <v-icon>lock</v-icon>
@@ -273,7 +218,7 @@
                 <v-container class="pa-5" style="margin: 0; max-width: 600px;">
                   <h2>Email notifications</h2>
                   <v-switch
-                    v-model="switch1"
+                    v-model="email.switch"
                     :label="`Switch 1: foobar`"
                     color="primary"
                   ></v-switch>
@@ -288,15 +233,62 @@
 </template>
 
 <script>
+import Navbar from '~/components/Navbar';
 import Resume from '~/components/Resume';
 export default {
   components: {
+    Navbar,
     Resume
   },
   data() {
     return {
-      tabs: null
+      tabs: null,
+      payment: {
+        dialog: false,
+        tabs: null
+      },
+      password: {
+        loading: false,
+        currentPassword: null,
+        newPassword: null,
+        newPasswordConfirm: null
+      },
+      email: {
+        switch: false
+      }
     };
+  },
+  methods: {
+    test() {
+      this.$axios.post('http://localhost:3001/gql/private', {
+        query: 'query { test }'
+      });
+    },
+    changePassword() {
+      const {
+        currentPassword,
+        newPassword,
+        newPasswordConfirm
+      } = this.password;
+      if (!currentPassword || !newPassword || !newPasswordConfirm) {
+        // Show error
+        return;
+      }
+      if (this.password.newPassword !== this.password.newPasswordConfirm) {
+        // Show error
+        return;
+      }
+      this.password.loading = true;
+      this.$store
+        .dispatch('cognito/changePassword', {
+          currentPassword: this.password.currentPassword,
+          newPassword: this.password.newPassword
+        })
+        .then(() => {
+          this.password.loading = false;
+          // Show success
+        });
+    }
   }
 };
 </script>

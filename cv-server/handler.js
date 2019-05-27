@@ -1,14 +1,16 @@
 import { graphql, parse } from 'graphql';
 import { checkQueryDepth } from './util';
-import { webhook } from './stripe';
 import schema from './schema';
 
 
-export const public = generateHandler(false);
-export const private = generateHandler(true);
+// TODO: Create Lambda to auto-confirm cognito users
 
 
-function generateHandler(private=false) {
+export const handlerPublic = generateHandler(false);
+export const handlerPrivate = generateHandler(true);
+
+
+function generateHandler(authenticated=false) {
 
   const HEADERS = {
     'Access-Control-Allow-Origin': '*'
@@ -26,11 +28,10 @@ function generateHandler(private=false) {
   return function (event, context, callback) {
     const { query, vars } = JSON.parse(event.body);
     const ctx = {
-      ip_address: event.requestContext.identity.sourceIp,
-      user_id: id.replace(/^auth0\|(acct|cus)_/g, ''),
+      ip_address: event.requestContext.identity.sourceIp
     };
 
-    if (private) {
+    if (authenticated) {
       const { principalId: id } = event.requestContext.authorizer;
       ctx.user_id = id;
     }
@@ -59,7 +60,7 @@ function generateHandler(private=false) {
           });
 
         } else {
-          console.log(`[handler:${private ? 'private' : 'public'}] Error: ${error.message}`);
+          console.log(`[handler:${authenticated ? 'private' : 'public'}] Error: ${error.message}`);
           return callback(null, {
             headers: HEADERS,
             statusCode: StatusCodes.INTERNAL_ERROR,
@@ -76,7 +77,7 @@ function generateHandler(private=false) {
       }
     })
     .catch(error => {
-      console.log(`[handler:${private ? 'private' : 'public'}] Error: ${error.message}`);
+      console.log(`[handler:${authenticated ? 'private' : 'public'}] Error: ${error.message}`);
       return callback(null, {
         headers: HEADERS,
         statusCode: StatusCodes.INTERNAL_ERROR,

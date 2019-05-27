@@ -43,6 +43,9 @@ export default {
       rightDrawer: false,
       title: 'cvbaby'
     };
+  },
+  created() {
+    this.$store.dispatch('cognito/checkAuthentication');
   }
 };
 </script>

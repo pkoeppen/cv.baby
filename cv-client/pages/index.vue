@@ -1,82 +1,11 @@
 <template>
-  <v-layout justify-center align-center>
+  <v-layout row column wrap>
+    <v-flex xs12>
+      <v-container class="pa-0">
+        <navbar />
+      </v-container>
+    </v-flex>
     <v-flex style="position: relative;" xs12 md8>
-      <v-toolbar class="cv-toolbar elevation-0">
-        <v-toolbar-title class="cv-logo font-weight-black">
-          <nuxt-link to="/" style="text-decoration: none; color: inherit;">
-            <span>cv</span><span>baby&nbsp;</span>
-          </nuxt-link>
-        </v-toolbar-title>
-        <v-spacer />
-        <v-dialog v-model="loginDialog" max-width="400px">
-          <template v-slot:activator="{ on }">
-            <v-btn class="text-none" color="primary" flat depressed v-on="on">
-              Login
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title
-              class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
-            >
-              <span class="cv-dialog-header headline">
-                Login
-              </span>
-            </v-card-title>
-            <v-card-text>
-              <v-container class="py-0" grid-list-md>
-                <v-layout wrap>
-                  <v-flex xs12>
-                    <v-text-field label="Email" required />
-                  </v-flex>
-                  <v-flex xs12>
-                    <v-text-field label="Password" type="password" required />
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-card-text>
-            <v-card-actions class="justify-center pb-4">
-              <v-btn color="primary" @click="loginDialog = false">
-                Login
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-dialog v-model="freeTrialDialog" max-width="400px">
-          <template v-slot:activator="{ on }">
-            <v-btn color="primary" v-on="on">Free Trial</v-btn>
-          </template>
-          <v-card>
-            <v-card-title
-              class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
-            >
-              <span class="cv-dialog-header headline">
-                Try
-                <div class="cv-logo" style="display: inline;">
-                  <span>cv</span><span>baby</span>
-                </div>
-                for free
-              </span>
-            </v-card-title>
-            <v-card-text>
-              <v-container class="py-0" grid-list-md>
-                <v-layout wrap>
-                  <v-flex xs12>
-                    <v-text-field label="Email" required />
-                  </v-flex>
-                  <v-flex xs12>
-                    <v-text-field label="Password" type="password" required />
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-card-text>
-            <v-card-actions class="justify-center pb-4">
-              <v-btn color="primary" @click="freeTrialDialog = false">
-                Start Free Trial
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
       <div class="cv-header font-weight-black text-xs-center px-4 mt-4">
         Online resumes, simplified.
       </div>
@@ -97,16 +26,69 @@
 </template>
 
 <script>
+import Navbar from '~/components/Navbar';
 import Resume from '~/components/Resume';
 export default {
   components: {
+    Navbar,
     Resume
   },
   data() {
     return {
-      freeTrialDialog: false,
-      loginDialog: false
+      signInData: {
+        dialog: false,
+        email: 'p.hartzog.koeppen@gmail.com',
+        password: null,
+        loading: false
+      },
+      signUpData: {
+        dialog: false,
+        email: 'p.hartzog.koeppen@gmail.com',
+        password: null,
+        loading: false
+      }
     };
+  },
+  computed: {
+    authenticated() {
+      return !!this.$store.state.cognito.authenticated;
+    },
+    username() {
+      return (this.$store.state.cognito.authenticated || {}).username;
+    }
+  },
+  methods: {
+    signIn(event) {
+      event.preventDefault();
+      this.signInData.loading = true;
+      this.$store
+        .dispatch('cognito/authenticateUser', {
+          email: this.signInData.email,
+          password: this.signInData.password
+        })
+        .then(() => {
+          this.$router.push({
+            path: '/settings'
+          });
+        })
+        .catch(error => console.log(error))
+        .finally(() => {
+          this.signInData.loading = false;
+        });
+    },
+    signUp(event) {
+      event.preventDefault();
+      this.signUpData.loading = true;
+      this.$store
+        .dispatch('cognito/signUp', {
+          email: this.signUpData.email,
+          password: this.signUpData.password
+        })
+        .catch(error => console.log(error))
+        .finally(() => {
+          this.signUpData.loading = false;
+        });
+    }
   }
 };
 </script>
