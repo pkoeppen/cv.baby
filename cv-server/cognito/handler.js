@@ -1,9 +1,12 @@
-import * as nconf from "nconf";
-import { DynamoDB } from "../util";
+import * as uuid from 'uuid/v1';
+import { DynamoDB } from '../util';
 
-nconf.file(`${__dirname}/config.json`);
-
-const DYNAMODB_TABLE_USERS = nconf.get("DYNAMODB_TABLE_USERS");
+const CVBABY_TABLE_USERS = process.env.CVBABY_TABLE_USERS;
+const AccountStatus = {
+  PRETRIAL: 'pretrial',
+  TRIAL: 'trial',
+  LICENSED: 'licensed'
+};
 
 /*
  *  Pre-signup hook to automatically confirm users.
@@ -14,34 +17,39 @@ export function confirmUser(event, context, callback) {
 }
 
 /*
- *  Post-signup hook to create a user in DynamoDB.
+ *  Post-confirmation hook to create a user in DynamoDB.
  */
 export function createUser(event, context, callback) {
+  const _id = event.userName;
   const email = event.request.userAttributes.email;
   const user = {
+    _id: _id,
     time_created: Date.now(),
     time_updated: 0,
-    name: "",
-    title: "",
+    account_status: AccountStatus.PRETRIAL,
+    name: null,
+    title: null,
+    profile: null,
     skills: [],
-    profile: "",
     employment: [],
     education: [],
     references: [],
     personal: {
-      description: "",
+      description: null,
       hobbies: []
     },
     contact: {
       email: email,
-      phone: "",
-      website: "",
+      phone: null,
+      website: null,
       social: []
     }
   };
 
-  return DynamoDB.put({
-    TableName: DYNAMODB_TABLE_USERS,
+  DynamoDB.put({
+    TableName: CVBABY_TABLE_USERS,
     Item: user
-  }).promise();
+  }).promise()
+  .then(() => callback(null, event))
+  .catch(error => callback(error));
 }

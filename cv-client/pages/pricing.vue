@@ -36,7 +36,7 @@
                 <span class="grey--text text--darken-1">cancel any time</span>
               </v-card-title>
               <v-card-text class="text-xs-center py-0">
-                <v-btn color="primary" to="/payment" large>
+                <v-btn color="primary" to="/payment?cycle=monthly" large>
                   Start Free Trial
                 </v-btn>
                 <v-list class="cv-features pb-4">
@@ -83,7 +83,7 @@
                 <span class="grey--text text--darken-1">cancel any time</span>
               </v-card-title>
               <v-card-text class="text-xs-center py-0">
-                <v-btn color="primary" to="/payment" large>
+                <v-btn color="primary" to="/payment?cycle=yearly" large>
                   Start Free Trial
                 </v-btn>
                 <v-list class="cv-features pb-4">
@@ -218,7 +218,7 @@
             </v-layout>
           </v-flex>
           <v-flex class="mt-5" xs12>
-            <v-btn class="mb-5" color="primary">
+            <v-btn to="/payment?cycle=yearly" class="mb-5" color="primary">
               Get started
             </v-btn>
           </v-flex>
@@ -289,10 +289,12 @@
           </div>
           pro
         </div>
-        <v-btn class="my-4" color="primary">Get started</v-btn>
+        <v-btn to="/payment?cycle=yearly" class="my-4" color="primary"
+          >Get started</v-btn
+        >
         <div class="questions">
           Still have questions?
-          <a href="">Contact us</a>
+          <a href="mailto:support@cv.baby">Contact us</a>
         </div>
       </div>
       <div class="mb-5" />

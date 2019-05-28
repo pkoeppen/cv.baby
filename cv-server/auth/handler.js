@@ -38,31 +38,31 @@ export const authorizer = async event => {
   const { kid } = JSON.parse(header);
 
   // Get .well-known keys.
-  return axios.get(AWS_KEYS_URL)
-    .then(response => {
-      if (response.status === 200 && response.data.keys) {
-        // Find the correct key.
-        const key = find(response.data.keys, _key => _key.kid === kid);
-        // Verify the given token.
-        return jose.JWK.asKey(key)
-          .then(result => jose.JWS.createVerify(result)
-            .verify(token)
-            .then(data => {
-              // Token is valid; check if expired.
-              const claims = JSON.parse(data.payload);
-              const timestamp = Math.floor(new Date() / 1000);
-              if (timestamp > claims.exp) {
-                throw new Error('Token is expired.');
-              } else if (claims.iss !== AWS_ISSUER) {
-                throw new Error('Token issuer invalid.');
-              }
-              // Verification succeeded.
-              return generatePolicy(claims, 'Allow', event.methodArn);
-            })
-            .catch(() => {
-              throw new Error('Signature verification failed.');
-            }));
-      }
-      throw new Error('Unauthorized.');
-    });
+  return axios.get(AWS_KEYS_URL).then(response => {
+    if (response.status === 200 && response.data.keys) {
+      // Find the correct key.
+      const key = find(response.data.keys, _key => _key.kid === kid);
+      // Verify the given token.
+      return jose.JWK.asKey(key).then(result =>
+        jose.JWS.createVerify(result)
+          .verify(token)
+          .then(data => {
+            // Token is valid; check if expired.
+            const claims = JSON.parse(data.payload);
+            const timestamp = Math.floor(new Date() / 1000);
+            if (timestamp > claims.exp) {
+              throw new Error('Token is expired.');
+            } else if (claims.iss !== AWS_ISSUER) {
+              throw new Error('Token issuer invalid.');
+            }
+            // Verification succeeded.
+            return generatePolicy(claims, 'Allow', event.methodArn);
+          })
+          .catch(() => {
+            throw new Error('Signature verification failed.');
+          })
+      );
+    }
+    throw new Error('Unauthorized.');
+  });
 };

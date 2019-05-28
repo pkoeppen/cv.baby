@@ -23,13 +23,14 @@
         </div>
       </div>
     </v-flex>
+    <payment-fields />
     <v-flex xs12>
       <v-container grid-list-xl fill-height>
         <v-layout justify-center>
           <v-flex class="px-5" xs12 md5>
             <div class="mb-3">1. Choose a billing cycle</div>
             <v-card class="cv-step elevation-0">
-              <v-tabs v-model="activeBillingTypeTab" grow>
+              <v-tabs v-model="activeBillingCycleTab" grow>
                 <v-tab ripple>Monthly</v-tab>
                 <v-tab-item>
                   <v-container>
@@ -90,10 +91,25 @@
                 </v-tab-item>
               </v-tabs>
             </v-card>
-            <div class="mb-3 mt-4">2. Create your account</div>
-            <v-text-field label="Email" outline required />
-            <v-text-field label="Password" type="password" outline required />
-            <div class="mb-3 mt-4">3. Choose payment</div>
+            <template v-if="!authenticated">
+              <div class="mb-3 mt-4">2. Create your account</div>
+              <v-text-field
+                v-model="signUpData.email"
+                label="Email"
+                outline
+                required
+              />
+              <v-text-field
+                v-model="password"
+                label="Password"
+                type="password"
+                outline
+                required
+              />
+            </template>
+            <div class="mb-3 mt-4">
+              {{ authenticated ? '2' : '3' }}. Choose payment
+            </div>
             <v-card class="cv-step elevation-0">
               <v-tabs v-model="activePaymentTypeTab" grow>
                 <v-tab ripple>Debit/Credit Card</v-tab>
@@ -134,7 +150,7 @@
                   check_circle
                 </v-icon>
               </div>
-              <div>Cancel your trial any time before May 31, 2019</div>
+              <div>Cancel your trial any time before {{ paidStartDate }}</div>
             </div>
             <div class="text-xs-center">
               <v-btn class="my-4" color="primary" depressed>
@@ -221,12 +237,70 @@
 </template>
 
 <script>
+import PaymentFields from '~/components/PaymentFields';
 export default {
+  components: {
+    PaymentFields
+  },
   data() {
+    let activeBillingCycleTab = null;
+    if (this.$route.query.cycle === 'monthly') {
+      activeBillingCycleTab = 0;
+    }
+    if (this.$route.query.cycle === 'yearly') {
+      activeBillingCycleTab = 1;
+    }
     return {
-      activeBillingTypeTab: null,
-      activePaymentTypeTab: null
+      activeBillingCycleTab,
+      activePaymentTypeTab: null,
+      signUpData: {
+        email: null,
+        password: null,
+        loading: false,
+        success: false
+      }
     };
+  },
+  computed: {
+    authenticated() {
+      return !!this.$store.state.cognito.authenticated;
+    },
+    paidStartDate() {
+      const date = new Date(Date.now() + 12096e5);
+      return date.toLocaleString('en-us', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    }
+  },
+  methods: {
+    signUp(event) {
+      event.preventDefault();
+      this.signUpData.loading = true;
+      this.$store
+        .dispatch('cognito/signUp', {
+          email: this.signUpData.email,
+          password: this.signUpData.password
+        })
+        .then(() =>
+          this.$store.dispatch('cognito/authenticateUser', {
+            email: this.signUpData.email,
+            password: this.signUpData.password
+          })
+        )
+        // then create Stripe customer / add card
+        .then(() => {
+          // Final success
+          this.signUpData.loading = false;
+          this.signUpData.success = true;
+          setTimeout(() => this.$router.push({ path: 'settings' }), 2000);
+        })
+        .catch(error => console.log(error))
+        .finally(() => {
+          this.signUpData.loading = false;
+        });
+    }
   }
 };
 </script>

@@ -7,9 +7,9 @@
     </v-toolbar-title>
     <v-spacer />
     <template v-if="authenticated">
-      <v-btn class="mr-3" color="primary" flat depressed outline small>
-        Renew Subscription
-      </v-btn>
+      <v-btn class="mr-3" color="primary" flat depressed outline small
+        >Renew Subscription</v-btn
+      >
       <v-menu
         bottom
         left
@@ -40,7 +40,8 @@
                     class="cv-logo font-weight-black"
                     style="font-size: 16px; display: inline;"
                   >
-                    <span>cv</span><span>baby&nbsp;</span>pro
+                    <span>cv</span>
+                    <span>baby&nbsp;</span>pro
                   </div>
                   &ndash; 135 days remaining
                 </v-list-tile-sub-title>
@@ -80,18 +81,16 @@
     <template v-else>
       <v-dialog v-model="signInData.dialog" max-width="400px">
         <template v-slot:activator="{ on }">
-          <v-btn class="text-none" color="primary" flat depressed v-on="on">
-            Login
-          </v-btn>
+          <v-btn class="text-none" color="primary" flat depressed v-on="on"
+            >Login</v-btn
+          >
         </template>
         <v-form @submit="signIn">
           <v-card>
             <v-card-title
               class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
             >
-              <span class="cv-dialog-header headline">
-                Login
-              </span>
+              <span class="cv-dialog-header headline">Login</span>
             </v-card-title>
             <v-card-text>
               <v-container class="py-0" grid-list-md>
@@ -115,13 +114,9 @@
               </v-container>
             </v-card-text>
             <v-card-actions class="justify-center pb-4">
-              <v-btn
-                :loading="signInData.loading"
-                color="primary"
-                type="submit"
+              <v-btn :loading="signInData.loading" color="primary" type="submit"
+                >Login</v-btn
               >
-                Login
-              </v-btn>
             </v-card-actions>
           </v-card>
         </v-form>
@@ -138,7 +133,8 @@
               <span class="cv-dialog-header headline">
                 Try
                 <div class="cv-logo" style="display: inline;">
-                  <span>cv</span><span>baby</span>
+                  <span>cv</span>
+                  <span>baby</span>
                 </div>
                 for free
               </span>
@@ -167,10 +163,15 @@
             <v-card-actions class="justify-center pb-4">
               <v-btn
                 :loading="signUpData.loading"
-                color="primary"
+                :color="signUpData.success ? 'success' : 'primary'"
                 type="submit"
               >
-                Start Free Trial
+                <v-icon v-if="signUpData.success">check_circle</v-icon>
+                {{
+                  signUpData.success
+                    ? '&nbsp;Account created'
+                    : 'Start free trial'
+                }}
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -195,7 +196,8 @@ export default {
         dialog: false,
         email: 'p.hartzog.koeppen@gmail.com',
         password: null,
-        loading: false
+        loading: false,
+        success: false
       }
     };
   },
@@ -204,7 +206,8 @@ export default {
       return !!this.$store.state.cognito.authenticated;
     },
     username() {
-      return (this.$store.state.cognito.authenticated || {}).username;
+      return (this.$store.state.cognito.authenticated || {}).signInUserSession
+        .idToken.payload.email;
     }
   },
   methods: {
@@ -234,6 +237,19 @@ export default {
           email: this.signUpData.email,
           password: this.signUpData.password
         })
+        .then(() => {
+          this.signUpData.loading = false;
+          this.signUpData.success = true;
+          return this.$store.dispatch('cognito/authenticateUser', {
+            email: this.signUpData.email,
+            password: this.signUpData.password
+          });
+        })
+        .then(() => {
+          setTimeout(() => {
+            this.$router.push({ path: 'pricing' });
+          }, 2000);
+        })
         .catch(error => console.log(error))
         .finally(() => {
           this.signUpData.loading = false;
@@ -250,40 +266,62 @@ export default {
 };
 </script>
 <style lang="stylus" scoped>
-.cv-toolbar
-  background-color: #ffffff !important
-.cv-logo
-  font-size: 28px
-  span
-    letter-spacing: -.03em
-  span:nth-child(2)
-    color: #2196f3
-.cv-header,
-.cv-subheader
-  line-height: 1.5em !important
-.cv-header
-  font-size: 28px
-.cv-subheader
-  font-size: 20px
-  font-family: 'Open Sans', sans-serif !important
-.cv-ribbon
-  position: absolute
-  left: 0
-  top: 300px
-  width: 200px
-  .cv-ribbon-text
-    font-family: 'Open Sans', sans-serif !important
-    position: absolute
-    left: 50px
-    top: 20px
-    transform: rotate(8deg)
-    .rate
-      font-size: 34px
-      font-weight: 900
-      line-height: 36px
-  img
-    width: 100%
-.cv-dialog-header *
-  font-size: 24px !important
-  font-weight: 900 !important
+.cv-toolbar {
+  background-color: #ffffff !important;
+}
+
+.cv-logo {
+  font-size: 28px;
+
+  span {
+    letter-spacing: -0.03em;
+  }
+
+  span:nth-child(2) {
+    color: #2196f3;
+  }
+}
+
+.cv-header, .cv-subheader {
+  line-height: 1.5em !important;
+}
+
+.cv-header {
+  font-size: 28px;
+}
+
+.cv-subheader {
+  font-size: 20px;
+  font-family: 'Open Sans', sans-serif !important;
+}
+
+.cv-ribbon {
+  position: absolute;
+  left: 0;
+  top: 300px;
+  width: 200px;
+
+  .cv-ribbon-text {
+    font-family: 'Open Sans', sans-serif !important;
+    position: absolute;
+    left: 50px;
+    top: 20px;
+    transform: rotate(8deg);
+
+    .rate {
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 36px;
+    }
+  }
+
+  img {
+    width: 100%;
+  }
+}
+
+.cv-dialog-header * {
+  font-size: 24px !important;
+  font-weight: 900 !important;
+}
 </style>
