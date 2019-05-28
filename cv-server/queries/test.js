@@ -1,6 +1,6 @@
 import { GraphQLString } from 'graphql';
 
-export const TestQuery = {
+export default TestQuery = {
   test: {
     type: GraphQLString,
     resolve: (root, args, ctx, ast) => {

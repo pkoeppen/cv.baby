@@ -305,21 +305,17 @@ export default {
 .vertical-tabs
   overflow: hidden;
   height: 240px
-
 .vertical-tabs--horizontal-text .v-tabs
   transform: rotate(90deg);
   transform-origin: 100px 100px;
   height: 240px;
   left: 40px
-
 .vertical-tabs--horizontal-text .v-tabs >>> .v-tabs__container
   height: 240px;
-
 .vertical-tabs--horizontal-text .v-tabs >>> .v-tabs__div
   width: 48px;
   height: 240px;
   display: inline-block;
-
 .vertical-tabs--horizontal-text .v-tabs >>> .v-tabs__item
   transform: rotate(-90deg);
   transform-origin: 100px 100px;
@@ -333,17 +329,13 @@ export default {
   white-space: pre;
   overflow: hidden;
   text-overflow: ellipsis;
-
 .vertical-tabs--vertical-text
   width: 48px;
-
 .vertical-tabs--vertical-text .v-tabs
   transform: rotate(90deg);
   transform-origin: 24px 24px;
-
 .vertical-tabs--vertical-text .v-tabs >>> .v-tabs__item
   transform: rotate(180deg);
-
 .vertical-tabs--vertical-text .v-tabs >>> .v-tabs__slider-wrapper
   top: 0;
   bottom: auto;

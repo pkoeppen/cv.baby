@@ -1,7 +1,7 @@
-import { TestQuery } from './test';
+import PaymentQuery from './payment';
 
 export const queries = {
-  test: TestQuery.test
+  getClientPaymentToken: PaymentQuery.getClientPaymentToken
 };
 
 export const mutations = {

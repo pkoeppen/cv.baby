@@ -23,7 +23,6 @@
         </div>
       </div>
     </v-flex>
-    <payment-fields />
     <v-flex xs12>
       <v-container grid-list-xl fill-height>
         <v-layout justify-center>
@@ -100,7 +99,7 @@
                 required
               />
               <v-text-field
-                v-model="password"
+                v-model="signUpData.password"
                 label="Password"
                 type="password"
                 outline
@@ -114,9 +113,9 @@
               <v-tabs v-model="activePaymentTypeTab" grow>
                 <v-tab ripple>Debit/Credit Card</v-tab>
                 <v-tab-item>
-                  <v-container>
-                    credit card fields go here
-                  </v-container>
+                  <no-ssr>
+                    <payment-fields ref="paymentFields" />
+                  </no-ssr>
                 </v-tab-item>
                 <v-tab ripple>PayPal</v-tab>
                 <v-tab-item>
@@ -153,7 +152,7 @@
               <div>Cancel your trial any time before {{ paidStartDate }}</div>
             </div>
             <div class="text-xs-center">
-              <v-btn class="my-4" color="primary" depressed>
+              <v-btn class="my-4" color="primary" depressed @click="signUp">
                 Start free trial
               </v-btn>
               <div
@@ -275,8 +274,8 @@ export default {
     }
   },
   methods: {
-    signUp(event) {
-      event.preventDefault();
+    signUp() {
+      console.log(this.$refs.paymentFields.generateNonce());
       this.signUpData.loading = true;
       this.$store
         .dispatch('cognito/signUp', {
