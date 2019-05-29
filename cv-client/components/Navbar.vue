@@ -240,17 +240,16 @@ export default {
         .then(() => {
           this.signUpData.loading = false;
           this.signUpData.success = true;
-          return this.$store.dispatch('cognito/authenticateUser', {
-            email: this.signUpData.email,
-            password: this.signUpData.password
-          });
-        })
-        .then(() => {
+          setTimeout(() => {
+            this.$store.dispatch('cognito/authenticateUser', {
+              email: this.signUpData.email,
+              password: this.signUpData.password
+            });
+          }, 1000);
           setTimeout(() => {
             this.$router.push({ path: 'pricing' });
-          }, 2000);
+          }, 2250);
         })
-        .catch(error => console.log(error))
         .finally(() => {
           this.signUpData.loading = false;
         });

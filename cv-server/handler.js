@@ -32,8 +32,8 @@ function generateHandler(authenticated=false) {
     };
 
     if (authenticated) {
-      const { principalId: id } = event.requestContext.authorizer;
-      ctx.user_id = id;
+      const { principalId } = event.requestContext.authorizer;
+      ctx.principalId = principalId;
     }
 
     // Disallow query depth over ten levels.
@@ -60,7 +60,7 @@ function generateHandler(authenticated=false) {
           });
 
         } else {
-          console.log(`[handler:${authenticated ? 'private' : 'public'}] Error: ${error.message}`);
+          console.error(`[handler:${authenticated ? 'private' : 'public'}] Error: ${error.message}`);
           return callback(null, {
             headers: HEADERS,
             statusCode: StatusCodes.INTERNAL_ERROR,
@@ -77,7 +77,7 @@ function generateHandler(authenticated=false) {
       }
     })
     .catch(error => {
-      console.log(`[handler:${authenticated ? 'private' : 'public'}] Error: ${error.message}`);
+      console.error(`[handler:${authenticated ? 'private' : 'public'}] Error: ${error.message}`);
       return callback(null, {
         headers: HEADERS,
         statusCode: StatusCodes.INTERNAL_ERROR,

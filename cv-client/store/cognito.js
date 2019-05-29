@@ -33,7 +33,7 @@ export const actions = {
     return new Promise((resolve, reject) => {
       context.commit('setAuthenticating', true);
       const user = pool.getCurrentUser();
-      if (user == null) {
+      if (!user) {
         context.commit('setAuthenticating', false);
         context.commit('setAuthenticated', null);
         resolve(false);

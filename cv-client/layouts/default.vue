@@ -45,7 +45,9 @@ export default {
     };
   },
   created() {
-    this.$store.dispatch('cognito/checkAuthentication');
+    this.$store
+      .dispatch('cognito/checkAuthentication')
+      .catch(() => this.$store.dispatch('cognito/signOut'));
   }
 };
 </script>
