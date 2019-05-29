@@ -1,4 +1,4 @@
-import { GraphQLError, Kind } from 'graphql';
+import { Kind } from 'graphql';
 
 /**
  * Validates GraphQL ASTs by query depth.
@@ -10,7 +10,14 @@ export function checkQueryDepth(ast, maxDepth, callback, options = {}) {
     const queries = getQueriesAndMutations(definitions);
     const queryDepths = {};
     for (let name in queries) {
-      queryDepths[name] = determineDepth(queries[name], fragments, 0, maxDepth, name, options);
+      queryDepths[name] = determineDepth(
+        queries[name],
+        fragments,
+        0,
+        maxDepth,
+        name,
+        options
+      );
     }
     return ast;
   } catch (error) {
@@ -41,35 +48,74 @@ function getQueriesAndMutations(definitions) {
   }, {});
 }
 
-function determineDepth(node, fragments, depthSoFar, maxDepth, operationName, options) {
+function determineDepth(
+  node,
+  fragments,
+  depthSoFar,
+  maxDepth,
+  operationName,
+  options
+) {
   if (depthSoFar > maxDepth) {
-      throw new Error(`'${operationName}' exceeds maximum operation depth of ${maxDepth}`, [ node ]);
+    throw new Error(
+      `'${operationName}' exceeds maximum operation depth of ${maxDepth}`,
+      [node]
+    );
   }
   switch (node.kind) {
     case Kind.FIELD:
       // By default, ignore introspection fields that begin with double underscores.
-      const shouldIgnore = /^__/.test(node.name.value) || seeIfIgnored(node, options.ignore);
+      const shouldIgnore =
+        /^__/.test(node.name.value) || seeIfIgnored(node, options.ignore);
       if (shouldIgnore || !node.selectionSet) {
         return 0;
       }
-      return 1 + Math.max(...node.selectionSet.selections.map(selection =>
-        determineDepth(selection, fragments, depthSoFar + 1, maxDepth, operationName, options)
-      ));
+      return (
+        1 +
+        Math.max(
+          ...node.selectionSet.selections.map(selection =>
+            determineDepth(
+              selection,
+              fragments,
+              depthSoFar + 1,
+              maxDepth,
+              operationName,
+              options
+            )
+          )
+        )
+      );
     case Kind.FRAGMENT_SPREAD:
-      return determineDepth(fragments[node.name.value], fragments, depthSoFar, maxDepth, operationName, options);
+      return determineDepth(
+        fragments[node.name.value],
+        fragments,
+        depthSoFar,
+        maxDepth,
+        operationName,
+        options
+      );
     case Kind.INLINE_FRAGMENT:
     case Kind.FRAGMENT_DEFINITION:
     case Kind.OPERATION_DEFINITION:
-      return Math.max(...node.selectionSet.selections.map(selection =>
-        determineDepth(selection, fragments, depthSoFar, maxDepth, operationName, options)
-      ));
+      return Math.max(
+        ...node.selectionSet.selections.map(selection =>
+          determineDepth(
+            selection,
+            fragments,
+            depthSoFar,
+            maxDepth,
+            operationName,
+            options
+          )
+        )
+      );
     default:
       throw new Error('Depth crawler cannot handle: ' + node.kind);
   }
 }
 
 function seeIfIgnored(node, ignore) {
-  for (let rule of (ignore || [])) {
+  for (let rule of ignore || []) {
     const fieldName = node.name.value;
     switch (rule.constructor) {
       case Function:

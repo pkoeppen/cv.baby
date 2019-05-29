@@ -1,0 +1,28 @@
+{
+  "root": true,
+  "env": {
+    "jest": true,
+    "browser": true,
+    "node": true
+  },
+  "parserOptions": {
+    "parser": "babel-eslint",
+    "sourceType": "module",
+    "ecmaVersion": 8
+  },
+  "extends": [
+    "plugin:prettier/recommended",
+    "prettier"
+  ],
+  "plugins": [
+    "import",
+    "node",
+    "promise",
+    "standard",
+    "prettier"
+  ],
+  "rules": {
+    "no-console": "off",
+    "no-unused-vars": "error"
+  }
+}

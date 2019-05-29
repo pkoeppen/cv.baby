@@ -1,15 +1,15 @@
-import * as AWS from "aws-sdk";
+import * as AWS from 'aws-sdk';
 
-AWS.config.update({ region: "us-east-1" });
+AWS.config.update({ region: 'us-east-1' });
 
 export const DynamoDB = new AWS.DynamoDB.DocumentClient();
 export const S3 = new AWS.S3({
-  apiVersion: "2006-03-01",
-  signatureVersion: "v4",
+  apiVersion: '2006-03-01',
+  signatureVersion: 'v4',
   s3ForcePathStyle: true,
-  endpoint: "https://s3.amazonaws.com"
+  endpoint: 'https://s3.amazonaws.com'
 });
-export const SES = new AWS.SES({ apiVersion: "2010-12-01" });
+export const SES = new AWS.SES({ apiVersion: '2010-12-01' });
 
 // import * as AmazonDAXClient from 'amazon-dax-client';
 // const DAXClient = new AmazonDAXClient({

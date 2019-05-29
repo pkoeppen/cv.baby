@@ -1,6 +1,10 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLBoolean, GraphQLList } from 'graphql';
-import { authorize } from '../util';
-import { getClientPaymentToken, startSubscription, getSubscription } from '../resolvers';
+import {
+  GraphQLObjectType,
+  GraphQLNonNull,
+  GraphQLString,
+  GraphQLBoolean,
+  GraphQLList
+} from 'graphql';
 
 const CreditCardType = new GraphQLObjectType({
   name: 'CreditCardType',
@@ -33,22 +37,22 @@ const TransactionType = new GraphQLObjectType({
       type: CreditCardType
     },
     currencyIsoCode: {
-      type: GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString)
     },
     paymentInstrumentType: {
-      type: GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString)
     },
     paypalAccount: {
       type: PaypalAccountType
     },
     planId: {
-      type: GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString)
     },
     processorResponseType: {
       type: GraphQLString
     },
     status: {
-      type: GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString)
     }
   })
 });
@@ -57,34 +61,34 @@ export const SubscriptionType = new GraphQLObjectType({
   name: 'SubscriptionType',
   fields: () => ({
     billingDayOfMonth: {
-      type: GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString)
     },
     createdAt: {
-      type: GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString)
     },
     firstBillingDate: {
-      type: GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString)
     },
     nextBillAmount: {
-      type: GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString)
     },
     nextBillingDate: {
-      type: GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString)
     },
     paidThroughDate: {
       type: GraphQLString
     },
     planId: {
-      type: GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString)
     },
     status: {
-      type: GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString)
     },
     trialPeriod: {
-      type: GraphQLNonNull(GraphQLBoolean)
+      type: new GraphQLNonNull(GraphQLBoolean)
     },
     transactions: {
-      type: GraphQLList(TransactionType)
-    },
+      type: new GraphQLList(TransactionType)
+    }
   })
-})
+});

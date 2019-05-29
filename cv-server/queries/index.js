@@ -6,6 +6,4 @@ export const queries = {
   getSubscription: PaymentQuery.getSubscription
 };
 
-export const mutations = {
-
-};
+export const mutations = {};

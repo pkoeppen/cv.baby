@@ -6,5 +6,8 @@ jspm_packages
 .serverless
 /tmp
 
+# Webpack
+.webpack
+
 # configuration
 # config\.*\.json

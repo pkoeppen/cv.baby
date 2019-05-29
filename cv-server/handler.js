@@ -2,16 +2,10 @@ import { graphql, parse } from 'graphql';
 import { checkQueryDepth } from './util';
 import schema from './schema';
 
-
-// TODO: Create Lambda to auto-confirm cognito users
-
-
 export const handlerPublic = generateHandler(false);
 export const handlerPrivate = generateHandler(true);
 
-
-function generateHandler(authenticated=false) {
-
+function generateHandler(authenticated = false) {
   const HEADERS = {
     'Access-Control-Allow-Origin': '*'
   };
@@ -25,7 +19,7 @@ function generateHandler(authenticated=false) {
     INTERNAL_ERROR: 500
   };
 
-  return function (event, context, callback) {
+  return function(event, context, callback) {
     const { query, vars } = JSON.parse(event.body);
     const ctx = {
       ip_address: event.requestContext.identity.sourceIp
@@ -41,48 +35,52 @@ function generateHandler(authenticated=false) {
 
     // Execute the query.
     graphql(schema, query, null, ctx, vars)
-    .then(({ data, errors }) => {
+      .then(({ data, errors }) => {
+        if (errors) {
+          const error = errors[0];
 
-      if (errors) {
-        const error = errors[0];
+          if (error.message.startsWith('!')) {
+            /* eslint-disable-next-line no-unused-vars */
+            const [match, statusCode, message] = ERROR_REGEX.exec(
+              error.message
+            );
 
-        if (error.message.startsWith('!')) {
-          const [
-            match,
-            statusCode,
-            message
-          ] = ERROR_REGEX.exec(error.message);
-
-          return callback(null, {
-            headers: HEADERS,
-            statusCode,
-            body: message
-          });
-
+            return callback(null, {
+              headers: HEADERS,
+              statusCode,
+              body: message
+            });
+          } else {
+            console.error(
+              `[handler:${authenticated ? 'private' : 'public'}] Error: ${
+                error.message
+              }`
+            );
+            return callback(null, {
+              headers: HEADERS,
+              statusCode: StatusCodes.INTERNAL_ERROR,
+              body: ErrorMessages.UNKNOWN
+            });
+          }
         } else {
-          console.error(`[handler:${authenticated ? 'private' : 'public'}] Error: ${error.message}`);
           return callback(null, {
             headers: HEADERS,
-            statusCode: StatusCodes.INTERNAL_ERROR,
-            body: ErrorMessages.UNKNOWN
+            statusCode: StatusCodes.OK,
+            body: JSON.stringify(data)
           });
         }
-
-      } else {
+      })
+      .catch(error => {
+        console.error(
+          `[handler:${authenticated ? 'private' : 'public'}] Error: ${
+            error.message
+          }`
+        );
         return callback(null, {
           headers: HEADERS,
-          statusCode: StatusCodes.OK,
-          body: JSON.stringify(data)
+          statusCode: StatusCodes.INTERNAL_ERROR,
+          body: ErrorMessages.UNKNOWN
         });
-      }
-    })
-    .catch(error => {
-      console.error(`[handler:${authenticated ? 'private' : 'public'}] Error: ${error.message}`);
-      return callback(null, {
-        headers: HEADERS,
-        statusCode: StatusCodes.INTERNAL_ERROR,
-        body: ErrorMessages.UNKNOWN
       });
-    });
-  }
+  };
 }

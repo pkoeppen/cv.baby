@@ -1,4 +1,3 @@
-import * as uuid from 'uuid/v1';
 import { DynamoDB } from '../util';
 
 const CVBABY_TABLE_USERS = process.env.CVBABY_TABLE_USERS;
@@ -49,7 +48,8 @@ export function createUser(event, context, callback) {
   DynamoDB.put({
     TableName: CVBABY_TABLE_USERS,
     Item: user
-  }).promise()
-  .then(() => callback(null, event))
-  .catch(error => callback(error));
+  })
+    .promise()
+    .then(() => callback(null, event))
+    .catch(error => callback(error));
 }
