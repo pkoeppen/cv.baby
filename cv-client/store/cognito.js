@@ -8,8 +8,8 @@ import {
 
 /* eslint-disable */
 const NODE_ENV = 'development';
-const AWS_COGNITO_CLIENT_ID = '53kbs7tdcbje86oljb3kmehvf6';
-const AWS_COGNITO_USER_POOL_ID = 'us-east-1_e10OIDnIA';
+const AWS_COGNITO_CLIENT_ID = '6ms48n6dklrja0c2pedj23an6v';
+const AWS_COGNITO_USER_POOL_ID = 'us-east-1_Dby2bokNF';
 /* eslint-enable */
 
 const storage = new CookieStorage({

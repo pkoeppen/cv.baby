@@ -33,6 +33,12 @@ const PaypalAccountType = new GraphQLObjectType({
 const TransactionType = new GraphQLObjectType({
   name: 'TransactionType',
   fields: () => ({
+    amount: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    createdAt: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
     creditCard: {
       type: CreditCardType
     },

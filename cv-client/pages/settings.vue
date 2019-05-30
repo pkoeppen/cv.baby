@@ -27,7 +27,7 @@
             <v-flex>
               <v-tabs-items v-model="tabs">
                 <v-tab-item>
-                  <resume />
+                  <resume-editor :resume.sync="resume" />
                 </v-tab-item>
                 <v-tab-item>
                   <v-container class="pa-5" style="margin: 0; max-width: 600px">
@@ -233,27 +233,55 @@
                   >
                     <h2>Invoices</h2>
                     <v-list v-if="payment.subscription" two-line>
-                      <div
+                      <v-card
                         v-for="(transaction, index) in payment.subscription
                           .transactions"
                         :key="index"
                       >
-                        <v-divider />
-                        <v-list-tile>
-                          <v-list-tile-content>
-                            <v-list-tile-title>
-                              {{ transaction.creditCard }}
-                              {{ transaction.currencyIsoCode }}
-                            </v-list-tile-title>
-                            <v-list-tile-sub-title>
-                              blah
-                            </v-list-tile-sub-title>
-                          </v-list-tile-content>
-                          <v-list-tile-avatar icon>
-                            <v-icon>lock</v-icon>
-                          </v-list-tile-avatar>
-                        </v-list-tile>
-                      </div>
+                        <v-container class="open-sans">
+                          <v-layout row justify-space-between align-center>
+                            <v-flex>
+                              <div class="grey--text">
+                                <div class="caption" style="line-height: 1;">
+                                  {{ transaction.currencyIsoCode }}
+                                </div>
+                                <div class="title">
+                                  {{ transaction.amount }}
+                                </div>
+                              </div>
+                            </v-flex>
+                            <v-flex>
+                              <div class="text-uppercase title">
+                                {{ transaction.creditCard.cardType }}
+                                {{ transaction.creditCard.last4 }}
+                              </div>
+                            </v-flex>
+                            <v-flex>
+                              <div class="text-uppercase title">
+                                {{ transaction.createdAt }}
+                              </div>
+                            </v-flex>
+                            <v-flex>
+                              <div
+                                :class="{
+                                  bluegrass: transaction.processorResponseType.match(
+                                    'approved'
+                                  )
+                                }"
+                                class="text-uppercase title"
+                              >
+                                {{
+                                  transaction.processorResponseType.match(
+                                    'approved'
+                                  )
+                                    ? 'Approved'
+                                    : 'Declined'
+                                }}
+                              </div>
+                            </v-flex>
+                          </v-layout>
+                        </v-container>
+                      </v-card>
                     </v-list>
                   </v-container>
                 </v-tab-item>
@@ -281,26 +309,28 @@
 
 <script>
 import Navbar from '~/components/Navbar';
-import Resume from '~/components/Resume';
+import ResumeEditor from '~/components/ResumeEditor';
+import { UserQuery, SubscriptionQuery } from '~/assets/js/queries';
 export default {
   components: {
     Navbar,
-    Resume
+    ResumeEditor
   },
   data() {
     return {
       tabs: null,
-      payment: {
-        subscription: null,
-        dialog: false,
-        tabs: null
-      },
+      resumes: [],
       password: {
         loading: false,
         success: false,
         currentPassword: null,
         newPassword: null,
         newPasswordConfirm: null
+      },
+      payment: {
+        subscription: null,
+        dialog: false,
+        tabs: null
       },
       email: {
         switch: false
@@ -310,39 +340,19 @@ export default {
   mounted() {
     this.$axios
       .post('/gql/private', {
-        query: `
-        query {
-          getSubscription {
-            billingDayOfMonth,
-            createdAt,
-            firstBillingDate,
-            nextBillAmount,
-            nextBillingDate,
-            paidThroughDate,
-            planId,
-            status,
-            trialPeriod,
-            transactions {
-              creditCard {
-                cardType,
-                last4
-              },
-              currencyIsoCode,
-              paymentInstrumentType,
-              paypalAccount {
-                payerEmail,
-                paymentId
-              },
-              planId,
-              processorResponseType,
-              status
-            }
-          }
-        }
-      `
+        query: UserQuery
       })
-      .then(({ data: { getSubscription: subscription } }) => {
-        this.payment.subscription = subscription;
+      .then(({ data }) => {
+        console.log(JSON.stringify(data, null, 2));
+        this.resumes = data.getUser.resumes;
+      });
+    this.$axios
+      .post('/gql/private', {
+        query: SubscriptionQuery
+      })
+      .then(({ data }) => {
+        console.log(JSON.stringify(data, null, 2));
+        this.payment.subscription = data.getSubscription;
       });
   },
   methods: {

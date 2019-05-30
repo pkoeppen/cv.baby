@@ -1,11 +1,6 @@
 import { DynamoDB } from '../util';
 
 const CVBABY_TABLE_USERS = process.env.CVBABY_TABLE_USERS;
-const AccountStatus = {
-  PRETRIAL: 'pretrial',
-  TRIAL: 'trial',
-  LICENSED: 'licensed'
-};
 
 /*
  *  Pre-signup hook to automatically confirm users.
@@ -19,31 +14,32 @@ export function confirmUser(event, context, callback) {
  *  Post-confirmation hook to create a user in DynamoDB.
  */
 export function createUser(event, context, callback) {
-  const _id = event.userName;
-  const email = event.request.userAttributes.email;
+  const userId = event.userName;
   const user = {
-    _id: _id,
-    time_created: Date.now(),
-    time_updated: 0,
-    account_status: AccountStatus.PRETRIAL,
-    name: null,
-    title: null,
-    profile: null,
-    skills: [],
-    employment: [],
-    education: [],
-    references: [],
-    personal: {
-      description: null,
-      hobbies: []
-    },
-    contact: {
-      email: email,
-      phone: null,
-      website: null,
-      social: []
-    }
+    userId: userId,
+    createdAt: new Date().toISOString(),
+    updatedAt: null,
+    resumes: []
   };
+
+  // const resume = {
+  //   alias: null,
+  //   createdAt: new Date().toISOString(),
+  //   updatedAt: null,
+  //   name: null,
+  //   title: null,
+  //   email: null,
+  //   phone: null,
+  //   website: null,
+  //   profile: null,
+  //   description: null,
+  //   skills: [],
+  //   employment: [],
+  //   education: [],
+  //   references: [],
+  //   hobbies: [],
+  //   social: []
+  // };
 
   DynamoDB.put({
     TableName: CVBABY_TABLE_USERS,

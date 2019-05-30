@@ -2,7 +2,9 @@ import {
   GraphQLObjectType,
   GraphQLNonNull,
   GraphQLID,
-  GraphQLInt
+  GraphQLInt,
+  GraphQLString,
+  GraphQLList
 } from 'graphql';
 
 const EmploymentType = new GraphQLObjectType({
@@ -95,6 +97,17 @@ const SocialLinkType = new GraphQLObjectType({
 const ResumeType = new GraphQLObjectType({
   name: 'ResumeType',
   fields: () => ({
+    alias: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    createdAt: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    updatedAt: {
+      type: GraphQLString
+    },
+
+    // Personal fields.
     name: {
       type: GraphQLString
     },
@@ -140,7 +153,7 @@ const ResumeType = new GraphQLObjectType({
 export const UserType = new GraphQLObjectType({
   name: 'UserType',
   fields: () => ({
-    _id: {
+    userId: {
       type: new GraphQLNonNull(GraphQLID)
     },
     createdAt: {

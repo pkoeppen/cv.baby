@@ -241,13 +241,15 @@ export default {
           this.signUpData.loading = false;
           this.signUpData.success = true;
           setTimeout(() => {
+            this.signUpData.dialog = false;
+            this.signUpData.success = false;
+          }, 1500);
+          setTimeout(() => {
+            this.$router.push({ path: 'pricing' });
             this.$store.dispatch('cognito/authenticateUser', {
               email: this.signUpData.email,
               password: this.signUpData.password
             });
-          }, 1000);
-          setTimeout(() => {
-            this.$router.push({ path: 'pricing' });
           }, 2250);
         })
         .finally(() => {

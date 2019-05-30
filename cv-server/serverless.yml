@@ -175,10 +175,10 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: user_id
+          - AttributeName: userId
             AttributeType: S
         KeySchema:
-          - AttributeName: user_id
+          - AttributeName: userId
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.CVBABY_TABLE_USERS}
@@ -190,16 +190,16 @@ resources:
         AttributeDefinitions:
           - AttributeName: slug
             AttributeType: S
-          - AttributeName: user_id
+          - AttributeName: userId
             AttributeType: S
         KeySchema:
           - AttributeName: slug
             KeyType: HASH
         GlobalSecondaryIndexes:
-          # GSI to query a slug by user_id.
+          # GSI to query a slug by userId.
           - IndexName: ${self:provider.environment.CVBABY_TABLE_SLUGS}-GSI
             KeySchema:
-              - AttributeName: user_id
+              - AttributeName: userId
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
@@ -211,21 +211,21 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: user_id
+          - AttributeName: userId
             AttributeType: S
-          - AttributeName: invite_id
+          - AttributeName: inviteId
             AttributeType: S
         KeySchema:
-          # Default - Query invites by user_id.
-          - AttributeName: user_id
+          # Default - Query invites by userId.
+          - AttributeName: userId
             KeyType: HASH
-          - AttributeName: invite_id
+          - AttributeName: inviteId
             KeyType: RANGE
         GlobalSecondaryIndexes:
-          # GSI to query invitations by invite_id.
+          # GSI to query invitations by inviteId.
           - IndexName: ${self:provider.environment.CVBABY_TABLE_INVITES}-GSI
             KeySchema:
-              - AttributeName: invite_id
+              - AttributeName: inviteId
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
