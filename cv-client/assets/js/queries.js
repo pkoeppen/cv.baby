@@ -14,13 +14,15 @@ export const UserQuery = `
         description,
         skills,
         employment {
-          date,
+          dateFrom,
+          dateTo,
           title,
           company,
           color
         },
         education {
-          date,
+          dateFrom,
+          dateTo,
           university,
           degree,
           color
@@ -77,5 +79,11 @@ export const SubscriptionQuery = `
         status
       }
     }
+  }
+`;
+
+export const StartSubscriptionMutation = `
+  query ($paymentMethodToken: String!, $planId: String!) {
+    startSubscription (paymentMethodToken: $paymentMethodToken, planId: $planId)
   }
 `;

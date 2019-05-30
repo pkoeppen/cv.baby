@@ -4,12 +4,7 @@
       <v-flex xs12>
         <div style="position: relative;">
           <v-avatar size="200" tile>
-            <v-img
-              :src="require('@/assets/images/testAvatar.jpg')"
-              :lazy-src="require('@/assets/images/testAvatar.jpg')"
-              aspect-ratio="1"
-              class="cv-avatar"
-            >
+            <v-img :src="''" :lazy-src="''" aspect-ratio="1" class="cv-avatar">
               <template v-slot:placeholder>
                 <v-layout fill-height align-center justify-center ma-0>
                   <v-progress-circular indeterminate color="grey lighten-5" />
@@ -50,27 +45,64 @@
         ></v-textarea>
       </v-flex>
       <v-flex xs12>
-        <v-btn color="primary" @click="addEmployer">
-          Add employer
-        </v-btn>
+        <dialog-employment @saveEmploymentItem="saveEmploymentItem" />
+        Employment items: {{ resume.employment.length }}
+        <div v-for="(employmentItem, index) in employmentItems" :key="index">
+          {{ JSON.stringify(employmentItem) }}
+        </div>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
+import DialogEmployment from './DialogEmployment';
+function getDefaultResume() {
+  return {
+    alias: null,
+    name: null,
+    title: null,
+    email: null,
+    phone: null,
+    website: null,
+    profile: null,
+    description: null,
+    skills: [],
+    employment: [],
+    education: [],
+    references: [],
+    hobbies: [],
+    social: []
+  };
+}
 export default {
+  components: {
+    DialogEmployment
+  },
   props: {
-    resume: {
+    resumeProp: {
       type: Object,
-      default: () => ({})
+      default: () => getDefaultResume()
     }
   },
   data() {
-    return {};
+    return {
+      resume: {
+        ...this.resumeProp
+      }
+    };
+  },
+  computed: {
+    employmentItems() {
+      return this.resume.employment;
+    }
   },
   methods: {
-    addEmployer() {}
+    saveEmploymentItem(index, employmentItem) {
+      const i = index > -1 && index < this.resume.employment.length ? index : 0;
+      this.resume.employment[i] = employmentItem;
+      console.log(this.resume.employment);
+    }
   }
 };
 </script>

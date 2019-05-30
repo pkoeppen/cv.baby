@@ -249,6 +249,7 @@
 
 <script>
 import PaymentFields from '~/components/PaymentFields';
+import StartSubscriptionMutation from '~/assets/js/queries';
 export default {
   components: {
     PaymentFields
@@ -307,11 +308,7 @@ export default {
         .then(() => this.$refs.paymentFields.generateNonce())
         .then(paymentMethodToken => {
           return this.$axios.post('/gql/private', {
-            query: `
-              query ($paymentMethodToken: String!, $planId: String!) {
-                startSubscription(paymentMethodToken: $paymentMethodToken, planId: $planId)
-              }
-            `,
+            query: StartSubscriptionMutation,
             vars: {
               paymentMethodToken,
               planId:

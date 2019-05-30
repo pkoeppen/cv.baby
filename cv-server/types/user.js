@@ -10,8 +10,11 @@ import {
 const EmploymentType = new GraphQLObjectType({
   name: 'EmploymentType',
   fields: () => ({
-    date: {
+    dateFrom: {
       type: new GraphQLNonNull(GraphQLString)
+    },
+    dateTo: {
+      type: GraphQLString
     },
     title: {
       type: new GraphQLNonNull(GraphQLString)
@@ -28,8 +31,11 @@ const EmploymentType = new GraphQLObjectType({
 const EducationType = new GraphQLObjectType({
   name: 'EducationType',
   fields: () => ({
-    date: {
+    dateFrom: {
       type: new GraphQLNonNull(GraphQLString)
+    },
+    dateTo: {
+      type: GraphQLString
     },
     university: {
       type: new GraphQLNonNull(GraphQLString)

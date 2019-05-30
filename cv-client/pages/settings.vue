@@ -27,7 +27,7 @@
             <v-flex>
               <v-tabs-items v-model="tabs">
                 <v-tab-item>
-                  <resume-editor :resume.sync="resume" />
+                  <resume-editor />
                 </v-tab-item>
                 <v-tab-item>
                   <v-container class="pa-5" style="margin: 0; max-width: 600px">
@@ -343,7 +343,6 @@ export default {
         query: UserQuery
       })
       .then(({ data }) => {
-        console.log(JSON.stringify(data, null, 2));
         this.resumes = data.getUser.resumes;
       });
     this.$axios
@@ -351,7 +350,6 @@ export default {
         query: SubscriptionQuery
       })
       .then(({ data }) => {
-        console.log(JSON.stringify(data, null, 2));
         this.payment.subscription = data.getSubscription;
       });
   },

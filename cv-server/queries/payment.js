@@ -9,10 +9,17 @@ import {
 
 export default {
   getClientPaymentToken: {
-    type: GraphQLNonNull(GraphQLString),
+    type: new GraphQLNonNull(GraphQLString),
     resolve: () => {
       return getClientPaymentToken();
     }
+  },
+  getSubscription: {
+    type: SubscriptionType,
+    resolve: authorize((root, args, ctx) => {
+      const { principalId } = ctx;
+      return getSubscription(principalId);
+    })
   },
   startSubscription: {
     type: GraphQLBoolean,
@@ -30,13 +37,6 @@ export default {
       const { paymentMethodToken, planId } = args;
       const { principalId } = ctx;
       return startSubscription(principalId, paymentMethodToken, planId);
-    })
-  },
-  getSubscription: {
-    type: SubscriptionType,
-    resolve: authorize((root, args, ctx) => {
-      const { principalId } = ctx;
-      return getSubscription(principalId);
     })
   }
 };
