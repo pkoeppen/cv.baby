@@ -1,0 +1,202 @@
+<template>
+  <v-flex xs12>
+    <v-flex class="text-xs-center" xs12>
+      <v-dialog v-model="dialog" max-width="400" persistent>
+        <template v-slot:activator="{ on }">
+          <v-btn class="text-none" color="primary" flat depressed v-on="on"
+            >Add education</v-btn
+          >
+        </template>
+        <v-form ref="form" lazy-validation @submit="saveEducationItem">
+          <v-card>
+            <v-card-title
+              class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
+            >
+              <span class="cv-dialog-header headline"
+                >{{ dialogTitlePrefix }} education</span
+              >
+            </v-card-title>
+            <v-card-text>
+              <v-container class="py-0" grid-list-md>
+                <v-layout wrap>
+                  <v-flex xs12>
+                    <v-text-field
+                      v-model="educationItem.dateFrom"
+                      :rules="[v => !!v || 'Date is required']"
+                      label="Date from"
+                      hint="(mm/dd/yyyy)"
+                      mask="##/##/####"
+                      return-masked-value
+                      validate-on-blur
+                      single-line
+                      required
+                    />
+                  </v-flex>
+                  <v-flex xs12>
+                    <v-text-field
+                      v-model="educationItem.dateTo"
+                      :rules="[v => !!v || 'Date is required']"
+                      label="Date to"
+                      mask="##/##/####"
+                      return-masked-value
+                      validate-on-blur
+                      single-line
+                    />
+                  </v-flex>
+                  <v-flex xs12>
+                    <v-text-field
+                      v-model="educationItem.university"
+                      :rules="[v => !!v || 'University is required']"
+                      label="University"
+                      single-line
+                      required
+                    />
+                  </v-flex>
+                  <v-flex xs12>
+                    <v-text-field
+                      v-model="educationItem.degree"
+                      :rules="[v => !!v || 'Degree is required']"
+                      label="Degree"
+                      single-line
+                      required
+                    />
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-card-text>
+            <v-card-actions class="justify-center pb-4">
+              <v-btn @click="dialog = false">Cancel</v-btn>
+              <v-btn color="primary" type="submit">Save</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-form>
+      </v-dialog>
+    </v-flex>
+    <v-layout justify-center align-center wrap>
+      <v-flex
+        v-for="(item, index) in educationItems"
+        :key="index"
+        class="pa-2"
+        xs12
+        md6
+      >
+        <v-card>
+          <v-card-title class="justify-center">
+            <h3 class="headline">{{ index }} - {{ item.university }}</h3>
+          </v-card-title>
+          <v-divider />
+          <v-card-text class="text-xs-center">
+            {{ item.dateFrom }} - {{ item.dateTo || 'present' }}
+            {{ item.degree }}
+          </v-card-text>
+          <v-divider />
+          <v-card-actions class="justify-center">
+            <v-btn flat @click="editEducationItem(item, index)">Edit</v-btn>
+            <v-btn color="error" flat @click="showConfirmRemoveDialog(index)"
+              >Remove</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+      <v-dialog v-model="confirmRemoveDialog" max-width="400">
+        <v-card>
+          <v-card-title
+            class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
+          >
+            <span class="cv-dialog-header headline">Remove education item</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container class="py-0" grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12>
+                  Are you sure you want to remove this item?
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+          <v-card-actions class="justify-center pb-4">
+            <v-btn @click="confirmRemoveDialog = false">Cancel</v-btn>
+            <v-btn color="error" @click="removeEducationItem">Remove</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-layout>
+  </v-flex>
+</template>
+
+<script>
+function getDefaultEducationItem() {
+  return {
+    index: -1,
+    dateFrom: null,
+    dateTo: null,
+    degree: null,
+    university: null
+  };
+}
+export default {
+  name: 'EducationEditor',
+  props: {
+    educationItems: {
+      type: Array,
+      default: () => []
+    }
+  },
+  data() {
+    return {
+      dialog: false,
+      confirmRemoveDialog: false,
+      removeIndex: -1,
+      educationItem: getDefaultEducationItem()
+    };
+  },
+  computed: {
+    dialogTitlePrefix() {
+      return this.educationItem.index < 0 ? 'Add' : 'Edit';
+    }
+  },
+  watch: {
+    dialog(value) {
+      if (value === false) {
+        // Reset education item on dialog close.
+        this.educationItem = getDefaultEducationItem();
+        this.$refs.form.reset();
+        this.$refs.form.resetValidation();
+      }
+    }
+  },
+  methods: {
+    editEducationItem(item, index) {
+      // Load item into the educationItem slot and show the dialog.
+      this.educationItem = { ...item, index };
+      this.dialog = true;
+    },
+    saveEducationItem(event) {
+      event.preventDefault();
+      if (!this.$refs.form.validate()) {
+        // Validation failed.
+        return;
+      }
+      const { index, ...item } = this.educationItem;
+      if (index < 0) {
+        // Add a new education item.
+        this.educationItems.push(item);
+      } else {
+        // Update an existing education item.
+        this.educationItems[index] = item;
+      }
+      this.dialog = false;
+      this.educationItem = getDefaultEducationItem();
+    },
+    showConfirmRemoveDialog(index) {
+      this.removeIndex = index;
+      this.confirmRemoveDialog = true;
+    },
+    removeEducationItem() {
+      this.educationItems.splice(this.removeIndex, 1);
+      this.confirmRemoveDialog = false;
+      this.removeIndex = -1;
+    }
+  }
+};
+</script>

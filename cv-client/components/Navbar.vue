@@ -40,8 +40,8 @@
                     class="cv-logo font-weight-black"
                     style="font-size: 16px; display: inline;"
                   >
-                    <span>cv</span>
-                    <span>baby&nbsp;</span>pro
+                    <!-- eslint-disable-next-line -->
+                    <span>cv</span><span>baby&nbsp;</span>pro
                   </div>
                   &ndash; 135 days remaining
                 </v-list-tile-sub-title>

@@ -1,6 +1,9 @@
 <template>
   <v-container>
-    <v-layout row justify-center align-center wrap>
+    <v-layout justify-center align-center wrap>
+      <v-flex xs12>
+        <v-btn color="primary">Save</v-btn>
+      </v-flex>
       <v-flex xs12>
         <div style="position: relative;">
           <v-avatar size="200" tile>
@@ -40,23 +43,21 @@
         <v-textarea
           v-model="resume.profile"
           label="Profile"
-          hint="Hint text"
+          hint="A brief synopsis of who you are"
           rows="2"
         ></v-textarea>
       </v-flex>
-      <v-flex xs12>
-        <dialog-employment @saveEmploymentItem="saveEmploymentItem" />
-        Employment items: {{ resume.employment.length }}
-        <div v-for="(employmentItem, index) in employmentItems" :key="index">
-          {{ JSON.stringify(employmentItem) }}
-        </div>
-      </v-flex>
+      <employment-editor :employment-items.sync="resume.employment" />
+      <education-editor :education-items.sync="resume.education" />
+      <reference-editor :reference-items.sync="resume.references" />
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import DialogEmployment from './DialogEmployment';
+import EmploymentEditor from './EmploymentEditor';
+import EducationEditor from './EducationEditor';
+import ReferenceEditor from './ReferenceEditor';
 function getDefaultResume() {
   return {
     alias: null,
@@ -77,7 +78,9 @@ function getDefaultResume() {
 }
 export default {
   components: {
-    DialogEmployment
+    EmploymentEditor,
+    EducationEditor,
+    ReferenceEditor
   },
   props: {
     resumeProp: {
@@ -91,160 +94,7 @@ export default {
         ...this.resumeProp
       }
     };
-  },
-  computed: {
-    employmentItems() {
-      return this.resume.employment;
-    }
-  },
-  methods: {
-    saveEmploymentItem(index, employmentItem) {
-      const i = index > -1 && index < this.resume.employment.length ? index : 0;
-      this.resume.employment[i] = employmentItem;
-      console.log(this.resume.employment);
-    }
   }
 };
 </script>
-<style lang="stylus" scoped>
-.cv-name
-  font-family: 'Open Sans', sans-serif
-  font-size: 44px
-.cv-title
-  font-family: 'Open Sans', sans-serif
-  font-size: 22px
-.cv-chip-additional
-  background-color: $blue.base !important
-  border-color: $blue.base !important
-  &:hover
-    background-color: $blue.darken-1 !important
-    border-color: $blue.darken-1 !important
-.cv-profile
-  font-size: 18px
-.cv-link
-  margin: 0 $spacers.one.x
-  i
-    color: $blue.base
-    &:hover
-      color: $blue.darken-1
-.section-header
-  margin: 0 auto
-  text-transform: uppercase
-  font-weight: 800
-  letter-spacing: 1px
-.hobbies-layout,
-.references-layout
-  margin: 0 -24px !important
-.paper-wrap-right
-  display: none
-  position: absolute
-  right: -47.9px
-  top: 0
-  height: 48px
-  width: 48px
-  background-color: $blue.lighten-1
-  &:before
-    content: ''
-    position: absolute
-    top: 48px
-    right: 0
-    width: 0
-    height: 0
-    border-style: solid
-    border-width: 48px 48px 0 0
-    border-color: $blue.darken-2 transparent transparent transparent
-.paper-wrap-left
-  position: absolute
-.label-wrap
-  position: relative
-  width: calc(100% + 40px)
-  left: -20px
-  &:before
-    content: ''
-    position: absolute
-    top: 48px
-    left: 0
-    width: 0
-    height: 0
-    border-style: solid
-    border-width: 0 20px 20px 0
-    border-color: transparent $blue.darken-2 transparent transparent
-  &:after
-    content: ''
-    position: absolute
-    top: 48px
-    right: 0
-    width: 0
-    height: 0
-    border-style: solid
-    border-width: 20px 20px 0 0
-    border-color: $blue.darken-2 transparent transparent transparent
-
-@media only screen and (min-width: 960px)
-  .hobbies-layout,
-  .references-layout
-    margin: 0 -36px !important
-
-@media only screen and (min-width: 600px)
-  @keyframes explode
-    0%
-      width: 0
-      transform: translate(0, 0)
-    45%
-      width: 40px
-      opacity: 1
-    70%
-      opacity: 0
-      width: 0
-      transform: translate(170px, 0)
-    100%
-      opacity: 0
-      width: 0
-      transform: translate(170px, 0)
-  @keyframes explode-smaller
-    0%
-      width: 0
-      transform: translate(0, 0)
-    45%
-      width: 30px
-      opacity: 1
-    70%
-      opacity: 0
-      width: 0
-      transform: translate(170px, 0)
-    100%
-      opacity: 0
-      width: 0
-      transform: translate(170px, 0)
-@media only screen and (max-width: 599px)
-  @keyframes explode
-    0%
-      width: 0
-      transform: translate(0, 0)
-    45%
-      width: 20px
-      opacity: 1
-    70%
-      opacity: 0
-      width: 0
-      transform: translate(80px, 0)
-    100%
-      opacity: 0
-      width: 0
-      transform: translate(80px, 0)
-  @keyframes explode-smaller
-    0%
-      width: 0
-      transform: translate(0, 0)
-    45%
-      width: 20px
-      opacity: 1
-    70%
-      opacity: 0
-      width: 0
-      transform: translate(100px, 0)
-    100%
-      opacity: 0
-      width: 0
-      transform: translate(100px, 0)
-</style>
+<style lang="stylus" scoped></style>
