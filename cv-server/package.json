@@ -4,11 +4,11 @@
   "description": "Serverless backend for cv.baby",
   "main": "handler.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "deploy:dev": "serverless deploy --stage dev",
     "deploy:prod": "serverless deploy --stage prod",
+    "dev": "serverless offline start",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "start": "serverless offline start"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -16,6 +16,7 @@
   },
   "author": "Peter Koeppen",
   "license": "UNLICENSED",
+  "private": true,
   "bugs": {
     "url": "https://github.com/pkoeppen/cv.baby/issues"
   },

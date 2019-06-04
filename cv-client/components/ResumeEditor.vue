@@ -2,7 +2,10 @@
   <v-container>
     <v-layout justify-center align-center wrap>
       <v-flex xs12>
-        <v-btn color="primary">Save</v-btn>
+        <v-btn color="primary" :disabled="!changed" @click="saveResume">{{
+          index === -1 ? 'Save New' : 'Save Changes'
+        }}</v-btn>
+        <v-btn @click="reset">Reset</v-btn>
       </v-flex>
       <v-flex xs12>
         <div style="position: relative;">
@@ -18,12 +21,15 @@
         </div>
       </v-flex>
       <v-flex xs12>
-        <v-text-field v-model="resume.name" label="Name" />
-        <v-text-field v-model="resume.title" label="Title" />
+        <v-text-field v-model="name" label="Name" />
+        <v-text-field v-model="title" label="Title" />
+        <v-text-field v-model="email" label="Email" />
+        <v-text-field v-model="phone" label="Phone" />
+        <v-text-field v-model="website" label="Website" />
       </v-flex>
       <v-flex xs12 class="text-xs-center my-3">
         <v-combobox
-          v-model="resume.skills"
+          v-model="skills"
           hide-selected
           hint="Enter a maximum of 10 skills"
           label="Skills"
@@ -41,15 +47,17 @@
       </v-flex>
       <v-flex xs12>
         <v-textarea
-          v-model="resume.profile"
+          v-model="profile"
           label="Profile"
           hint="A brief synopsis of who you are"
           rows="2"
         ></v-textarea>
       </v-flex>
-      <employment-editor :employment-items.sync="resume.employment" />
-      <education-editor :education-items.sync="resume.education" />
-      <reference-editor :reference-items.sync="resume.references" />
+      <employment-editor :employment-items.sync="employment" />
+      <education-editor :education-items.sync="education" />
+      <reference-editor :reference-items.sync="references" />
+      <hobby-editor :hobby-items.sync="hobbies" />
+      <social-link-editor :social-link-items.sync="social" />
     </v-layout>
   </v-container>
 </template>
@@ -58,8 +66,11 @@
 import EmploymentEditor from './EmploymentEditor';
 import EducationEditor from './EducationEditor';
 import ReferenceEditor from './ReferenceEditor';
+import HobbyEditor from './HobbyEditor';
+import SocialLinkEditor from './SocialLinkEditor';
 function getDefaultResume() {
   return {
+    index: -1,
     alias: null,
     name: null,
     title: null,
@@ -80,20 +91,103 @@ export default {
   components: {
     EmploymentEditor,
     EducationEditor,
-    ReferenceEditor
+    ReferenceEditor,
+    HobbyEditor,
+    SocialLinkEditor
   },
   props: {
-    resumeProp: {
+    resume: {
       type: Object,
       default: () => getDefaultResume()
     }
   },
   data() {
     return {
-      resume: {
-        ...this.resumeProp
-      }
+      changed: false,
+      ...this.resume
     };
+  },
+  watch: {
+    resume(resume) {
+      for (const key in resume) {
+        this[key] = resume[key];
+      }
+    },
+
+    //
+
+    alias() {
+      if (this.index !== -1) {
+        this.$emit('change', this.index);
+      }
+    },
+    name() {
+      this.changed = true;
+      console.log('name changed');
+    },
+    title() {
+      this.changed = true;
+      console.log('title changed');
+    },
+    email() {
+      this.changed = true;
+      console.log('email changed');
+    },
+    phone() {
+      this.changed = true;
+      console.log('phone changed');
+    },
+    website() {
+      this.changed = true;
+      console.log('website changed');
+    },
+    profile() {
+      this.changed = true;
+      console.log('profile changed');
+    },
+    description() {
+      this.changed = true;
+      console.log('description changed');
+    },
+    skills() {
+      this.changed = true;
+      console.log('skills changed');
+    },
+    employment() {
+      this.changed = true;
+      console.log('employment changed');
+    },
+    education() {
+      this.changed = true;
+      console.log('education changed');
+    },
+    references() {
+      this.changed = true;
+      console.log('references changed');
+    },
+    hobbies() {
+      this.changed = true;
+      console.log('hobbies changed');
+    },
+    social() {
+      this.changed = true;
+      console.log('social changed');
+    }
+  },
+  methods: {
+    saveResume() {
+      const resume = getDefaultResume();
+      for (const key in resume) {
+        resume[key] = this[key];
+      }
+      this.$emit('save', resume);
+    },
+    reset() {
+      const resume = getDefaultResume();
+      for (const key in resume) {
+        this[key] = resume[key];
+      }
+    }
   }
 };
 </script>

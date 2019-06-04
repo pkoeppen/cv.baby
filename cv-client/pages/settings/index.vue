@@ -27,7 +27,7 @@
             <v-flex>
               <v-tabs-items v-model="tabs">
                 <v-tab-item>
-                  <resume-editor />
+                  resume list here
                 </v-tab-item>
                 <v-tab-item>
                   <v-container class="pa-5" style="margin: 0; max-width: 600px">
@@ -309,12 +309,10 @@
 
 <script>
 import Navbar from '~/components/Navbar';
-import ResumeEditor from '~/components/ResumeEditor';
 import { UserQuery, SubscriptionQuery } from '~/assets/js/queries';
 export default {
   components: {
-    Navbar,
-    ResumeEditor
+    Navbar
   },
   data() {
     return {

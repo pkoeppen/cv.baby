@@ -249,7 +249,7 @@
 
 <script>
 import PaymentFields from '~/components/PaymentFields';
-import StartSubscriptionMutation from '~/assets/js/queries';
+import { StartSubscriptionMutation } from '~/assets/js/queries';
 export default {
   components: {
     PaymentFields
