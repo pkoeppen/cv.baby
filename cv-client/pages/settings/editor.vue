@@ -34,7 +34,15 @@
       </v-flex>
       <v-flex>
         <v-container grid-list-xl>
-          <v-layout wrap>
+          <v-layout v-if="loading" align-center justify-center>
+            <v-flex class="text-xs-center" xs12>
+              <v-progress-circular
+                color="primary"
+                indeterminate
+              ></v-progress-circular>
+            </v-flex>
+          </v-layout>
+          <v-layout v-else wrap>
             <v-flex
               v-for="(resume, index) in resumes"
               :key="index"
@@ -85,7 +93,7 @@
 </template>
 
 <script>
-import { cloneDeep } from 'lodash';
+import { cloneDeep, omit } from 'lodash';
 import Navbar from '~/components/Navbar';
 import ResumeEditor from '~/components/ResumeEditor';
 import { getDefaultResume } from '~/assets/js/util';
@@ -99,7 +107,8 @@ export default {
       resumes: [],
       resumesLastSaved: [],
       draftResume: getDefaultResume(),
-      activeIndex: -1
+      activeIndex: -1,
+      loading: false
     };
   },
   computed: {
@@ -125,19 +134,33 @@ export default {
     }
   },
   created() {
+    // If browser, add beforeunload handler to prevent
+    // accidentally discarding unsaved changes.
     if (process.client) {
       // eslint-disable-next-line nuxt/no-globals-in-created
       window.addEventListener('beforeunload', this.beforeUnloadHandler);
     }
+    // Fetch resumes from database.
+    this.loading = true;
+    this.$store
+      .dispatch('api/getResumes')
+      .then(resumes => {
+        // Add 'draft' field to each resume for the UI.
+        this.resumes = resumes.map(resume => ({ draft: false, ...resume }));
+        this.resumesLastSaved = cloneDeep(this.resumes);
+      })
+      .finally(() => {
+        this.loading = false;
+      });
   },
   methods: {
     loadResume(resume) {
-      console.log('loadResume');
+      // Load a resume into the editor.
       this.$refs.resumeEditor.loadResume(resume);
       this.activeIndex = resume.index;
     },
     editResume(index) {
-      console.log('editResume');
+      // Pass a resume and index to the loader method.
       if (index === -1) {
         this.loadResume({ index, ...this.draftResume });
       } else {
@@ -145,9 +168,9 @@ export default {
       }
     },
     removeResume(index) {
-      console.log('removeResume');
-      // Show confirm remove dialog
-
+      //
+      // TODO: Show confirm remove dialog
+      //
       this.loadResume({ index: -1, ...this.draftResume });
       this.resumes.splice(index, 1);
       this.resumesLastSaved.splice(index, 1);
@@ -155,34 +178,48 @@ export default {
       // TODO: remove from cloud
       //
     },
-    saveResume({ index, ...resume }) {
-      console.log('saveResume');
-      resume.draft = false;
-      if (index === -1) {
-        // Push new resume to resumes array.
-        this.resumes.push(resume);
-        this.resumesLastSaved.push(cloneDeep(resume));
-        // Load newly pushed resume from array.
-        this.loadResume({
-          index: this.resumes.length - 1,
-          ...resume
+    saveResume({ index, ...unsavedResume }) {
+      // Save resume to database.
+      // If index is -1, push a new resume onto the
+      // resume array on the user object in the database.
+      this.$store
+        .dispatch('api/saveResume', {
+          index,
+          resume: omit(unsavedResume, ['draft'])
+        })
+        .then(savedResume => {
+          const resume = { draft: false, ...savedResume };
+          if (index === -1) {
+            // Push new resume to resumes array.
+            this.resumes.push(resume);
+            this.resumesLastSaved.push(cloneDeep(resume));
+            // Load newly pushed resume from array.
+            this.loadResume({
+              index: this.resumes.length - 1,
+              ...resume
+            });
+            // Reset draft resume slot.
+            this.draftResume = getDefaultResume();
+          } else {
+            // Replace the entire array so Vue renders changes within the updated resume object.
+            const _resumes = cloneDeep(this.resumes);
+            _resumes[index] = resume;
+            this.resumes = _resumes;
+            this.resumesLastSaved[index] = cloneDeep(resume);
+            this.loadResume({ index, ...resume });
+          }
+        })
+        .catch(error => {
+          //
+          // TODO
+          //
+          console.error(error);
         });
-        // Reset draft resume slot.
-        this.draftResume = getDefaultResume();
-        //
-        // TODO: push to cloud
-        //
-      } else {
-        // Update the entire array so Vue catches changes within the array.
-        const _resumes = cloneDeep(this.resumes);
-        _resumes[index] = resume;
-        this.resumes = _resumes;
-        this.resumesLastSaved[index] = cloneDeep(resume);
-        this.loadResume({ index, ...resume });
-      }
     },
     saveAll() {
+      //
       // TODO
+      //
     },
     discardChanges(index) {
       console.log('discardChanges');
@@ -202,7 +239,7 @@ export default {
       if (index === -1) {
         this.draftResume = resume;
       } else {
-        // Update the entire array so Vue catches the draft change.
+        // Update the entire array so Vue renders the draft change.
         const _resumes = cloneDeep(this.resumes);
         _resumes[index] = resume;
         this.resumes = _resumes;
@@ -219,51 +256,3 @@ export default {
   }
 };
 </script>
-<style lang="stylus" scoped>
-.cv-toolbar
-  background-color: #ffffff !important
-.cv-logo
-  span
-    letter-spacing: -.03em
-  span:nth-child(2)
-    color: #2196f3
-.cv-payment
-  border: 1px solid #E0E0E0
-.vertical-tabs
-  overflow: hidden;
-  height: 240px
-.vertical-tabs--horizontal-text .v-tabs
-  transform: rotate(90deg);
-  transform-origin: 100px 100px;
-  height: 240px;
-  left: 40px
-.vertical-tabs--horizontal-text .v-tabs >>> .v-tabs__container
-  height: 240px;
-.vertical-tabs--horizontal-text .v-tabs >>> .v-tabs__div
-  width: 48px;
-  height: 240px;
-  display: inline-block;
-.vertical-tabs--horizontal-text .v-tabs >>> .v-tabs__item
-  transform: rotate(-90deg);
-  transform-origin: 100px 100px;
-  width: 240px;
-  height: 48px;
-  top: 40px
-  position: relative
-  display: block;
-  text-align: left;
-  line-height: 36px;
-  white-space: pre;
-  overflow: hidden;
-  text-overflow: ellipsis;
-.vertical-tabs--vertical-text
-  width: 48px;
-.vertical-tabs--vertical-text .v-tabs
-  transform: rotate(90deg);
-  transform-origin: 24px 24px;
-.vertical-tabs--vertical-text .v-tabs >>> .v-tabs__item
-  transform: rotate(180deg);
-.vertical-tabs--vertical-text .v-tabs >>> .v-tabs__slider-wrapper
-  top: 0;
-  bottom: auto;
-</style>

@@ -136,14 +136,7 @@ export default {
       this.$emit('draft', this.resume);
     },
     getWatcher() {
-      return this.$watch(
-        'resume',
-        () => {
-          this.resume.draft = true;
-          this.$emit('draft', this.resume);
-        },
-        { deep: true }
-      );
+      return this.$watch('resume', () => this.emitDraft(), { deep: true });
     },
     getRandomKey() {
       return Math.random()

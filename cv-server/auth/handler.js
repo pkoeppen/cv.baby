@@ -30,7 +30,7 @@ export const authorizer = event => {
   const token = event.authorizationToken;
 
   if (!token) {
-    throw new Error('Unauthorized');
+    return new Error('Unauthorized');
   }
 
   const sections = token.split('.');
@@ -61,14 +61,13 @@ export const authorizer = event => {
               return generatePolicy(claims, 'Allow', event.methodArn);
             })
             .catch(() => {
-              throw new Error('Signature verification failed');
+              return new Error('Signature verification failed');
             })
         );
       }
-      throw new Error('Unauthorized');
+      return new Error('Unauthorized');
     })
-    .catch(error => {
-      console.error(error);
-      throw new Error('Unauthorized');
+    .catch(() => {
+      return new Error('Unauthorized');
     });
 };

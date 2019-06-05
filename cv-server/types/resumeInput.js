@@ -1,14 +1,13 @@
 import {
-  GraphQLObjectType,
+  GraphQLInputObjectType,
   GraphQLNonNull,
-  GraphQLID,
   GraphQLInt,
   GraphQLString,
   GraphQLList
 } from 'graphql';
 
-export const EmploymentType = new GraphQLObjectType({
-  name: 'EmploymentType',
+export const EmploymentInputType = new GraphQLInputObjectType({
+  name: 'EmploymentInputType',
   fields: () => ({
     dateFrom: {
       type: new GraphQLNonNull(GraphQLString)
@@ -25,8 +24,8 @@ export const EmploymentType = new GraphQLObjectType({
   })
 });
 
-export const EducationType = new GraphQLObjectType({
-  name: 'EducationType',
+export const EducationInputType = new GraphQLInputObjectType({
+  name: 'EducationInputType',
   fields: () => ({
     dateFrom: {
       type: new GraphQLNonNull(GraphQLString)
@@ -43,8 +42,8 @@ export const EducationType = new GraphQLObjectType({
   })
 });
 
-export const ReferenceType = new GraphQLObjectType({
-  name: 'ReferenceType',
+export const ReferenceInputType = new GraphQLInputObjectType({
+  name: 'ReferenceInputType',
   fields: () => ({
     name: {
       type: new GraphQLNonNull(GraphQLString)
@@ -67,8 +66,8 @@ export const ReferenceType = new GraphQLObjectType({
   })
 });
 
-export const HobbyType = new GraphQLObjectType({
-  name: 'HobbyType',
+export const HobbyInputType = new GraphQLInputObjectType({
+  name: 'HobbyInputType',
   fields: () => ({
     icon: {
       type: new GraphQLNonNull(GraphQLString)
@@ -79,8 +78,8 @@ export const HobbyType = new GraphQLObjectType({
   })
 });
 
-export const SocialLinkType = new GraphQLObjectType({
-  name: 'SocialLinkType',
+export const SocialLinkInputType = new GraphQLInputObjectType({
+  name: 'SocialLinkInputType',
   fields: () => ({
     title: {
       type: new GraphQLNonNull(GraphQLString)
@@ -91,8 +90,8 @@ export const SocialLinkType = new GraphQLObjectType({
   })
 });
 
-export const ResumeType = new GraphQLObjectType({
-  name: 'ResumeType',
+export const ResumeInputType = new GraphQLInputObjectType({
+  name: 'ResumeInputType',
   fields: () => ({
     alias: {
       type: new GraphQLNonNull(GraphQLString)
@@ -122,37 +121,19 @@ export const ResumeType = new GraphQLObjectType({
       type: new GraphQLList(GraphQLString)
     },
     employment: {
-      type: new GraphQLList(EmploymentType)
+      type: new GraphQLList(EmploymentInputType)
     },
     education: {
-      type: new GraphQLList(EducationType)
+      type: new GraphQLList(EducationInputType)
     },
     references: {
-      type: new GraphQLList(ReferenceType)
+      type: new GraphQLList(ReferenceInputType)
     },
     hobbies: {
-      type: new GraphQLList(HobbyType)
+      type: new GraphQLList(HobbyInputType)
     },
     social: {
-      type: new GraphQLList(SocialLinkType)
-    }
-  })
-});
-
-export const UserType = new GraphQLObjectType({
-  name: 'UserType',
-  fields: () => ({
-    userId: {
-      type: new GraphQLNonNull(GraphQLID)
-    },
-    createdAt: {
-      type: new GraphQLNonNull(GraphQLString)
-    },
-    updatedAt: {
-      type: GraphQLString
-    },
-    resumes: {
-      type: new GraphQLList(ResumeType)
+      type: new GraphQLList(SocialLinkInputType)
     }
   })
 });

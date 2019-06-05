@@ -341,14 +341,26 @@ export default {
         query: UserQuery
       })
       .then(({ data }) => {
+        if (!data || !data.getUser) {
+          throw new Error('some typa error');
+        }
         this.resumes = data.getUser.resumes;
+      })
+      .catch(error => {
+        console.error(error);
       });
     this.$axios
       .post('/gql/private', {
         query: SubscriptionQuery
       })
       .then(({ data }) => {
+        if (!data || !data.getSubscription) {
+          throw new Error('some typa error');
+        }
         this.payment.subscription = data.getSubscription;
+      })
+      .catch(error => {
+        console.error(error);
       });
   },
   methods: {
