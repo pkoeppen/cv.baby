@@ -172,7 +172,7 @@ export default {
       const { index, ...item } = this.hobbyItem;
       item.icon = this.selectedHobbyIcon;
 
-      if (index < 0) {
+      if (index === -1) {
         // Add a new hobby item.
         this.hobbyItems.push(item);
       } else {
@@ -181,6 +181,7 @@ export default {
       }
       this.dialog = false;
       this.hobbyItem = getDefaultHobbyItem();
+      this.$emit('draft');
     },
     showConfirmRemoveDialog(index) {
       this.removeIndex = index;

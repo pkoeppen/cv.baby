@@ -18,7 +18,7 @@
         offset-x
       >
         <template v-slot:activator="{ on }">
-          <v-btn dark icon v-on="on">
+          <v-btn class="mx-0" dark icon v-on="on">
             <v-avatar color="indigo" size="36">
               <v-icon dark>account_circle</v-icon>
             </v-avatar>

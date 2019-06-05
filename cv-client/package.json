@@ -20,6 +20,7 @@
     "braintree-web": "^3.45.0",
     "cross-env": "^5.2.0",
     "express": "^4.16.4",
+    "lodash": "^4.17.11",
     "nuxt": "^2.4.0",
     "vue-mq": "^1.0.1",
     "vuetify": "^1.5.5",

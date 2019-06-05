@@ -1,6 +1,6 @@
 <template>
   <no-ssr>
-    <v-layout style="min-height: 100vh;" row column wrap>
+    <v-layout style="min-height: 100vh;" column wrap>
       <v-flex xs12>
         <v-container class="pa-0">
           <navbar />

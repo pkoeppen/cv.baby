@@ -180,7 +180,7 @@ export default {
         return;
       }
       const { index, ...item } = this.employmentItem;
-      if (index < 0) {
+      if (index === -1) {
         // Add a new employment item.
         this.employmentItems.push(item);
       } else {
@@ -189,6 +189,7 @@ export default {
       }
       this.dialog = false;
       this.employmentItem = getDefaultEmploymentItem();
+      this.$emit('draft');
     },
     showConfirmRemoveDialog(index) {
       this.removeIndex = index;

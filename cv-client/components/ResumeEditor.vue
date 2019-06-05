@@ -2,10 +2,27 @@
   <v-container>
     <v-layout justify-center align-center wrap>
       <v-flex xs12>
-        <v-btn color="primary" :disabled="!changed" @click="saveResume">{{
-          index === -1 ? 'Save New' : 'Save Changes'
-        }}</v-btn>
-        <v-btn @click="reset">Reset</v-btn>
+        <v-btn
+          class="ml-0"
+          color="primary"
+          :disabled="!resume.draft"
+          depressed
+          @click="saveResume"
+          >{{ resume.index === -1 ? 'Save Resume' : 'Save Changes' }}</v-btn
+        >
+        <v-btn :disabled="!resume.draft" depressed @click="discardChanges"
+          >Discard changes</v-btn
+        >
+        <v-btn
+          v-if="resume.index !== -1"
+          color="error"
+          depressed
+          @click="removeResume"
+          >Remove</v-btn
+        >
+      </v-flex>
+      <v-flex xs12>
+        <v-text-field v-model="resume.alias" label="Alias" />
       </v-flex>
       <v-flex xs12>
         <div style="position: relative;">
@@ -20,16 +37,16 @@
           </v-avatar>
         </div>
       </v-flex>
-      <v-flex xs12>
-        <v-text-field v-model="name" label="Name" />
-        <v-text-field v-model="title" label="Title" />
-        <v-text-field v-model="email" label="Email" />
-        <v-text-field v-model="phone" label="Phone" />
-        <v-text-field v-model="website" label="Website" />
+      <v-flex xs12 md10>
+        <v-text-field v-model="resume.name" label="Name" />
+        <v-text-field v-model="resume.title" label="Title" />
+        <v-text-field v-model="resume.email" label="Email" />
+        <v-text-field v-model="resume.phone" label="Phone" />
+        <v-text-field v-model="resume.website" label="Website" />
       </v-flex>
-      <v-flex xs12 class="text-xs-center my-3">
+      <v-flex xs12 md10 class="text-xs-center my-3">
         <v-combobox
-          v-model="skills"
+          v-model="resume.skills"
           hide-selected
           hint="Enter a maximum of 10 skills"
           label="Skills"
@@ -45,19 +62,31 @@
           </template>
         </v-combobox>
       </v-flex>
-      <v-flex xs12>
+      <v-flex xs12 md10>
         <v-textarea
-          v-model="profile"
+          v-model="resume.profile"
           label="Profile"
           hint="A brief synopsis of who you are"
           rows="2"
         ></v-textarea>
       </v-flex>
-      <employment-editor :employment-items.sync="employment" />
-      <education-editor :education-items.sync="education" />
-      <reference-editor :reference-items.sync="references" />
-      <hobby-editor :hobby-items.sync="hobbies" />
-      <social-link-editor :social-link-items.sync="social" />
+      <employment-editor
+        :employment-items.sync="resume.employment"
+        @draft="emitDraft"
+      />
+      <education-editor
+        :education-items.sync="resume.education"
+        @draft="emitDraft"
+      />
+      <reference-editor
+        :reference-items.sync="resume.references"
+        @draft="emitDraft"
+      />
+      <hobby-editor :hobby-items.sync="resume.hobbies" @draft="emitDraft" />
+      <social-link-editor
+        :social-link-items.sync="resume.social"
+        @draft="emitDraft"
+      />
     </v-layout>
   </v-container>
 </template>
@@ -68,25 +97,7 @@ import EducationEditor from './EducationEditor';
 import ReferenceEditor from './ReferenceEditor';
 import HobbyEditor from './HobbyEditor';
 import SocialLinkEditor from './SocialLinkEditor';
-function getDefaultResume() {
-  return {
-    index: -1,
-    alias: null,
-    name: null,
-    title: null,
-    email: null,
-    phone: null,
-    website: null,
-    profile: null,
-    description: null,
-    skills: [],
-    employment: [],
-    education: [],
-    references: [],
-    hobbies: [],
-    social: []
-  };
-}
+import { getDefaultResume } from '~/assets/js/util';
 export default {
   components: {
     EmploymentEditor,
@@ -95,98 +106,49 @@ export default {
     HobbyEditor,
     SocialLinkEditor
   },
-  props: {
-    resume: {
-      type: Object,
-      default: () => getDefaultResume()
-    }
-  },
   data() {
     return {
-      changed: false,
-      ...this.resume
+      resume: getDefaultResume()
     };
   },
-  watch: {
-    resume(resume) {
-      for (const key in resume) {
-        this[key] = resume[key];
-      }
-    },
-
-    //
-
-    alias() {
-      if (this.index !== -1) {
-        this.$emit('change', this.index);
-      }
-    },
-    name() {
-      this.changed = true;
-      console.log('name changed');
-    },
-    title() {
-      this.changed = true;
-      console.log('title changed');
-    },
-    email() {
-      this.changed = true;
-      console.log('email changed');
-    },
-    phone() {
-      this.changed = true;
-      console.log('phone changed');
-    },
-    website() {
-      this.changed = true;
-      console.log('website changed');
-    },
-    profile() {
-      this.changed = true;
-      console.log('profile changed');
-    },
-    description() {
-      this.changed = true;
-      console.log('description changed');
-    },
-    skills() {
-      this.changed = true;
-      console.log('skills changed');
-    },
-    employment() {
-      this.changed = true;
-      console.log('employment changed');
-    },
-    education() {
-      this.changed = true;
-      console.log('education changed');
-    },
-    references() {
-      this.changed = true;
-      console.log('references changed');
-    },
-    hobbies() {
-      this.changed = true;
-      console.log('hobbies changed');
-    },
-    social() {
-      this.changed = true;
-      console.log('social changed');
-    }
+  created() {
+    this.watcher = this.getWatcher();
   },
   methods: {
-    saveResume() {
-      const resume = getDefaultResume();
-      for (const key in resume) {
-        resume[key] = this[key];
-      }
-      this.$emit('save', resume);
+    loadResume(resume) {
+      // Turn off watcher to avoid emitting 'draft'.
+      this.watcher();
+      this.resume = resume;
+      // Turn watcher back on.
+      this.watcher = this.getWatcher();
     },
-    reset() {
-      const resume = getDefaultResume();
-      for (const key in resume) {
-        this[key] = resume[key];
-      }
+    saveResume() {
+      this.$emit('save', this.resume);
+    },
+    discardChanges() {
+      this.$emit('discard', this.resume.index);
+    },
+    removeResume() {
+      this.$emit('remove', this.resume.index);
+    },
+    emitDraft() {
+      this.resume.draft = true;
+      this.$emit('draft', this.resume);
+    },
+    getWatcher() {
+      return this.$watch(
+        'resume',
+        () => {
+          this.resume.draft = true;
+          this.$emit('draft', this.resume);
+        },
+        { deep: true }
+      );
+    },
+    getRandomKey() {
+      return Math.random()
+        .toString(36)
+        .substring(2);
     }
   }
 };

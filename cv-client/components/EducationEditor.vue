@@ -178,7 +178,7 @@ export default {
         return;
       }
       const { index, ...item } = this.educationItem;
-      if (index < 0) {
+      if (index === -1) {
         // Add a new education item.
         this.educationItems.push(item);
       } else {
@@ -187,6 +187,7 @@ export default {
       }
       this.dialog = false;
       this.educationItem = getDefaultEducationItem();
+      this.$emit('draft');
     },
     showConfirmRemoveDialog(index) {
       this.removeIndex = index;

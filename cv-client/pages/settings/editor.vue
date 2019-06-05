@@ -1,46 +1,219 @@
 <template>
   <no-ssr>
-    <div>
-      <v-btn to="/settings">
-        Back to settings
-      </v-btn>
-      <div v-for="(resume, index) in resumes" :key="index">
-        <div class="title">Resume #{{ index }}</div>
-        <v-btn @click="editResume(index)">Edit</v-btn>
-        <v-btn @click="removeResume(index)">Remove</v-btn>
-      </div>
-      <resume-editor :resume="activeResume" @save="saveResume" />
-    </div>
+    <v-layout style="min-height: 100vh;" column wrap>
+      <v-flex xs12>
+        <v-container class="pa-0">
+          <navbar />
+        </v-container>
+      </v-flex>
+      <v-flex xs12>
+        <v-divider />
+      </v-flex>
+      <v-flex xs12>
+        <v-container class="px-0 pt-0 pb-2">
+          <v-toolbar class="elevation-0" style="background-color: #ffffff;">
+            <v-btn to="/settings" class="mx-0" exact depressed>
+              <v-icon>keyboard_arrow_left</v-icon>
+              Back to settings
+            </v-btn>
+            <v-spacer />
+            <v-btn :disabled="!draftsRemaining" depressed @click="saveAll"
+              >Save all</v-btn
+            >
+            <v-btn
+              class="mx-0"
+              :color="draftResume.draft ? 'error' : 'primary'"
+              depressed
+              @click="editResume(-1)"
+            >
+              {{ draftResume.draft ? 'Edit Draft' : 'New Resume' }}
+              <v-icon class="ml-1">note_add</v-icon>
+            </v-btn>
+          </v-toolbar>
+        </v-container>
+      </v-flex>
+      <v-flex>
+        <v-container grid-list-xl>
+          <v-layout wrap>
+            <v-flex
+              v-for="(resume, index) in resumes"
+              :key="index"
+              xs12
+              sm4
+              md3
+            >
+              <v-badge
+                :color="resume.draft ? 'error' : 'success'"
+                overlap
+                style="width: 100%;"
+              >
+                <template v-slot:badge>
+                  <v-icon dark>save</v-icon>
+                </template>
+                <v-card>
+                  <v-card-title
+                    :class="{ 'red--text': resume.draft }"
+                    class="title justify-center"
+                  >
+                    {{ resume.alias }}
+                  </v-card-title>
+                  <v-card-actions class="justify-center">
+                    <v-btn
+                      depressed
+                      :disabled="activeIndex === index"
+                      @click="editResume(index)"
+                      >Edit{{ activeIndex === index ? 'ing' : '' }}</v-btn
+                    >
+                  </v-card-actions>
+                </v-card>
+              </v-badge>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-flex>
+      <v-flex xs12>
+        <resume-editor
+          ref="resumeEditor"
+          @save="saveResume"
+          @draft="setDraft"
+          @remove="removeResume"
+          @discard="discardChanges"
+        />
+      </v-flex>
+    </v-layout>
   </no-ssr>
 </template>
 
 <script>
+import { cloneDeep } from 'lodash';
+import Navbar from '~/components/Navbar';
 import ResumeEditor from '~/components/ResumeEditor';
+import { getDefaultResume } from '~/assets/js/util';
 export default {
   components: {
+    Navbar,
     ResumeEditor
   },
   data() {
     return {
       resumes: [],
-      activeResume: undefined
+      resumesLastSaved: [],
+      draftResume: getDefaultResume(),
+      activeIndex: -1
     };
   },
+  computed: {
+    draftsRemaining() {
+      return (
+        this.resumes.map(({ draft }) => draft).filter(x => x).length ||
+        this.draftResume.draft
+      );
+    }
+  },
+  watch: {
+    resumes: {
+      handler(a) {
+        console.log('resumes changed');
+      },
+      deep: true
+    },
+    resumesLastSaved: {
+      handler(a) {
+        console.log('resumesLastSaved changed');
+      },
+      deep: true
+    }
+  },
+  created() {
+    if (process.client) {
+      // eslint-disable-next-line nuxt/no-globals-in-created
+      window.addEventListener('beforeunload', this.beforeUnloadHandler);
+    }
+  },
   methods: {
+    loadResume(resume) {
+      console.log('loadResume');
+      this.$refs.resumeEditor.loadResume(resume);
+      this.activeIndex = resume.index;
+    },
     editResume(index) {
-      this.activeResume = { index, ...this.resumes[index] };
-      console.log('loading index', index);
+      console.log('editResume');
+      if (index === -1) {
+        this.loadResume({ index, ...this.draftResume });
+      } else {
+        this.loadResume({ index, ...this.resumes[index] });
+      }
     },
     removeResume(index) {
-      console.log('removing');
+      console.log('removeResume');
+      // Show confirm remove dialog
+
+      this.loadResume({ index: -1, ...this.draftResume });
+      this.resumes.splice(index, 1);
+      this.resumesLastSaved.splice(index, 1);
+      //
+      // TODO: remove from cloud
+      //
     },
     saveResume({ index, ...resume }) {
-      console.log('saving index:', index);
-      if (index < 0) {
+      console.log('saveResume');
+      resume.draft = false;
+      if (index === -1) {
+        // Push new resume to resumes array.
         this.resumes.push(resume);
+        this.resumesLastSaved.push(cloneDeep(resume));
+        // Load newly pushed resume from array.
+        this.loadResume({
+          index: this.resumes.length - 1,
+          ...resume
+        });
+        // Reset draft resume slot.
+        this.draftResume = getDefaultResume();
+        //
         // TODO: push to cloud
+        //
       } else {
-        this.resumes[index] = resume;
+        // Update the entire array so Vue catches changes within the array.
+        const _resumes = cloneDeep(this.resumes);
+        _resumes[index] = resume;
+        this.resumes = _resumes;
+        this.resumesLastSaved[index] = cloneDeep(resume);
+        this.loadResume({ index, ...resume });
+      }
+    },
+    saveAll() {
+      // TODO
+    },
+    discardChanges(index) {
+      console.log('discardChanges');
+      if (index === -1) {
+        this.draftResume = getDefaultResume();
+        this.loadResume({ index, ...this.draftResume });
+      } else {
+        const resume = cloneDeep(this.resumesLastSaved[index]);
+        const _resumes = cloneDeep(this.resumes);
+        _resumes[index] = resume;
+        this.resumes = _resumes;
+        this.loadResume({ index, ...resume });
+      }
+    },
+    setDraft({ index, ...resume }) {
+      console.log('setDraft');
+      if (index === -1) {
+        this.draftResume = resume;
+      } else {
+        // Update the entire array so Vue catches the draft change.
+        const _resumes = cloneDeep(this.resumes);
+        _resumes[index] = resume;
+        this.resumes = _resumes;
+      }
+    },
+    beforeUnloadHandler(event) {
+      // Check if any resumes have not yet been saved.
+      for (const { draft } of this.resumes) {
+        if (draft) {
+          event.preventDefault();
+        }
       }
     }
   }

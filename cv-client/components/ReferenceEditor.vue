@@ -196,7 +196,7 @@ export default {
         return;
       }
       const { index, ...item } = this.referenceItem;
-      if (index < 0) {
+      if (index === -1) {
         // Add a new reference item.
         this.referenceItems.push(item);
       } else {
@@ -205,6 +205,7 @@ export default {
       }
       this.dialog = false;
       this.referenceItem = getDefaultReferenceItem();
+      this.$emit('draft');
     },
     showConfirmRemoveDialog(index) {
       this.removeIndex = index;

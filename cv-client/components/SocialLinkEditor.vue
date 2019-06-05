@@ -190,7 +190,7 @@ export default {
         return;
       }
       const { index, ...item } = this.socialLinkItem;
-      if (index < 0) {
+      if (index === -1) {
         // Add a new socialLink item.
         this.socialLinkItems.push(item);
       } else {
@@ -199,6 +199,7 @@ export default {
       }
       this.dialog = false;
       this.socialLinkItem = getDefaultSocialLinkItem();
+      this.$emit('draft');
     },
     showConfirmRemoveDialog(index) {
       this.removeIndex = index;
