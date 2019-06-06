@@ -1,4 +1,9 @@
-import { ResumesQuery, SaveResumeMutation } from '~/assets/js/queries';
+import {
+  ResumesQuery,
+  SubscriptionQuery,
+  SaveResumeMutation,
+  RemoveResumeMutation
+} from '~/assets/js/queries';
 
 export const state = () => ({
   authenticating: false,
@@ -13,6 +18,13 @@ export const actions = {
       })
       .then(({ data }) => data.getResumes);
   },
+  getSubscription() {
+    return this.$axios
+      .post('/gql/private', {
+        query: SubscriptionQuery
+      })
+      .then(({ data }) => data.getSubscription);
+  },
   saveResume(context, { index, resume }) {
     return this.$axios
       .post('/gql/private', {
@@ -23,6 +35,14 @@ export const actions = {
         }
       })
       .then(({ data }) => data.saveResume);
+  },
+  removeResume(context, index) {
+    return this.$axios
+      .post('/gql/private', {
+        query: RemoveResumeMutation,
+        vars: { index }
+      })
+      .then(({ data }) => data.removeResume);
   }
 };
 

@@ -2,7 +2,6 @@ import {
   GraphQLObjectType,
   GraphQLNonNull,
   GraphQLID,
-  GraphQLInt,
   GraphQLString,
   GraphQLList
 } from 'graphql';
@@ -56,7 +55,7 @@ export const ReferenceType = new GraphQLObjectType({
       type: GraphQLString
     },
     yearsKnown: {
-      type: GraphQLInt
+      type: GraphQLString
     },
     phone: {
       type: GraphQLString

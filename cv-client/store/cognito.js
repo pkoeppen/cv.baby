@@ -5,6 +5,7 @@ import {
   CognitoUserPool,
   CookieStorage
 } from 'amazon-cognito-identity-js';
+import * as cookie from 'cookie';
 
 /* eslint-disable */
 const NODE_ENV = 'development';
@@ -24,10 +25,28 @@ const pool = new CognitoUserPool({
 
 export const state = () => ({
   authenticating: false,
-  authenticated: null
+  authenticated: null,
+  accessToken: null
 });
 
 export const actions = {
+  /* Called by nuxtServerInit() in index.js. */
+  serverInit(context, request) {
+    if (request && request.headers.cookie) {
+      const parsed = cookie.parse(request.headers.cookie);
+      const usernameField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.LastAuthUser`;
+      const username = parsed[usernameField];
+      const accessTokenField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.${username}.accessToken`;
+      const accessToken = parsed[accessTokenField];
+      context.commit('setAccessToken', accessToken);
+    }
+  },
+
+  /* Fetch access token from state. */
+  getAccessToken({ state }) {
+    return state.accessToken;
+  },
+
   /* Check if authenticated. */
   checkAuthentication(context) {
     return new Promise((resolve, reject) => {
@@ -74,6 +93,7 @@ export const actions = {
           onSuccess(session) {
             context.commit('setAuthenticating', false);
             context.commit('setAuthenticated', user);
+            context.commit('setAccessToken', session.accessToken.jwtToken);
             resolve(session);
           },
           newPasswordRequired(userAttributes) {
@@ -295,5 +315,9 @@ export const mutations = {
       ..._state.authenticated,
       attributes
     };
+  },
+  setAccessToken(_state, accessToken) {
+    // eslint-disable-next-line no-param-reassign
+    _state.accessToken = accessToken;
   }
 };

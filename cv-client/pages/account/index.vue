@@ -16,7 +16,7 @@
               <h2 class="mt-5 mb-4">Account</h2>
               <div class="vertical-tabs vertical-tabs--horizontal-text">
                 <v-tabs v-model="tabs" @change="$emit('input', $event)">
-                  <v-tab>Profile</v-tab>
+                  <v-tab>Resumes</v-tab>
                   <v-tab>Password</v-tab>
                   <v-tab>Billing &amp; Subscription</v-tab>
                   <v-tab>Invoices</v-tab>
@@ -27,7 +27,67 @@
             <v-flex>
               <v-tabs-items v-model="tabs">
                 <v-tab-item>
-                  resume list here
+                  <v-container class="pa-5" grid-list-xl>
+                    <v-layout wrap>
+                      <v-flex
+                        v-for="(resume, index) in resumes"
+                        :key="index"
+                        xs12
+                        sm6
+                        md4
+                      >
+                        <v-badge
+                          :color="resume.draft ? 'error' : 'success'"
+                          overlap
+                          style="width: 100%;"
+                        >
+                          <template v-slot:badge>
+                            <v-icon dark>save</v-icon>
+                          </template>
+                          <v-card class="text-xs-center">
+                            <v-card-title
+                              :class="{ 'red--text': resume.draft }"
+                              class="title justify-center"
+                            >
+                              {{ resume.alias }}
+                            </v-card-title>
+                            <v-card-text>
+                              <v-avatar size="100">
+                                <v-img
+                                  :src="
+                                    require('~/assets/images/testAvatar.jpg')
+                                  "
+                                  :lazy-src="''"
+                                  aspect-ratio="1"
+                                >
+                                  <template v-slot:placeholder>
+                                    <v-layout
+                                      fill-height
+                                      align-center
+                                      justify-center
+                                      ma-0
+                                    >
+                                      <v-progress-circular
+                                        indeterminate
+                                        color="grey lighten-5"
+                                      />
+                                    </v-layout>
+                                  </template>
+                                </v-img>
+                              </v-avatar>
+                            </v-card-text>
+                            <v-card-actions class="justify-center">
+                              <v-btn
+                                depressed
+                                :to="`/account/editor?i=${index}`"
+                                >Edit</v-btn
+                              >
+                            </v-card-actions>
+                          </v-card>
+                        </v-badge>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
                 </v-tab-item>
                 <v-tab-item>
                   <v-container class="pa-5" style="margin: 0; max-width: 600px">
@@ -309,7 +369,6 @@
 
 <script>
 import Navbar from '~/components/Navbar';
-import { UserQuery, SubscriptionQuery } from '~/assets/js/queries';
 export default {
   components: {
     Navbar
@@ -336,31 +395,27 @@ export default {
     };
   },
   mounted() {
-    this.$axios
-      .post('/gql/private', {
-        query: UserQuery
+    this.$store
+      .dispatch('api/getResumes')
+      .then(resumes => {
+        this.resumes = resumes;
       })
-      .then(({ data }) => {
-        if (!data || !data.getUser) {
-          throw new Error('some typa error');
-        }
-        this.resumes = data.getUser.resumes;
-      })
-      .catch(error => {
-        console.error(error);
+      .catch(() => {
+        this.$store.dispatch('showSnackbar', {
+          color: 'red',
+          message: 'Error fetching resumes. Please check your connection.'
+        });
       });
-    this.$axios
-      .post('/gql/private', {
-        query: SubscriptionQuery
+    this.$store
+      .dispatch('api/getSubscription')
+      .then(subscription => {
+        this.payment.subscription = subscription;
       })
-      .then(({ data }) => {
-        if (!data || !data.getSubscription) {
-          throw new Error('some typa error');
-        }
-        this.payment.subscription = data.getSubscription;
-      })
-      .catch(error => {
-        console.error(error);
+      .catch(() => {
+        this.$store.dispatch('showSnackbar', {
+          color: 'red',
+          message: 'Error fetching subscription. Please check your connection.'
+        });
       });
   },
   methods: {

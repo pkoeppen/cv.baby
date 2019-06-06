@@ -1,7 +1,7 @@
 import { GraphQLNonNull, GraphQLInt, GraphQLList } from 'graphql';
 import { authorize } from '../util';
 import { UserType, ResumeType, ResumeInputType } from '../types';
-import { getUser, getResumes, saveResume } from '../resolvers';
+import { getUser, getResumes, saveResume, removeResume } from '../resolvers';
 
 export default {
   getUser: {
@@ -34,6 +34,20 @@ export default {
       const { index, resume } = args;
       const { principalId } = ctx;
       return saveResume(principalId, index, resume);
+    })
+  },
+  removeResume: {
+    type: new GraphQLNonNull(ResumeType),
+    args: {
+      index: {
+        name: 'index',
+        type: new GraphQLNonNull(GraphQLInt)
+      }
+    },
+    resolve: authorize((root, args, ctx) => {
+      const { index } = args;
+      const { principalId } = ctx;
+      return removeResume(principalId, index);
     })
   }
 };

@@ -1,7 +1,6 @@
 import {
   GraphQLInputObjectType,
   GraphQLNonNull,
-  GraphQLInt,
   GraphQLString,
   GraphQLList
 } from 'graphql';
@@ -55,7 +54,7 @@ export const ReferenceInputType = new GraphQLInputObjectType({
       type: GraphQLString
     },
     yearsKnown: {
-      type: GraphQLInt
+      type: GraphQLString
     },
     phone: {
       type: GraphQLString

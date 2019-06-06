@@ -60,7 +60,8 @@ export const authorizer = event => {
               // Verification succeeded.
               return generatePolicy(claims, 'Allow', event.methodArn);
             })
-            .catch(() => {
+            .catch(error => {
+              console.error(error);
               return new Error('Signature verification failed');
             })
         );

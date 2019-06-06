@@ -3,31 +3,38 @@
     <v-layout justify-center align-center wrap>
       <v-flex xs12>
         <v-btn
-          class="ml-0"
+          class="ml-0 my-0"
           color="primary"
-          :disabled="!resume.draft"
+          :disabled="!resume.draft || !hasAlias"
           depressed
-          @click="saveResume"
+          @click="emitSaveResume"
           >{{ resume.index === -1 ? 'Save Resume' : 'Save Changes' }}</v-btn
         >
-        <v-btn :disabled="!resume.draft" depressed @click="discardChanges"
+        <v-btn
+          class="my-0"
+          :disabled="!resume.draft"
+          depressed
+          @click="emitDiscardChanges"
           >Discard changes</v-btn
         >
         <v-btn
           v-if="resume.index !== -1"
+          class="my-0"
           color="error"
           depressed
-          @click="removeResume"
+          @click="confirmRemoveDialog = true"
           >Remove</v-btn
         >
       </v-flex>
-      <v-flex xs12>
-        <v-text-field v-model="resume.alias" label="Alias" />
-      </v-flex>
-      <v-flex xs12>
+      <v-flex class="text-xs-center mt-5" xs12>
         <div style="position: relative;">
-          <v-avatar size="200" tile>
-            <v-img :src="''" :lazy-src="''" aspect-ratio="1" class="cv-avatar">
+          <v-avatar size="200">
+            <v-img
+              :src="require('~/assets/images/testAvatar.jpg')"
+              :lazy-src="''"
+              aspect-ratio="1"
+              class="cv-avatar"
+            >
               <template v-slot:placeholder>
                 <v-layout fill-height align-center justify-center ma-0>
                   <v-progress-circular indeterminate color="grey lighten-5" />
@@ -38,6 +45,18 @@
         </div>
       </v-flex>
       <v-flex xs12 md10>
+        <v-form ref="aliasForm" v-model="hasAlias">
+          <v-text-field
+            ref="alias"
+            v-model="resume.alias"
+            :rules="[v => !!v || 'Resume alias is required']"
+            class="mb-4"
+            prepend-inner-icon="bookmark"
+            label="Resume alias"
+            hint="Give your resume a name"
+            required
+          />
+        </v-form>
         <v-text-field v-model="resume.name" label="Name" />
         <v-text-field v-model="resume.title" label="Title" />
         <v-text-field v-model="resume.email" label="Email" />
@@ -88,6 +107,28 @@
         @draft="emitDraft"
       />
     </v-layout>
+    <v-dialog v-model="confirmRemoveDialog" max-width="400">
+      <v-card>
+        <v-card-title
+          class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
+        >
+          <span class="cv-dialog-header headline">Remove resume</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container class="py-0" grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                Are you sure you want to remove this resume?
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions class="justify-center pb-4">
+          <v-btn @click="confirmRemoveDialog = false">Cancel</v-btn>
+          <v-btn color="error" @click="emitRemoveResume">Remove</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -108,7 +149,9 @@ export default {
   },
   data() {
     return {
-      resume: getDefaultResume()
+      resume: getDefaultResume(),
+      confirmRemoveDialog: false,
+      hasAlias: false
     };
   },
   created() {
@@ -116,24 +159,34 @@ export default {
   },
   methods: {
     loadResume(resume) {
+      if (resume.index === -1) {
+        this.$refs.aliasForm.resetValidation();
+      }
       // Turn off watcher to avoid emitting 'draft'.
       this.watcher();
       this.resume = resume;
       // Turn watcher back on.
       this.watcher = this.getWatcher();
     },
-    saveResume() {
-      this.$emit('save', this.resume);
+    emitSaveResume() {
+      if (this.$refs.aliasForm.validate()) {
+        this.$emit('save', this.resume);
+      }
     },
-    discardChanges() {
+    emitDiscardChanges() {
+      this.$refs.aliasForm.resetValidation();
       this.$emit('discard', this.resume.index);
     },
-    removeResume() {
+    emitRemoveResume() {
+      this.confirmRemoveDialog = false;
       this.$emit('remove', this.resume.index);
     },
     emitDraft() {
       this.resume.draft = true;
       this.$emit('draft', this.resume);
+    },
+    focusAliasField() {
+      this.$refs.alias.focus();
     },
     getWatcher() {
       return this.$watch('resume', () => this.emitDraft(), { deep: true });

@@ -16,6 +16,12 @@
         </v-layout>
       </v-footer>
     </v-content>
+    <v-snackbar v-model="showSnackbar" :color="snackbar.color" :timeout="3000">
+      {{ snackbar.message }}
+      <v-btn flat @click="showSnackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -23,26 +29,18 @@
 export default {
   data() {
     return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
-      items: [
-        {
-          icon: 'apps',
-          title: 'Welcome',
-          to: '/'
-        },
-        {
-          icon: 'bubble_chart',
-          title: 'Inspire',
-          to: '/inspire'
-        }
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'cvbaby'
+      showSnackbar: false
     };
+  },
+  computed: {
+    snackbar() {
+      return this.$store.state.snackbar;
+    }
+  },
+  watch: {
+    snackbar() {
+      this.showSnackbar = true;
+    }
   },
   created() {
     this.$store

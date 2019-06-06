@@ -1,3 +1,36 @@
+/*
+ * Fragments
+ */
+export const SubscriptionFragment = `
+  fragment SubscriptionFields on SubscriptionType {
+    billingDayOfMonth,
+    createdAt,
+    firstBillingDate,
+    nextBillAmount,
+    nextBillingDate,
+    paidThroughDate,
+    planId,
+    status,
+    trialPeriod,
+    transactions {
+      amount,
+      createdAt,
+      creditCard {
+        cardType,
+        last4
+      },
+      currencyIsoCode,
+      paymentInstrumentType,
+      paypalAccount {
+        payerEmail,
+        paymentId
+      },
+      planId,
+      processorResponseType,
+      status
+    }
+  }
+`;
 export const ResumeFragment = `
   fragment ResumeFields on ResumeType {
     alias,
@@ -40,6 +73,9 @@ export const ResumeFragment = `
   }
 `;
 
+/*
+ * Queries
+ */
 export const UserQuery = `
   query {
     getUser {
@@ -50,38 +86,6 @@ export const UserQuery = `
   }
   ${ResumeFragment}
 `;
-
-export const SubscriptionFragment = `
-  fragment SubscriptionFields on SubscriptionType {
-    billingDayOfMonth,
-    createdAt,
-    firstBillingDate,
-    nextBillAmount,
-    nextBillingDate,
-    paidThroughDate,
-    planId,
-    status,
-    trialPeriod,
-    transactions {
-      amount,
-      createdAt,
-      creditCard {
-        cardType,
-        last4
-      },
-      currencyIsoCode,
-      paymentInstrumentType,
-      paypalAccount {
-        payerEmail,
-        paymentId
-      },
-      planId,
-      processorResponseType,
-      status
-    }
-  }
-`;
-
 export const SubscriptionQuery = `
   query {
     getSubscription {
@@ -90,7 +94,6 @@ export const SubscriptionQuery = `
   }
   ${SubscriptionFragment}
 `;
-
 export const ResumesQuery = `
   query {
     getResumes {
@@ -100,15 +103,25 @@ export const ResumesQuery = `
   ${ResumeFragment}
 `;
 
+/*
+ * Mutations
+ */
 export const StartSubscriptionMutation = `
   mutation ($paymentMethodToken: String!, $planId: String!) {
     startSubscription (paymentMethodToken: $paymentMethodToken, planId: $planId)
   }
 `;
-
 export const SaveResumeMutation = `
   mutation ($index: Int!, $resume: ResumeInputType!) {
     saveResume (index: $index, resume: $resume) {
+      ...ResumeFields
+    }
+  }
+  ${ResumeFragment}
+`;
+export const RemoveResumeMutation = `
+  mutation ($index: Int!) {
+    removeResume (index: $index) {
       ...ResumeFields
     }
   }
