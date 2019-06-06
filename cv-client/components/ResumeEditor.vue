@@ -1,31 +1,42 @@
 <template>
   <v-container>
     <v-layout justify-center align-center wrap>
-      <v-flex xs12>
-        <v-btn
-          class="ml-0 my-0"
-          color="primary"
-          :disabled="!resume.draft || !hasAlias"
-          depressed
-          @click="emitSaveResume"
-          >{{ resume.index === -1 ? 'Save Resume' : 'Save Changes' }}</v-btn
-        >
-        <v-btn
-          class="my-0"
-          :disabled="!resume.draft"
-          depressed
-          @click="emitDiscardChanges"
-          >Discard changes</v-btn
-        >
-        <v-btn
-          v-if="resume.index !== -1"
-          class="my-0"
-          color="error"
-          depressed
-          @click="confirmRemoveDialog = true"
-          >Remove</v-btn
-        >
-      </v-flex>
+      <v-container class="pa-0" grid-list-xl>
+        <v-layout>
+          <v-flex xs12 md4>
+            <v-btn
+              class="ml-0 my-0"
+              color="primary"
+              :disabled="!resume.draft || !hasAlias"
+              depressed
+              block
+              @click="emitSaveResume"
+              >{{ resume.index === -1 ? 'Save Resume' : 'Save Changes' }}</v-btn
+            >
+          </v-flex>
+          <v-flex xs12 md4>
+            <v-btn
+              class="my-0"
+              :disabled="!resume.draft"
+              depressed
+              block
+              @click="emitDiscardChanges"
+              >Discard changes</v-btn
+            >
+          </v-flex>
+          <v-flex xs12 md4>
+            <v-btn
+              :disabled="resume.index === -1"
+              class="my-0"
+              color="error"
+              depressed
+              block
+              @click="confirmRemoveDialog = true"
+              >Remove</v-btn
+            >
+          </v-flex>
+        </v-layout>
+      </v-container>
       <v-flex class="text-xs-center mt-5" xs12>
         <div style="position: relative;">
           <v-avatar size="200">
@@ -45,7 +56,7 @@
         </div>
       </v-flex>
       <v-flex xs12 md10>
-        <v-form ref="aliasForm" v-model="hasAlias">
+        <v-form ref="form" v-model="hasAlias" @submit="e => e.preventDefault()">
           <v-text-field
             ref="alias"
             v-model="resume.alias"
@@ -54,6 +65,18 @@
             prepend-inner-icon="bookmark"
             label="Resume alias"
             hint="Give your resume a name"
+            required
+          />
+          <v-text-field
+            v-model="resume.slug"
+            :rules="[v => !!v || 'Resume slug is required']"
+            class="mb-4"
+            prepend-inner-icon="link"
+            label="Resume slug"
+            :hint="
+              `https://cv.baby/${resume.slug ? resume.slug : 'your-slug-here'}`
+            "
+            persistent-hint
             required
           />
         </v-form>
@@ -117,7 +140,7 @@
         <v-card-text>
           <v-container class="py-0" grid-list-md>
             <v-layout wrap>
-              <v-flex xs12>
+              <v-flex class="text-xs-center" xs12>
                 Are you sure you want to remove this resume?
               </v-flex>
             </v-layout>
@@ -160,7 +183,7 @@ export default {
   methods: {
     loadResume(resume) {
       if (resume.index === -1) {
-        this.$refs.aliasForm.resetValidation();
+        this.$refs.form.resetValidation();
       }
       // Turn off watcher to avoid emitting 'draft'.
       this.watcher();
@@ -169,12 +192,12 @@ export default {
       this.watcher = this.getWatcher();
     },
     emitSaveResume() {
-      if (this.$refs.aliasForm.validate()) {
+      if (this.$refs.form.validate()) {
         this.$emit('save', this.resume);
       }
     },
     emitDiscardChanges() {
-      this.$refs.aliasForm.resetValidation();
+      this.$refs.form.resetValidation();
       this.$emit('discard', this.resume.index);
     },
     emitRemoveResume() {

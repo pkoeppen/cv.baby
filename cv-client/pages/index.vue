@@ -32,63 +32,6 @@ export default {
   components: {
     Navbar,
     Resume
-  },
-  data() {
-    return {
-      signInData: {
-        dialog: false,
-        email: 'p.hartzog.koeppen@gmail.com',
-        password: null,
-        loading: false
-      },
-      signUpData: {
-        dialog: false,
-        email: 'p.hartzog.koeppen@gmail.com',
-        password: null,
-        loading: false
-      }
-    };
-  },
-  computed: {
-    authenticated() {
-      return !!this.$store.state.cognito.authenticated;
-    },
-    username() {
-      return (this.$store.state.cognito.authenticated || {}).username;
-    }
-  },
-  methods: {
-    signIn(event) {
-      event.preventDefault();
-      this.signInData.loading = true;
-      this.$store
-        .dispatch('cognito/authenticateUser', {
-          email: this.signInData.email,
-          password: this.signInData.password
-        })
-        .then(() => {
-          this.$router.push({
-            path: '/settings'
-          });
-        })
-        .catch(error => console.log(error))
-        .finally(() => {
-          this.signInData.loading = false;
-        });
-    },
-    signUp(event) {
-      event.preventDefault();
-      this.signUpData.loading = true;
-      this.$store
-        .dispatch('cognito/signUp', {
-          email: this.signUpData.email,
-          password: this.signUpData.password
-        })
-        .catch(error => console.log(error))
-        .finally(() => {
-          this.signUpData.loading = false;
-        });
-    }
   }
 };
 </script>

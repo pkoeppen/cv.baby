@@ -27,7 +27,7 @@
             <v-flex>
               <v-tabs-items v-model="tabs">
                 <v-tab-item>
-                  <v-container class="pa-5" grid-list-xl>
+                  <v-container class="py-5 pl-5 pr-0" grid-list-xl>
                     <v-layout wrap>
                       <v-flex
                         v-for="(resume, index) in resumes"
@@ -36,19 +36,12 @@
                         sm6
                         md4
                       >
-                        <v-badge
-                          :color="resume.draft ? 'error' : 'success'"
-                          overlap
-                          style="width: 100%;"
-                        >
+                        <v-badge color="success" overlap style="width: 100%;">
                           <template v-slot:badge>
                             <v-icon dark>save</v-icon>
                           </template>
                           <v-card class="text-xs-center">
-                            <v-card-title
-                              :class="{ 'red--text': resume.draft }"
-                              class="title justify-center"
-                            >
+                            <v-card-title class="title justify-center">
                               {{ resume.alias }}
                             </v-card-title>
                             <v-card-text>
@@ -78,10 +71,18 @@
                             </v-card-text>
                             <v-card-actions class="justify-center">
                               <v-btn
+                                icon
                                 depressed
                                 :to="`/account/editor?i=${index}`"
-                                >Edit</v-btn
+                                ><v-icon>edit</v-icon></v-btn
                               >
+                              <v-btn
+                                icon
+                                depressed
+                                :to="`/account/analytics?i=${index}`"
+                              >
+                                <v-icon>trending_up</v-icon>
+                              </v-btn>
                             </v-card-actions>
                           </v-card>
                         </v-badge>

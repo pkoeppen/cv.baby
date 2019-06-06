@@ -27,15 +27,16 @@ function generatePolicy(claims, effect, resource) {
 }
 
 export const authorizer = event => {
-  const token = event.authorizationToken;
-
-  if (!token) {
+  let token, kid;
+  try {
+    // Decode token header, throw if malformed.
+    token = event.authorizationToken;
+    const sections = token.split('.');
+    const header = jose.util.base64url.decode(sections[0]);
+    ({ kid } = JSON.parse(header));
+  } catch (error) {
     return new Error('Unauthorized');
   }
-
-  const sections = token.split('.');
-  const header = jose.util.base64url.decode(sections[0]);
-  const { kid } = JSON.parse(header);
 
   // Get .well-known keys.
   return axios

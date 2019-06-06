@@ -40,7 +40,7 @@
               ></v-progress-circular>
             </v-flex>
           </v-layout>
-          <v-layout v-else wrap>
+          <v-layout v-else justify-center align-center wrap>
             <v-flex
               v-for="(resume, index) in resumes"
               :key="index"
@@ -168,7 +168,6 @@ export default {
           this.resumes = resumes.map(resume => ({ draft: false, ...resume }));
           this.resumesLastSaved = cloneDeep(this.resumes);
 
-          console.log(JSON.stringify(this.$route.query));
           const index = parseInt(this.$route.query.i);
           if (index >= -1 && index < this.resumes.length) {
             this.editResume(index);
@@ -184,6 +183,12 @@ export default {
           this.loading = false;
         });
     }
+  },
+  destroyed() {
+    //
+    // TODO: Add 'confirm discard changes?' before leave route
+    //
+    window.removeEventListener('beforeunload', this.beforeUnloadHandler);
   },
   methods: {
     loadResume(resume) {

@@ -119,7 +119,7 @@
           <v-card-text>
             <v-container class="py-0" grid-list-md>
               <v-layout wrap>
-                <v-flex xs12>
+                <v-flex class="text-xs-center" xs12>
                   Are you sure you want to remove this reference?
                 </v-flex>
               </v-layout>

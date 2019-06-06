@@ -1,184 +1,190 @@
 <template>
-  <v-toolbar class="cv-toolbar elevation-0">
-    <v-toolbar-title class="cv-logo font-weight-black">
-      <nuxt-link to="/" style="text-decoration: none; color: inherit;">
-        <span>cv</span><span>baby&nbsp;</span>
-      </nuxt-link>
-    </v-toolbar-title>
-    <v-spacer />
-    <template v-if="authenticated">
-      <v-btn class="mr-3" color="primary" flat depressed outline small
-        >Renew Subscription</v-btn
-      >
-      <v-menu
-        bottom
-        left
-        :close-on-content-click="false"
-        :nudge-width="200"
-        offset-x
-      >
-        <template v-slot:activator="{ on }">
-          <v-btn class="mx-0" dark icon v-on="on">
-            <v-avatar color="indigo" size="36">
-              <v-icon dark>account_circle</v-icon>
-            </v-avatar>
-          </v-btn>
-        </template>
-        <v-card>
-          <v-list>
-            <v-list-tile avatar>
-              <v-list-tile-avatar>
-                <img
-                  src="https://cdn.vuetifyjs.com/images/john.jpg"
-                  alt="John"
-                />
-              </v-list-tile-avatar>
-              <v-list-tile-content>
-                <v-list-tile-title>{{ username }}</v-list-tile-title>
-                <v-list-tile-sub-title>
-                  <div
-                    class="cv-logo font-weight-black"
-                    style="font-size: 16px; display: inline;"
-                  >
-                    <!-- eslint-disable-next-line -->
+  <no-ssr>
+    <v-toolbar class="cv-toolbar elevation-0">
+      <v-toolbar-title class="cv-logo font-weight-black">
+        <nuxt-link to="/" style="text-decoration: none; color: inherit;">
+          <span>cv</span><span>baby&nbsp;</span>
+        </nuxt-link>
+      </v-toolbar-title>
+      <v-spacer />
+      <template v-if="authenticated">
+        <v-btn class="mr-3" color="primary" flat depressed outline small
+          >Renew Subscription</v-btn
+        >
+        <v-menu
+          bottom
+          left
+          :close-on-content-click="false"
+          :nudge-width="200"
+          offset-x
+        >
+          <template v-slot:activator="{ on }">
+            <v-btn class="mx-0" dark icon v-on="on">
+              <v-avatar color="indigo" size="36">
+                <v-icon dark>account_circle</v-icon>
+              </v-avatar>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-list>
+              <v-list-tile avatar>
+                <v-list-tile-avatar>
+                  <img :src="require('~/assets/images/testAvatar.jpg')" />
+                </v-list-tile-avatar>
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ username }}</v-list-tile-title>
+                  <v-list-tile-sub-title>
+                    <div
+                      class="cv-logo font-weight-black"
+                      style="font-size: 16px; display: inline;"
+                    >
+                      <!-- eslint-disable-next-line -->
                     <span>cv</span><span>baby&nbsp;</span>pro
-                  </div>
-                  &ndash; 135 days remaining
-                </v-list-tile-sub-title>
-              </v-list-tile-content>
+                    </div>
+                    &ndash; 135 days remaining
+                  </v-list-tile-sub-title>
+                </v-list-tile-content>
 
-              <v-list-tile-action>
-                <v-btn class="red--text" icon>
-                  <v-icon>favorite</v-icon>
+                <v-list-tile-action>
+                  <v-btn class="red--text" icon>
+                    <v-icon>favorite</v-icon>
+                  </v-btn>
+                </v-list-tile-action>
+              </v-list-tile>
+            </v-list>
+            <v-divider></v-divider>
+            <v-list>
+              <v-list-tile to="/account">
+                <v-list-tile-avatar>
+                  <v-icon>account_box</v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-title>Account</v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile @click="$router.push({ path: '/help' })">
+                <v-list-tile-avatar>
+                  <v-icon>assignment_late</v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-title>Help</v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile @click="signout">
+                <v-list-tile-avatar>
+                  <v-icon>exit_to_app</v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-title>Logout</v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-card>
+        </v-menu>
+      </template>
+      <template v-else>
+        <v-dialog v-model="signInData.dialog" max-width="400px">
+          <template v-slot:activator="{ on }">
+            <v-btn class="text-none" color="primary" flat depressed v-on="on"
+              >Login</v-btn
+            >
+          </template>
+          <v-form ref="formSignIn" @submit="signIn">
+            <v-card>
+              <v-card-title
+                class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
+              >
+                <span class="cv-dialog-header headline">Login</span>
+              </v-card-title>
+              <v-card-text>
+                <v-container class="py-0" grid-list-md>
+                  <v-layout wrap>
+                    <v-flex xs12>
+                      <v-text-field
+                        v-model="signInData.email"
+                        :rules="[v => !!v || 'Email is required']"
+                        label="Email"
+                        required
+                      />
+                    </v-flex>
+                    <v-flex xs12>
+                      <v-text-field
+                        v-model="signInData.password"
+                        :rules="[v => !!v || 'Password is required']"
+                        label="Password"
+                        type="password"
+                        required
+                      />
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+              </v-card-text>
+              <v-card-actions class="justify-center pb-4">
+                <v-btn
+                  :loading="signInData.loading"
+                  color="primary"
+                  type="submit"
+                  >Login</v-btn
+                >
+              </v-card-actions>
+            </v-card>
+          </v-form>
+        </v-dialog>
+        <v-dialog v-model="signUpData.dialog" max-width="400px">
+          <template v-slot:activator="{ on }">
+            <v-btn color="primary" v-on="on">Free Trial</v-btn>
+          </template>
+          <v-form ref="formSignUp" @submit="signUp">
+            <v-card>
+              <v-card-title
+                class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
+              >
+                <span class="cv-dialog-header headline">
+                  Try
+                  <div class="cv-logo" style="display: inline;">
+                    <span>cv</span>
+                    <span>baby</span>
+                  </div>
+                  for free
+                </span>
+              </v-card-title>
+              <v-card-text>
+                <v-container class="py-0" grid-list-md>
+                  <v-layout wrap>
+                    <v-flex xs12>
+                      <v-text-field
+                        v-model="signUpData.email"
+                        :rules="[v => !!v || 'Email is required']"
+                        label="Email"
+                        required
+                      />
+                    </v-flex>
+                    <v-flex xs12>
+                      <v-text-field
+                        v-model="signUpData.password"
+                        :rules="[v => !!v || 'Password is required']"
+                        label="Password"
+                        type="password"
+                        required
+                      />
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+              </v-card-text>
+              <v-card-actions class="justify-center pb-4">
+                <v-btn
+                  :loading="signUpData.loading"
+                  :color="signUpData.success ? 'success' : 'primary'"
+                  type="submit"
+                >
+                  <v-icon v-if="signUpData.success">check_circle</v-icon>
+                  {{
+                    signUpData.success
+                      ? '&nbsp;Account created'
+                      : 'Start free trial'
+                  }}
                 </v-btn>
-              </v-list-tile-action>
-            </v-list-tile>
-          </v-list>
-          <v-divider></v-divider>
-          <v-list>
-            <v-list-tile to="/settings">
-              <v-list-tile-avatar>
-                <v-icon>account_box</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-title>Account</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile @click="$router.push({ path: '/help' })">
-              <v-list-tile-avatar>
-                <v-icon>assignment_late</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-title>Help</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile @click="signout">
-              <v-list-tile-avatar>
-                <v-icon>exit_to_app</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-title>Logout</v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-card>
-      </v-menu>
-    </template>
-    <template v-else>
-      <v-dialog v-model="signInData.dialog" max-width="400px">
-        <template v-slot:activator="{ on }">
-          <v-btn class="text-none" color="primary" flat depressed v-on="on"
-            >Login</v-btn
-          >
-        </template>
-        <v-form @submit="signIn">
-          <v-card>
-            <v-card-title
-              class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
-            >
-              <span class="cv-dialog-header headline">Login</span>
-            </v-card-title>
-            <v-card-text>
-              <v-container class="py-0" grid-list-md>
-                <v-layout wrap>
-                  <v-flex xs12>
-                    <v-text-field
-                      v-model="signInData.email"
-                      label="Email"
-                      required
-                    />
-                  </v-flex>
-                  <v-flex xs12>
-                    <v-text-field
-                      v-model="signInData.password"
-                      label="Password"
-                      type="password"
-                      required
-                    />
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-card-text>
-            <v-card-actions class="justify-center pb-4">
-              <v-btn :loading="signInData.loading" color="primary" type="submit"
-                >Login</v-btn
-              >
-            </v-card-actions>
-          </v-card>
-        </v-form>
-      </v-dialog>
-      <v-dialog v-model="signUpData.dialog" max-width="400px">
-        <template v-slot:activator="{ on }">
-          <v-btn color="primary" v-on="on">Free Trial</v-btn>
-        </template>
-        <v-form @submit="signUp">
-          <v-card>
-            <v-card-title
-              class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
-            >
-              <span class="cv-dialog-header headline">
-                Try
-                <div class="cv-logo" style="display: inline;">
-                  <span>cv</span>
-                  <span>baby</span>
-                </div>
-                for free
-              </span>
-            </v-card-title>
-            <v-card-text>
-              <v-container class="py-0" grid-list-md>
-                <v-layout wrap>
-                  <v-flex xs12>
-                    <v-text-field
-                      v-model="signUpData.email"
-                      label="Email"
-                      required
-                    />
-                  </v-flex>
-                  <v-flex xs12>
-                    <v-text-field
-                      v-model="signUpData.password"
-                      label="Password"
-                      type="password"
-                      required
-                    />
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-card-text>
-            <v-card-actions class="justify-center pb-4">
-              <v-btn
-                :loading="signUpData.loading"
-                :color="signUpData.success ? 'success' : 'primary'"
-                type="submit"
-              >
-                <v-icon v-if="signUpData.success">check_circle</v-icon>
-                {{
-                  signUpData.success
-                    ? '&nbsp;Account created'
-                    : 'Start free trial'
-                }}
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-form>
-      </v-dialog>
-    </template>
-  </v-toolbar>
+              </v-card-actions>
+            </v-card>
+          </v-form>
+        </v-dialog>
+      </template>
+    </v-toolbar>
+  </no-ssr>
 </template>
 
 <script>
@@ -213,6 +219,9 @@ export default {
   methods: {
     signIn(event) {
       event.preventDefault();
+      if (!this.$refs.formSignIn.validate()) {
+        return;
+      }
       this.signInData.loading = true;
       this.$store
         .dispatch('cognito/authenticateUser', {
@@ -221,16 +230,24 @@ export default {
         })
         .then(() => {
           this.$router.push({
-            path: '/settings'
+            path: '/account'
           });
         })
-        .catch(error => console.log(error))
+        .catch(error => {
+          this.$store.dispatch('showSnackbar', {
+            color: 'red',
+            message: error.message
+          });
+        })
         .finally(() => {
           this.signInData.loading = false;
         });
     },
     signUp(event) {
       event.preventDefault();
+      if (!this.$refs.formSignUp.validate()) {
+        return;
+      }
       this.signUpData.loading = true;
       this.$store
         .dispatch('cognito/signUp', {
@@ -251,6 +268,12 @@ export default {
               password: this.signUpData.password
             });
           }, 2250);
+        })
+        .catch(error => {
+          this.$store.dispatch('showSnackbar', {
+            color: 'red',
+            message: error.message
+          });
         })
         .finally(() => {
           this.signUpData.loading = false;

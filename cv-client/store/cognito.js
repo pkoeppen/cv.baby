@@ -115,7 +115,7 @@ export const actions = {
   getUserSession() {
     return new Promise((resolve, reject) => {
       const user = pool.getCurrentUser();
-      if (user != null) {
+      if (user !== null) {
         user.getSession((error, session) => {
           if (error) {
             reject(error);
@@ -293,7 +293,7 @@ export const actions = {
   /* Sign out user. */
   signOut(context) {
     const user = pool.getCurrentUser();
-    if (user != null) {
+    if (user !== null) {
       user.signOut();
       context.commit('setAuthenticated', null);
     }

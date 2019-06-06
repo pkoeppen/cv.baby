@@ -45,6 +45,13 @@ export default {
   created() {
     this.$store
       .dispatch('cognito/checkAuthentication')
+      .then(session => {
+        if (!session) {
+          return this.$store
+            .dispatch('cognito/signOut')
+            .then(() => this.$router.push({ path: '/' }));
+        }
+      })
       .catch(() => this.$store.dispatch('cognito/signOut'));
   }
 };
