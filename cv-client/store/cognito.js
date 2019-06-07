@@ -9,8 +9,8 @@ import * as cookie from 'cookie';
 
 /* eslint-disable */
 const NODE_ENV = 'development';
-const AWS_COGNITO_CLIENT_ID = '6ms48n6dklrja0c2pedj23an6v';
-const AWS_COGNITO_USER_POOL_ID = 'us-east-1_Dby2bokNF';
+const AWS_COGNITO_CLIENT_ID = '7i51gl7eub5u79qvfaosr43f38';
+const AWS_COGNITO_USER_POOL_ID = 'us-east-1_Ml3vEfFCs';
 /* eslint-enable */
 
 const storage = new CookieStorage({
@@ -38,7 +38,8 @@ export const actions = {
       const username = parsed[usernameField];
       const accessTokenField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.${username}.accessToken`;
       const accessToken = parsed[accessTokenField];
-      context.commit('setAccessToken', accessToken);
+      context.commit('setAccessToken', { jwtToken: accessToken, payload: {} });
+      context.dispatch('checkAuthentication');
     }
   },
 
@@ -64,6 +65,7 @@ export const actions = {
             reject(error);
           } else {
             context.commit('setAuthenticated', user);
+            context.commit('setAccessToken', session.accessToken);
             resolve(session);
           }
         });
@@ -93,7 +95,7 @@ export const actions = {
           onSuccess(session) {
             context.commit('setAuthenticating', false);
             context.commit('setAuthenticated', user);
-            context.commit('setAccessToken', session.accessToken.jwtToken);
+            context.commit('setAccessToken', session.accessToken);
             resolve(session);
           },
           newPasswordRequired(userAttributes) {

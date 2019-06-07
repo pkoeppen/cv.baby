@@ -1,6 +1,6 @@
 <template>
   <no-ssr>
-    <v-layout row justify-center align-center wrap>
+    <v-layout justify-center align-center wrap>
       <v-flex xs12 md8>
         <v-toolbar class="cv-toolbar elevation-0">
           <v-toolbar-title
@@ -311,7 +311,7 @@ export default {
             query: StartSubscriptionMutation,
             vars: {
               paymentMethodToken,
-              planId:
+              planID:
                 this.activeBillingCycleTab === 0
                   ? 'cvbaby-monthly'
                   : 'cvbaby-yearly'
@@ -321,7 +321,7 @@ export default {
         .then(result => {
           this.signUpData.loading = false;
           this.signUpData.success = true;
-          setTimeout(() => this.$router.push({ path: 'settings' }), 2000);
+          setTimeout(() => this.$router.push({ path: 'account' }), 2000);
         })
         .catch(({ response }) => {
           // Do something with these...

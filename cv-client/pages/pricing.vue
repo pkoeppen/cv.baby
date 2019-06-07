@@ -1,5 +1,5 @@
 <template>
-  <v-layout class="cv-background-grey" row justify-center align-center wrap>
+  <v-layout class="cv-background-grey" justify-center align-center wrap>
     <v-flex xs12 md8>
       <v-toolbar class="elevation-0">
         <v-toolbar-title class="cv-logo font-weight-black">

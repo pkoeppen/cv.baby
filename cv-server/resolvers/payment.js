@@ -18,15 +18,11 @@ export function getClientPaymentToken() {
   });
 }
 
-export async function startSubscription(
-  principalId,
-  paymentMethodNonce,
-  planId
-) {
+export async function startSubscription(userID, paymentMethodNonce, planID) {
   const customer = await new Promise((resolve, reject) => {
     gateway.customer.create(
       {
-        id: principalId,
+        id: userID,
         paymentMethodNonce
       },
       (error, result) => {
@@ -48,9 +44,9 @@ export async function startSubscription(
   return new Promise((resolve, reject) => {
     gateway.subscription.create(
       {
-        id: principalId,
+        id: userID,
         paymentMethodToken,
-        planId
+        planId: planID
       },
       (error, result) => {
         if (error) {
@@ -65,9 +61,9 @@ export async function startSubscription(
   });
 }
 
-export async function getSubscription(principalId) {
+export async function getSubscription(userID) {
   const subscription = await new Promise((resolve, reject) => {
-    gateway.subscription.find(principalId, (error, subscription) => {
+    gateway.subscription.find(userID, (error, subscription) => {
       if (error) {
         return reject(error);
       }

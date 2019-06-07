@@ -69,7 +69,8 @@ export const authorizer = event => {
       }
       return new Error('Unauthorized');
     })
-    .catch(() => {
+    .catch(error => {
+      console.error(error);
       return new Error('Unauthorized');
     });
 };

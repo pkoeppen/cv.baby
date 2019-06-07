@@ -8,6 +8,7 @@
     "deploy:prod": "serverless deploy --stage prod",
     "dev": "serverless offline start",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "remove:dev": "serverless remove --stage dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

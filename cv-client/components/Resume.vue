@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-layout row justify-center align-center wrap>
+    <v-layout justify-center align-center wrap>
       <v-flex xs7 sm5 md4 lg3>
         <div style="position: relative;">
           <v-img
@@ -36,8 +36,12 @@
         </div>
       </v-flex>
       <v-flex xs12>
-        <div class="cv-name text-xs-center font-weight-thin">{{ name }}</div>
-        <div class="cv-title text-xs-center font-weight-thin">{{ title }}</div>
+        <div class="cv-name text-xs-center font-weight-thin">
+          {{ resume.name }}
+        </div>
+        <div class="cv-title text-xs-center font-weight-thin">
+          {{ resume.title }}
+        </div>
       </v-flex>
       <v-flex xs12 class="text-xs-center my-3">
         <v-chip
@@ -45,7 +49,7 @@
           :key="index"
           outline
         >
-          <strong>{{ skill }}</strong>
+          {{ skill }}
         </v-chip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
@@ -56,14 +60,13 @@
               class="cv-chip-additional"
               v-on="on"
             >
-              <strong>+{{ skillsCurated.additional.length }}</strong>
+              +{{ skillsCurated.additional.length }}
             </v-chip>
           </template>
           <div
             v-for="(skill, index) in skillsCurated.additional"
             :key="index"
             class="text-xs-center"
-            @click="foo = 1"
           >
             {{ skill }}
           </div>
@@ -71,13 +74,13 @@
       </v-flex>
       <v-flex xs12 sm8 md6>
         <p class="cv-profile font-weight-light text-xs-center my-0">
-          {{ profile }}
+          {{ resume.profile }}
         </p>
       </v-flex>
       <v-flex xs12 class="my-5">
         <hr style="width: 15%; margin: 0 auto; color: #EEEEEE;" />
       </v-flex>
-      <template v-if="sections.employment">
+      <template v-if="resume.employment.length">
         <v-flex xs12 lg10>
           <v-toolbar
             dark
@@ -86,27 +89,24 @@
             color="primary"
             class="text-xs-center label-wrap"
           >
-            <span class="section-header" text-color="white">Employment</span>
+            <span class="cv-section-header" text-color="white">Employment</span>
           </v-toolbar>
         </v-flex>
         <v-flex v-if="$mq === 'lg'" class="px-5" xs12 lg10>
           <v-timeline>
             <v-timeline-item
-              v-for="(item, index) in sections.employment"
+              v-for="(item, index) in resume.employment"
               :key="index"
-              :color="item.color"
               small
             >
               <template v-slot:opposite>
                 <span
-                  :class="`headline font-weight-bold ${item.color}--text`"
-                  v-text="item.date"
+                  :class="`headline font-weight-bold grey--text`"
+                  v-text="item.dateFrom"
                 ></span>
               </template>
               <div class="py-3">
-                <h2
-                  :class="`headline font-weight-light mb-3 ${item.color}--text`"
-                >
+                <h2 :class="`headline font-weight-light mb-3`">
                   {{ item.title }}
                 </h2>
                 <p>
@@ -122,14 +122,13 @@
         <v-flex v-else xs12 sm9 offset-sm3 md8 offset-md4>
           <v-timeline align-top dense>
             <v-timeline-item
-              v-for="(item, index) in sections.employment"
+              v-for="(item, index) in resume.employment"
               :key="index"
-              :color="item.color"
               small
             >
               <v-layout pt-3>
                 <v-flex xs3>
-                  <strong>{{ item.date }}</strong>
+                  <strong>{{ item.dateFrom }}</strong>
                 </v-flex>
                 <v-flex>
                   <strong>{{ item.title }}</strong>
@@ -155,7 +154,7 @@
           </v-timeline>
         </v-flex>
       </template>
-      <template v-if="sections.education">
+      <template v-if="resume.education.length">
         <v-flex xs12 lg10>
           <v-toolbar
             dark
@@ -164,27 +163,24 @@
             color="primary"
             class="text-xs-center label-wrap"
           >
-            <span class="section-header" text-color="white">Education</span>
+            <span class="cv-section-header" text-color="white">Education</span>
           </v-toolbar>
         </v-flex>
         <v-flex v-if="$mq === 'lg'" class="px-5" xs12 lg10>
           <v-timeline>
             <v-timeline-item
-              v-for="(item, index) in sections.education"
+              v-for="(item, index) in resume.education"
               :key="index"
-              :color="item.color"
               small
             >
               <template v-slot:opposite>
                 <span
-                  :class="`headline font-weight-bold ${item.color}--text`"
-                  v-text="item.date"
+                  :class="`headline font-weight-bold grey--text`"
+                  v-text="item.dateFrom"
                 ></span>
               </template>
               <div class="py-3">
-                <h2
-                  :class="`headline font-weight-light mb-3 ${item.color}--text`"
-                >
+                <h2 :class="`headline font-weight-light mb-3`">
                   {{ item.university }}
                 </h2>
                 <p>
@@ -200,14 +196,13 @@
         <v-flex v-else xs12 sm9 offset-sm3 md8 offset-md4>
           <v-timeline align-top dense>
             <v-timeline-item
-              v-for="(item, index) in sections.education"
+              v-for="(item, index) in resume.education"
               :key="index"
-              :color="item.color"
               small
             >
               <v-layout pt-3>
                 <v-flex xs3>
-                  <strong>{{ item.date }}</strong>
+                  <strong>{{ item.dateFrom }}</strong>
                 </v-flex>
                 <v-flex>
                   <strong>{{ item.university }}</strong>
@@ -233,7 +228,7 @@
           </v-timeline>
         </v-flex>
       </template>
-      <template v-if="sections.references">
+      <template v-if="resume.references.length">
         <v-flex xs12 lg10>
           <v-toolbar
             dark
@@ -242,7 +237,7 @@
             color="primary"
             class="text-xs-center label-wrap"
           >
-            <span class="section-header" text-color="white">References</span>
+            <span class="cv-section-header" text-color="white">References</span>
           </v-toolbar>
         </v-flex>
         <v-flex class="py-3 px-4" xs12 lg10>
@@ -256,7 +251,7 @@
               class="references-layout"
             >
               <v-flex
-                v-for="(reference, index) in sections.references"
+                v-for="(reference, index) in resume.references"
                 :key="index"
                 xs12
                 sm6
@@ -287,7 +282,10 @@
                     </v-card-text>
                     <v-divider />
                     <v-card-actions class="justify-center">
-                      <v-dialog v-model="contactDialog[index]" width="400">
+                      <v-dialog
+                        v-model="resume.references[index].dialog"
+                        width="400"
+                      >
                         <template v-slot:activator="{ on }">
                           <v-btn color="blue" flat v-on="on">
                             Show Contact
@@ -371,7 +369,7 @@
                             <v-btn
                               color="primary"
                               flat
-                              @click="contactDialog[index] = false"
+                              @click="resume.references[index].dialog = false"
                             >
                               Close
                             </v-btn>
@@ -386,7 +384,7 @@
           </v-container>
         </v-flex>
       </template>
-      <template v-if="sections.personal">
+      <template v-if="resume.hobbies.length">
         <v-flex xs12 lg10>
           <v-toolbar
             dark
@@ -395,15 +393,11 @@
             color="primary"
             class="text-xs-center label-wrap"
           >
-            <span class="section-header" text-color="white">Personal</span>
+            <span class="cv-section-header" text-color="white">Personal</span>
           </v-toolbar>
         </v-flex>
         <v-flex class="px-3" xs12 lg10>
-          <v-container
-            v-if="sections.personal.hobbies"
-            class="my-3"
-            grid-list-xl
-          >
+          <v-container class="my-3" grid-list-xl>
             <v-layout
               row
               wrap
@@ -413,15 +407,17 @@
               class="hobbies-layout"
             >
               <v-flex
-                v-for="(hobby, index) in sections.personal.hobbies"
+                v-for="(hobby, index) in resume.hobbies"
                 :key="index"
                 xs6
                 sm4
                 md2
               >
                 <v-img
-                  :src="require(`@/assets/images/hobbies/${hobby.id}.svg`)"
-                  :lazy-src="require(`@/assets/images/hobbies/${hobby.id}.svg`)"
+                  :src="require(`@/assets/images/hobbies/${hobby.icon}.svg`)"
+                  :lazy-src="
+                    require(`@/assets/images/hobbies/${hobby.icon}.svg`)
+                  "
                   aspect-ratio="1"
                   class="cv-avatar"
                 >
@@ -437,16 +433,16 @@
                 <div
                   class="caption text-xs-center text-uppercase font-weight-bold mt-2"
                 >
-                  {{ hobby.name }}
+                  {{ hobby.title }}
                 </div>
               </v-flex>
             </v-layout>
           </v-container>
         </v-flex>
         <v-flex
-          v-if="sections.personal.description"
+          v-if="resume.description"
           :class="{
-            'mt-5': !sections.personal.hobbies,
+            'mt-5': !resume.hobbies,
             'mb-4': true
           }"
           xs10
@@ -459,11 +455,11 @@
           </h3>
           <v-divider class="mb-4" />
           <p class="mb-5 mt-2 text-xs-center">
-            {{ sections.personal.description }}
+            {{ resume.description }}
           </p>
         </v-flex>
       </template>
-      <template v-if="sections.contact">
+      <template>
         <v-flex xs12 lg10>
           <v-toolbar
             dark
@@ -472,7 +468,7 @@
             color="primary"
             class="text-xs-center label-wrap"
           >
-            <span class="section-header" text-color="white">Contact</span>
+            <span class="cv-section-header" text-color="white">Contact</span>
           </v-toolbar>
         </v-flex>
         <v-flex class="pa-5" xs12 lg10>
@@ -480,16 +476,13 @@
             <v-layout row align-center wrap>
               <v-flex xs12 lg6>
                 <div class="cv-name text-xs-center font-weight-thin">
-                  {{ name }}
+                  {{ resume.name }}
                 </div>
                 <div class="cv-title text-xs-center font-weight-thin">
-                  {{ title }}
+                  {{ resume.title }}
                 </div>
-                <div v-if="sections.contact.social" class="text-xs-center my-4">
-                  <span
-                    v-for="(platform, index) in sections.contact.social"
-                    :key="index"
-                  >
+                <div v-if="resume.social.length" class="text-xs-center my-4">
+                  <span v-for="(platform, index) in resume.social" :key="index">
                     <a :href="platform.link" class="cv-link">
                       <i :class="`fab fa-${platform.name}-square fa-2x`"></i>
                     </a>
@@ -499,15 +492,15 @@
               <v-flex xs12 lg6>
                 <v-list>
                   <v-list-tile
-                    v-if="sections.contact.phone"
-                    :href="`tel:${sections.contact.phone}`"
+                    v-if="resume.phone"
+                    :href="`tel:${resume.phone}`"
                   >
                     <v-list-tile-action>
                       <v-icon>phone</v-icon>
                     </v-list-tile-action>
                     <v-list-tile-content>
                       <v-list-tile-title>
-                        {{ sections.contact.phone }}
+                        {{ resume.phone }}
                       </v-list-tile-title>
                     </v-list-tile-content>
                     <v-list-tile-action>
@@ -518,15 +511,15 @@
                   <v-divider inset></v-divider>
 
                   <v-list-tile
-                    v-if="sections.contact.email"
-                    :href="`mailto:${sections.contact.email}`"
+                    v-if="resume.email"
+                    :href="`mailto:${resume.email}`"
                   >
                     <v-list-tile-action>
                       <v-icon>mail</v-icon>
                     </v-list-tile-action>
                     <v-list-tile-content>
                       <v-list-tile-title>
-                        {{ sections.contact.email }}
+                        {{ resume.email }}
                       </v-list-tile-title>
                     </v-list-tile-content>
                     <v-list-tile-action>
@@ -536,17 +529,14 @@
 
                   <v-divider inset></v-divider>
 
-                  <v-list-tile
-                    v-if="sections.contact.email"
-                    :href="`${sections.contact.website}`"
-                  >
+                  <v-list-tile v-if="resume.email" :href="`${resume.website}`">
                     <v-list-tile-action>
                       <v-icon>public</v-icon>
                     </v-list-tile-action>
 
                     <v-list-tile-content>
                       <v-list-tile-title>
-                        {{ sections.contact.website }}
+                        {{ resume.website }}
                       </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
@@ -561,134 +551,28 @@
 </template>
 
 <script>
+import { getDefaultResume } from '~/assets/js/util';
 export default {
+  props: {
+    resume: {
+      type: Object,
+      default: () => getDefaultResume()
+    }
+  },
   data() {
     return {
       contactDialog: {
         '0': false,
         '1': false,
         '2': false
-      },
-      name: 'Joe Example',
-      title: 'UI/UX designer',
-      skills: ['UI', 'UX', 'photoshop', 'illustrator', 'javascript'],
-      profile:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      sections: {
-        employment: [
-          {
-            date: '2019',
-            title: 'UX designer',
-            company: 'Microsoft',
-            color: 'cyan'
-          },
-          {
-            date: '2017',
-            title: 'UX designer',
-            company: 'Microsoft',
-            color: 'cyan'
-          },
-          {
-            date: '2016',
-            title: 'UX designer',
-            company: 'Microsoft',
-            color: 'cyan'
-          }
-        ],
-        education: [
-          {
-            date: '2015',
-            university: 'Indiana University',
-            degree: 'BS Computer Science',
-            color: 'cyan'
-          },
-          {
-            date: '2012',
-            university: 'Ivy Tech Community College',
-            degree: 'AA Psychology',
-            color: 'cyan'
-          }
-        ],
-        references: [
-          {
-            name: 'Kenny Crosbie',
-            title: 'Video Manager',
-            company: 'Take Two, Inc.',
-            yearsKnown: '5',
-            phone: '+1 (234) 567 8910',
-            email: 'someaddress@gmail.com'
-          },
-          {
-            name: 'Dale Carnegie',
-            title: 'Lead Developer',
-            company: 'Acme, Inc.',
-            yearsKnown: '5',
-            phone: '+1 (234) 567 8910',
-            email: 'someaddress@gmail.com',
-            website: 'https://google.com'
-          },
-          {
-            name: 'Theodore Roosevelt',
-            title: 'Technical Officer',
-            company: 'Rockstar LLC',
-            yearsKnown: '5',
-            phone: '+1 (234) 567 8910',
-            email: 'someaddress@gmail.com'
-          }
-        ],
-        personal: {
-          description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-          hobbies: [
-            {
-              id: '001-ice-cream',
-              name: 'Ice cream'
-            },
-            {
-              id: '002-bowling',
-              name: 'Bowling'
-            },
-            {
-              id: '003-toilet-paper',
-              name: 'Pooping'
-            },
-            {
-              id: '004-book',
-              name: 'Reading'
-            },
-            {
-              id: '005-television',
-              name: 'Television'
-            }
-          ]
-        },
-        contact: {
-          email: 'foobar@gmail.com',
-          phone: '+12345678910',
-          website: 'https://foo.bar',
-          social: [
-            {
-              name: 'facebook',
-              link: 'https://facebook.com/foobar'
-            },
-            {
-              name: 'twitter',
-              link: 'https://twitter.com/foobar'
-            },
-            {
-              name: 'github',
-              link: 'https://github.com/foobar'
-            }
-          ]
-        }
       }
     };
   },
   computed: {
     skillsCurated() {
       return {
-        skills: this.skills.slice(0, 3),
-        additional: this.skills.slice(3)
+        skills: this.resume.skills.slice(0, 3),
+        additional: this.resume.skills.slice(3)
       };
     }
   }
@@ -715,11 +599,12 @@ export default {
     color: $blue.base
     &:hover
       color: $blue.darken-1
-.section-header
+.cv-section-header
   margin: 0 auto
   text-transform: uppercase
   font-weight: 800
-  letter-spacing: 1px
+  letter-spacing: 2px
+  font-size: 12px
 .hobbies-layout,
 .references-layout
   margin: 0 -24px !important

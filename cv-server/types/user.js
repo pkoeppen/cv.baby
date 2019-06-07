@@ -62,6 +62,9 @@ export const ReferenceType = new GraphQLObjectType({
     },
     email: {
       type: GraphQLString
+    },
+    website: {
+      type: GraphQLString
     }
   })
 });
@@ -94,6 +97,9 @@ export const ResumeType = new GraphQLObjectType({
   name: 'ResumeType',
   fields: () => ({
     alias: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    slug: {
       type: new GraphQLNonNull(GraphQLString)
     },
     name: {
@@ -141,7 +147,7 @@ export const ResumeType = new GraphQLObjectType({
 export const UserType = new GraphQLObjectType({
   name: 'UserType',
   fields: () => ({
-    userId: {
+    userID: {
       type: new GraphQLNonNull(GraphQLID)
     },
     createdAt: {

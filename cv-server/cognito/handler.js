@@ -14,9 +14,9 @@ export function confirmUser(event, context, callback) {
  *  Post-confirmation hook to create a user in DynamoDB.
  */
 export function createUser(event, context, callback) {
-  const userId = event.userName;
+  const userID = event.userName;
   const user = {
-    userId: userId,
+    userID: userID,
     createdAt: new Date().toISOString(),
     updatedAt: null,
     resumes: []

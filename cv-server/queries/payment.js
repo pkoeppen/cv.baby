@@ -17,8 +17,8 @@ export default {
   getSubscription: {
     type: SubscriptionType,
     resolve: authorize((root, args, ctx) => {
-      const { principalId } = ctx;
-      return getSubscription(principalId);
+      const { userID } = ctx;
+      return getSubscription(userID);
     })
   },
   startSubscription: {
@@ -28,15 +28,15 @@ export default {
         name: 'paymentMethodToken',
         type: new GraphQLNonNull(GraphQLString)
       },
-      planId: {
-        name: 'planId',
+      planID: {
+        name: 'planID',
         type: new GraphQLNonNull(GraphQLString)
       }
     },
     resolve: authorize((root, args, ctx) => {
-      const { paymentMethodToken, planId } = args;
-      const { principalId } = ctx;
-      return startSubscription(principalId, paymentMethodToken, planId);
+      const { paymentMethodToken, planID } = args;
+      const { userID } = ctx;
+      return startSubscription(userID, paymentMethodToken, planID);
     })
   }
 };

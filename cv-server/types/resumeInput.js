@@ -61,6 +61,9 @@ export const ReferenceInputType = new GraphQLInputObjectType({
     },
     email: {
       type: GraphQLString
+    },
+    website: {
+      type: GraphQLString
     }
   })
 });
@@ -93,6 +96,9 @@ export const ResumeInputType = new GraphQLInputObjectType({
   name: 'ResumeInputType',
   fields: () => ({
     alias: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    slug: {
       type: new GraphQLNonNull(GraphQLString)
     },
     name: {

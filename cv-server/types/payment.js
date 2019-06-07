@@ -24,7 +24,7 @@ const PaypalAccountType = new GraphQLObjectType({
     payerEmail: {
       type: GraphQLString
     },
-    paymentId: {
+    paymentID: {
       type: GraphQLString
     }
   })

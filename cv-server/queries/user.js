@@ -1,21 +1,45 @@
-import { GraphQLNonNull, GraphQLInt, GraphQLList } from 'graphql';
+import {
+  GraphQLNonNull,
+  GraphQLInt,
+  GraphQLList,
+  GraphQLString
+} from 'graphql';
 import { authorize } from '../util';
 import { UserType, ResumeType, ResumeInputType } from '../types';
-import { getUser, getResumes, saveResume, removeResume } from '../resolvers';
+import {
+  getUser,
+  getResume,
+  getResumes,
+  saveResume,
+  removeResume
+} from '../resolvers';
 
 export default {
   getUser: {
     type: new GraphQLNonNull(UserType),
     resolve: authorize((root, args, ctx) => {
-      const { principalId } = ctx;
-      return getUser(principalId);
+      const { userID } = ctx;
+      return getUser(userID);
     })
+  },
+  getResume: {
+    type: new GraphQLNonNull(ResumeType),
+    args: {
+      slug: {
+        name: 'slug',
+        type: new GraphQLNonNull(GraphQLString)
+      }
+    },
+    resolve: (root, args) => {
+      const { slug } = args;
+      return getResume(slug);
+    }
   },
   getResumes: {
     type: new GraphQLList(ResumeType),
     resolve: authorize((root, args, ctx) => {
-      const { principalId } = ctx;
-      return getResumes(principalId);
+      const { userID } = ctx;
+      return getResumes(userID);
     })
   },
   saveResume: {
@@ -32,8 +56,8 @@ export default {
     },
     resolve: authorize((root, args, ctx) => {
       const { index, resume } = args;
-      const { principalId } = ctx;
-      return saveResume(principalId, index, resume);
+      const { userID } = ctx;
+      return saveResume(userID, index, resume);
     })
   },
   removeResume: {
@@ -46,8 +70,8 @@ export default {
     },
     resolve: authorize((root, args, ctx) => {
       const { index } = args;
-      const { principalId } = ctx;
-      return removeResume(principalId, index);
+      const { userID } = ctx;
+      return removeResume(userID, index);
     })
   }
 };

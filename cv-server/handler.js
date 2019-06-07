@@ -27,7 +27,7 @@ function generateHandler(authenticated = false) {
 
     if (authenticated) {
       const { principalId } = event.requestContext.authorizer;
-      ctx.principalId = principalId;
+      ctx.userID = principalId;
     }
 
     // Disallow query depth over ten levels.

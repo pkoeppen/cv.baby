@@ -7,7 +7,7 @@
             <v-btn
               class="ml-0 my-0"
               color="primary"
-              :disabled="!resume.draft || !hasAlias"
+              :disabled="!resume.draft || !hasAlias || !hasSlug"
               depressed
               block
               @click="emitSaveResume"
@@ -56,21 +56,34 @@
         </div>
       </v-flex>
       <v-flex xs12 md10>
-        <v-form ref="form" v-model="hasAlias" @submit="e => e.preventDefault()">
+        <v-form
+          ref="formAlias"
+          v-model="hasAlias"
+          @submit="e => e.preventDefault()"
+        >
           <v-text-field
             ref="alias"
-            v-model="resume.alias"
+            :value="resume.alias"
             :rules="[v => !!v || 'Resume alias is required']"
-            class="mb-4"
             prepend-inner-icon="bookmark"
             label="Resume alias"
             hint="Give your resume a name"
             required
+            @change="v => (resume.alias = v)"
           />
+        </v-form>
+        <v-form
+          ref="formSlug"
+          v-model="hasSlug"
+          class="mb-5"
+          @submit="e => e.preventDefault()"
+        >
           <v-text-field
-            v-model="resume.slug"
-            :rules="[v => !!v || 'Resume slug is required']"
-            class="mb-4"
+            :value="resume.slug"
+            :rules="[
+              v => !!v || 'Resume slug is required',
+              v => (!!v && slugAvailable) || 'Slug is taken'
+            ]"
             prepend-inner-icon="link"
             label="Resume slug"
             :hint="
@@ -78,13 +91,45 @@
             "
             persistent-hint
             required
-          />
+            @change="
+              v => {
+                resume.slug = v;
+                checkSlugAvailable(v);
+              }
+            "
+          >
+            <template v-slot:append>
+              <v-icon :color="slugFieldAppendIconColor">{{
+                slugFieldAppendIcon
+              }}</v-icon>
+            </template>
+          </v-text-field>
         </v-form>
-        <v-text-field v-model="resume.name" label="Name" />
-        <v-text-field v-model="resume.title" label="Title" />
-        <v-text-field v-model="resume.email" label="Email" />
-        <v-text-field v-model="resume.phone" label="Phone" />
-        <v-text-field v-model="resume.website" label="Website" />
+        <v-text-field
+          :value="resume.name"
+          label="Name"
+          @change="v => (resume.name = v)"
+        />
+        <v-text-field
+          :value="resume.title"
+          label="Title"
+          @change="v => (resume.title = v)"
+        />
+        <v-text-field
+          :value="resume.email"
+          label="Email"
+          @change="v => (resume.email = v)"
+        />
+        <v-text-field
+          :value="resume.phone"
+          label="Phone"
+          @change="v => (resume.phone = v)"
+        />
+        <v-text-field
+          :value="resume.website"
+          label="Website"
+          @change="v => (resume.website = v)"
+        />
       </v-flex>
       <v-flex xs12 md10 class="text-xs-center my-3">
         <v-combobox
@@ -106,10 +151,11 @@
       </v-flex>
       <v-flex xs12 md10>
         <v-textarea
-          v-model="resume.profile"
+          :value="resume.profile"
           label="Profile"
           hint="A brief synopsis of who you are"
           rows="2"
+          @change="v => (resume.profile = v)"
         ></v-textarea>
       </v-flex>
       <employment-editor
@@ -174,30 +220,61 @@ export default {
     return {
       resume: getDefaultResume(),
       confirmRemoveDialog: false,
-      hasAlias: false
+      hasAlias: false,
+      hasSlug: false,
+      slugAvailable: true
     };
+  },
+  computed: {
+    slugFieldAppendIcon() {
+      if (this.resume.slug) {
+        if (this.slugAvailable) {
+          return 'check';
+        } else {
+          return 'close';
+        }
+      } else {
+        return '';
+      }
+    },
+    slugFieldAppendIconColor() {
+      if (this.slugAvailable) {
+        return 'success';
+      } else {
+        return 'error';
+      }
+    }
   },
   created() {
     this.watcher = this.getWatcher();
   },
   methods: {
-    loadResume(resume) {
-      if (resume.index === -1) {
-        this.$refs.form.resetValidation();
+    checkSlugAvailable() {
+      if (!this.resume.slug) {
+        return;
       }
-      // Turn off watcher to avoid emitting 'draft'.
-      this.watcher();
-      this.resume = resume;
-      // Turn watcher back on.
-      this.watcher = this.getWatcher();
+      this.$store
+        .dispatch('api/checkSlugAvailable', this.resume.slug)
+        .then(available => {
+          this.slugAvailable = available;
+          this.$refs.formSlug.validate();
+        })
+        .catch(() => {
+          this.$store.dispatch('showSnackbar', {
+            color: 'red',
+            message:
+              'Error checking slug availability. Please check your connection.'
+          });
+        });
     },
     emitSaveResume() {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.formAlias.validate() && this.$refs.formSlug.validate()) {
         this.$emit('save', this.resume);
       }
     },
     emitDiscardChanges() {
-      this.$refs.form.resetValidation();
+      this.$refs.formAlias.resetValidation();
+      this.$refs.formSlug.resetValidation();
       this.$emit('discard', this.resume.index);
     },
     emitRemoveResume() {
@@ -205,6 +282,7 @@ export default {
       this.$emit('remove', this.resume.index);
     },
     emitDraft() {
+      console.log('emitting draft');
       this.resume.draft = true;
       this.$emit('draft', this.resume);
     },
@@ -214,10 +292,17 @@ export default {
     getWatcher() {
       return this.$watch('resume', () => this.emitDraft(), { deep: true });
     },
-    getRandomKey() {
-      return Math.random()
-        .toString(36)
-        .substring(2);
+    loadResume(resume) {
+      // Called by parent.
+      if (resume.index === -1) {
+        this.$refs.formAlias.resetValidation();
+        this.$refs.formSlug.resetValidation();
+      }
+      // Turn off watcher to avoid emitting 'draft'.
+      this.watcher();
+      this.resume = resume;
+      // Turn watcher back on.
+      this.watcher = this.getWatcher();
     }
   }
 };

@@ -1,6 +1,8 @@
 import {
+  ResumeQuery,
   ResumesQuery,
   SubscriptionQuery,
+  CheckSlugAvailableQuery,
   SaveResumeMutation,
   RemoveResumeMutation
 } from '~/assets/js/queries';
@@ -11,6 +13,14 @@ export const state = () => ({
 });
 
 export const actions = {
+  getResume(context, slug) {
+    return this.$axios
+      .post('/gql/public', {
+        query: ResumeQuery,
+        vars: { slug }
+      })
+      .then(({ data }) => data.getResume);
+  },
   getResumes() {
     return this.$axios
       .post('/gql/private', {
@@ -24,6 +34,14 @@ export const actions = {
         query: SubscriptionQuery
       })
       .then(({ data }) => data.getSubscription);
+  },
+  checkSlugAvailable(context, slug) {
+    return this.$axios
+      .post('/gql/private', {
+        query: CheckSlugAvailableQuery,
+        vars: { slug }
+      })
+      .then(({ data }) => data.checkSlugAvailable);
   },
   saveResume(context, { index, resume }) {
     return this.$axios

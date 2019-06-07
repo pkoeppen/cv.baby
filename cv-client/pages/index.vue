@@ -1,5 +1,5 @@
 <template>
-  <v-layout row column wrap>
+  <v-layout column>
     <v-flex xs12>
       <v-container class="pa-0">
         <navbar />

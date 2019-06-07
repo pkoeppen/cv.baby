@@ -23,7 +23,7 @@ export const SubscriptionFragment = `
       paymentInstrumentType,
       paypalAccount {
         payerEmail,
-        paymentId
+        paymentID
       },
       planId,
       processorResponseType,
@@ -34,6 +34,7 @@ export const SubscriptionFragment = `
 export const ResumeFragment = `
   fragment ResumeFields on ResumeType {
     alias,
+    slug,
     name,
     title,
     email,
@@ -76,6 +77,14 @@ export const ResumeFragment = `
 /*
  * Queries
  */
+export const ResumeQuery = `
+  query ($slug: String!) {
+    getResume (slug: $slug) {
+      ...ResumeFields
+    }
+  }
+  ${ResumeFragment}
+`;
 export const UserQuery = `
   query {
     getUser {
@@ -101,6 +110,11 @@ export const ResumesQuery = `
     }
   }
   ${ResumeFragment}
+`;
+export const CheckSlugAvailableQuery = `
+  query ($slug: String!) {
+    checkSlugAvailable (slug: $slug)
+  }
 `;
 
 /*

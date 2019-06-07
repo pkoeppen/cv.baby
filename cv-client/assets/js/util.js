@@ -4,6 +4,7 @@ export function getDefaultResume() {
     draft: false,
     // Database fields.
     alias: null,
+    slug: null,
     name: null,
     title: null,
     email: null,

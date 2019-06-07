@@ -255,13 +255,18 @@ export default {
             _resumes[index] = resume;
             this.resumes = _resumes;
             this.resumesLastSaved[index] = cloneDeep(resume);
+            console.log(JSON.stringify(unsavedResume, null, 2));
             this.loadResume({ index, ...resume });
           }
         })
-        .catch(() => {
+        .catch(({ response }) => {
+          const message =
+            response.status === 409
+              ? 'Error saving resume: Slug is unavailable.'
+              : 'Error saving resume. Please check your connection.';
           this.$store.dispatch('showSnackbar', {
             color: 'red',
-            message: 'Error saving resume. Please check your connection.'
+            message
           });
         });
     },

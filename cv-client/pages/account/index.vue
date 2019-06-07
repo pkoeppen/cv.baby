@@ -30,62 +30,91 @@
                   <v-container class="py-5 pl-5 pr-0" grid-list-xl>
                     <v-layout wrap>
                       <v-flex
-                        v-for="(resume, index) in resumes"
-                        :key="index"
-                        xs12
-                        sm6
-                        md4
+                        v-if="resumes.loading"
+                        class="py-5 text-xs-center"
                       >
-                        <v-badge color="success" overlap style="width: 100%;">
-                          <template v-slot:badge>
-                            <v-icon dark>save</v-icon>
-                          </template>
-                          <v-card class="text-xs-center">
-                            <v-card-title class="title justify-center">
-                              {{ resume.alias }}
-                            </v-card-title>
-                            <v-card-text>
-                              <v-avatar size="100">
-                                <v-img
-                                  :src="
-                                    require('~/assets/images/testAvatar.jpg')
-                                  "
-                                  :lazy-src="''"
-                                  aspect-ratio="1"
+                        <v-progress-circular
+                          color="primary"
+                          indeterminate
+                        ></v-progress-circular>
+                      </v-flex>
+                      <template v-else-if="resumes.resumes.length">
+                        <v-flex
+                          v-for="(resume, index) in resumes.resumes"
+                          :key="index"
+                          xs12
+                          sm6
+                          md4
+                        >
+                          <v-badge color="success" overlap style="width: 100%;">
+                            <template v-slot:badge>
+                              <v-icon dark>save</v-icon>
+                            </template>
+                            <v-card class="text-xs-center">
+                              <v-card-title class="title justify-center">
+                                {{ resume.alias }}
+                              </v-card-title>
+                              <v-card-text>
+                                <v-avatar size="100">
+                                  <v-img
+                                    :src="
+                                      require('~/assets/images/testAvatar.jpg')
+                                    "
+                                    :lazy-src="''"
+                                    aspect-ratio="1"
+                                  >
+                                    <template v-slot:placeholder>
+                                      <v-layout
+                                        fill-height
+                                        align-center
+                                        justify-center
+                                        ma-0
+                                      >
+                                        <v-progress-circular
+                                          indeterminate
+                                          color="grey lighten-5"
+                                        />
+                                      </v-layout>
+                                    </template>
+                                  </v-img>
+                                </v-avatar>
+                              </v-card-text>
+                              <v-card-actions class="justify-center">
+                                <v-btn
+                                  icon
+                                  depressed
+                                  :to="`/account/editor?i=${index}`"
+                                  ><v-icon>edit</v-icon></v-btn
                                 >
-                                  <template v-slot:placeholder>
-                                    <v-layout
-                                      fill-height
-                                      align-center
-                                      justify-center
-                                      ma-0
-                                    >
-                                      <v-progress-circular
-                                        indeterminate
-                                        color="grey lighten-5"
-                                      />
-                                    </v-layout>
-                                  </template>
-                                </v-img>
-                              </v-avatar>
-                            </v-card-text>
-                            <v-card-actions class="justify-center">
-                              <v-btn
-                                icon
-                                depressed
-                                :to="`/account/editor?i=${index}`"
-                                ><v-icon>edit</v-icon></v-btn
-                              >
-                              <v-btn
-                                icon
-                                depressed
-                                :to="`/account/analytics?i=${index}`"
-                              >
-                                <v-icon>trending_up</v-icon>
-                              </v-btn>
-                            </v-card-actions>
-                          </v-card>
-                        </v-badge>
+                                <v-btn
+                                  icon
+                                  depressed
+                                  :to="`/account/analytics?i=${index}`"
+                                >
+                                  <v-icon>trending_up</v-icon>
+                                </v-btn>
+                              </v-card-actions>
+                            </v-card>
+                          </v-badge>
+                        </v-flex>
+                      </template>
+                      <v-flex v-else class="text-xs-center py-5" xs12>
+                        <div class="title">
+                          You haven't saved any resumes yet.
+                        </div>
+                        <div class="mt-2 open-sans">
+                          <nuxt-link to="/account/editor">Click here</nuxt-link>
+                          to launch the editor.
+                        </div>
+                        <v-btn
+                          to="/account/editor"
+                          color="primary"
+                          class="mx-0 mt-4"
+                          depressed
+                        >
+                          Launch Editor
+                          <v-icon class="ml-1" small>launch</v-icon>
+                        </v-btn>
                       </v-flex>
                     </v-layout>
                   </v-container>
@@ -377,7 +406,10 @@ export default {
   data() {
     return {
       tabs: null,
-      resumes: [],
+      resumes: {
+        loading: false,
+        resumes: []
+      },
       password: {
         loading: false,
         success: false,
@@ -386,6 +418,7 @@ export default {
         newPasswordConfirm: null
       },
       payment: {
+        loading: false,
         subscription: null,
         dialog: false,
         tabs: null
@@ -396,17 +429,22 @@ export default {
     };
   },
   mounted() {
+    this.resumes.loading = true;
     this.$store
       .dispatch('api/getResumes')
       .then(resumes => {
-        this.resumes = resumes;
+        this.resumes.resumes = resumes;
       })
       .catch(() => {
         this.$store.dispatch('showSnackbar', {
           color: 'red',
           message: 'Error fetching resumes. Please check your connection.'
         });
+      })
+      .finally(() => {
+        this.resumes.loading = false;
       });
+    this.payment.loading = true;
     this.$store
       .dispatch('api/getSubscription')
       .then(subscription => {
@@ -417,6 +455,9 @@ export default {
           color: 'red',
           message: 'Error fetching subscription. Please check your connection.'
         });
+      })
+      .finally(() => {
+        this.payment.loading = false;
       });
   },
   methods: {

@@ -1,11 +1,14 @@
 import PaymentQuery from './payment';
 import UserQuery from './user';
+import SlugQuery from './slug';
 
 export const queries = {
+  getResume: UserQuery.getResume,
   getClientPaymentToken: PaymentQuery.getClientPaymentToken,
   getSubscription: PaymentQuery.getSubscription,
   getUser: UserQuery.getUser,
-  getResumes: UserQuery.getResumes
+  getResumes: UserQuery.getResumes,
+  checkSlugAvailable: SlugQuery.checkSlugAvailable
 };
 
 export const mutations = {
