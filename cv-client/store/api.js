@@ -4,8 +4,7 @@ import {
   SubscriptionQuery,
   CheckSlugAvailableQuery,
   SaveResumeMutation,
-  RemoveResumeMutation,
-  UploadURLQuery
+  RemoveResumeMutation
 } from '~/assets/js/queries';
 
 export const state = () => ({
@@ -44,53 +43,24 @@ export const actions = {
       })
       .then(({ data }) => data.checkSlugAvailable);
   },
-  saveResume(context, { index, resume }) {
+  saveResume(context, { resume, base64Image }) {
     return this.$axios
       .post('/gql/private', {
         query: SaveResumeMutation,
         vars: {
-          index,
-          resume
+          resume,
+          base64Image
         }
       })
       .then(({ data }) => data.saveResume);
   },
-  removeResume(context, index) {
+  removeResume(context, resumeID) {
     return this.$axios
       .post('/gql/private', {
         query: RemoveResumeMutation,
-        vars: { index }
+        vars: { resumeID }
       })
       .then(({ data }) => data.removeResume);
-  },
-  async uploadImage(context, { index, base64Image }) {
-    // Extract the content type from the base64 image string.
-    const contentType = base64Image.split(',')[0].match(/:(.*?);/)[1];
-    const extension = contentType.split('/')[1];
-    // const contentType = '';
-    const imageFile = await fetch(base64Image)
-      .then(res => res.blob())
-      .then(blob => new File([blob], `profile.${extension}`));
-    const uploadURL = await this.$axios
-      .post('/gql/private', {
-        query: UploadURLQuery,
-        vars: {
-          index,
-          contentType
-        }
-      })
-      .then(({ data }) => data.getUploadURL);
-    return this.$axios.put(uploadURL, imageFile, {
-      // onUploadProgress: progress,
-      // transformRequest: [
-      //   (data, headers) => {
-      //     delete headers.common;
-      //     delete headers.put;
-      //     headers['Content-Type'] = imageFile.type;
-      //     return data;
-      //   }
-      // ]
-    });
   }
 };
 

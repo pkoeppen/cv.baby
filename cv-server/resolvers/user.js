@@ -1,8 +1,10 @@
-import { _, DynamoDB, S3 } from '../util';
+import * as uuid from 'uuid/v1';
+import { _, Lambda, DynamoDB, S3 } from '../util';
 import { createSlug, deleteSlug, getSlug } from './slug';
 
+const CVBABY_ENV = process.env.CVBABY_ENV;
 const CVBABY_TABLE_USERS = process.env.CVBABY_TABLE_USERS;
-const CVBABY_BUCKET_PRE = process.env.CVBABY_BUCKET_PRE;
+const CVBABY_BUCKET_POST = process.env.CVBABY_BUCKET_POST;
 
 export function getUser(userID) {
   // Fetch a user from the database.
@@ -32,93 +34,147 @@ export async function getResume(slug) {
 }
 
 export function getResumes(userID) {
-  return getUser(userID).then(({ resumes }) => {
-    return resumes;
-  });
+  return getUser(userID).then(({ resumes }) => resumes);
 }
 
-export async function saveResume(userID, index, resume) {
-  if (index === -1) {
-    // If new resume, create new slug.
-    await createSlug(resume.slug, userID);
+export async function saveResume(userID, resume, base64Image) {
+  if (resume.resumeID) {
+    return updateResume(userID, resume, base64Image);
   } else {
-    // Else, check if slug changed.
-    const { resumes } = await getUser(userID);
-    const { slug } = resumes[index];
-    if (slug !== resume.slug) {
-      // Update slug and delete old slug.
-      await createSlug(resume.slug, userID);
-      slug && (await deleteSlug(slug, userID));
-    }
+    return createResume(userID, resume, base64Image);
   }
+}
+
+async function createResume(userID, resume, base64Image) {
+  // Create a new slug.
+  await createSlug(resume.slug, userID);
+
   // Convert all empty strings to null for DynamoDB.
   const resumeSaveable = _.deep(_.mapValues)(resume, value => {
     return value === '' ? null : value;
   });
-  const updateExpression =
-    index === -1
-      ? `SET resumes = list_append(resumes, :resume)`
-      : `SET resumes[${index}] = :resume`;
-  return DynamoDB.update({
+  resumeSaveable.resumeID = uuid();
+
+  // Append the resume to the user document.
+  const resumes = await DynamoDB.update({
     TableName: CVBABY_TABLE_USERS,
-    Key: {
-      userID: userID
-    },
-    UpdateExpression: updateExpression,
+    Key: { userID },
+    UpdateExpression: 'SET resumes = list_append(resumes, :resume)',
     ExpressionAttributeValues: {
       // Wrap resume in an array for list_append.
-      ':resume': index === -1 ? [resumeSaveable] : resumeSaveable
+      ':resume': [resumeSaveable]
     },
     ReturnValues: 'ALL_NEW'
   })
     .promise()
-    .then(({ Attributes: { resumes } }) =>
-      index === -1 ? resumes.pop() : resumes[index]
-    );
+    .then(({ Attributes: { resumes } }) => resumes);
+
+  const index = resumes.length - 1;
+  const savedResume = resumes[index];
+
+  // If there's an image to process, process it.
+  if (base64Image) {
+    await uploadImage(userID, savedResume.resumeID, base64Image);
+  }
+
+  return savedResume;
 }
 
-export async function removeResume(userID, index) {
-  // Delete the slug.
-  const { resumes } = await getUser(userID);
-  const { slug } = resumes[index];
-  slug && (await deleteSlug(slug, userID));
-  // Update the user's resumes array.
-  const updateExpression = `REMOVE resumes[${index}]`;
-  return DynamoDB.update({
+async function updateResume(userID, resume, base64Image) {
+  // Get the user.
+  const user = await getUser(userID);
+
+  // Assert the resume exists.
+  const index = _.findIndex(user.resumes, ['resumeID', resume.resumeID]);
+  if (index === -1) {
+    throw new Error('![404] Resume not found');
+  }
+
+  // If slug has changed, create a new slug and delete the old.
+  const { slug } = user.resumes[index];
+  if (slug !== resume.slug) {
+    await createSlug(resume.slug, userID);
+    slug && (await deleteSlug(slug, userID));
+  }
+
+  // Convert all empty strings to null for DynamoDB.
+  const resumeSaveable = _.deep(_.mapValues)(resume, value => {
+    return value === '' ? null : value;
+  });
+
+  // Update the resume on the user document.
+  const resumes = await DynamoDB.update({
     TableName: CVBABY_TABLE_USERS,
-    Key: {
-      userID: userID
-    },
-    UpdateExpression: updateExpression,
+    Key: { userID },
+    UpdateExpression: `SET resumes[${index}] = :resume`,
+    ExpressionAttributeValues: { ':resume': resumeSaveable },
+    ReturnValues: 'ALL_NEW'
+  })
+    .promise()
+    .then(({ Attributes: { resumes } }) => resumes);
+
+  const savedResume = resumes[index];
+
+  // If there's an image to process, process it.
+  if (base64Image) {
+    await uploadImage(userID, savedResume.resumeID, base64Image);
+  }
+
+  return savedResume;
+}
+
+export async function removeResume(userID, resumeID) {
+  // Get the user.
+  const user = await getUser(userID);
+
+  // Assert the resume exists.
+  const index = _.findIndex(user.resumes, ['resumeID', resumeID]);
+  if (index === -1) {
+    throw new Error('![404] Resume not found');
+  }
+
+  // Delete the slug.
+  const { slug } = user.resumes[index];
+  slug && (await deleteSlug(slug, userID));
+
+  // Update the resumes array on the user document.
+  const deletedResume = await DynamoDB.update({
+    TableName: CVBABY_TABLE_USERS,
+    Key: { userID },
+    UpdateExpression: `REMOVE resumes[${index}]`,
     ReturnValues: 'ALL_OLD'
   })
     .promise()
     .then(({ Attributes }) => Attributes.resumes[index]);
+
+  // Delete the resume image.
+  await S3.deleteObject({
+    Bucket: CVBABY_BUCKET_POST,
+    Key: `users/${userID}/${resumeID}/profile.jpeg`
+  }).promise();
+
+  return deletedResume;
 }
 
-export async function getUploadURL(userID, index, contentType) {
-  // TODO:
-  // Validate that index is within bounds of user.resumes
-  // Get resumes.length for when index === -1
-
-  // const ALLOWED_CONTENT_TYPES = ['image/jpeg', 'image/png'];
-  // if (ALLOWED_CONTENT_TYPES.includes(contentType)) {
-  //   throw new Error('![400] Invalid content type');
-  // }
-  const extension = contentType.split('/')[1];
-  const uploadKey = `users/${userID}/${index}/profile.${extension}`;
-  const params = {
-    Bucket: CVBABY_BUCKET_PRE,
-    Key: uploadKey,
-    ContentType: contentType
+function uploadImage(userID, resumeID, base64Image) {
+  const payload = {
+    userID,
+    resumeID,
+    base64Image
   };
   return new Promise((resolve, reject) => {
-    S3.getSignedUrl('putObject', params, (error, URL) => {
-      if (error) {
-        return reject(error);
-      } else {
-        return resolve(URL);
+    Lambda.invoke(
+      {
+        FunctionName: `cvbaby-ingest-${CVBABY_ENV}-processImage`,
+        Payload: JSON.stringify(payload)
+      },
+      (error, data) => {
+        if (error) {
+          return reject(error);
+        }
+        // TODO: Do something with this data/error
+        resolve(data);
       }
-    });
+    );
   });
 }

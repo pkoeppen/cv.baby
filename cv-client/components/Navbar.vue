@@ -19,9 +19,14 @@
           offset-x
         >
           <template v-slot:activator="{ on }">
-            <v-btn class="mx-0" dark icon v-on="on">
-              <v-avatar color="indigo" size="36">
-                <v-icon dark>account_circle</v-icon>
+            <v-btn class="mx-0" icon v-on="on">
+              <v-avatar size="36">
+                <v-img
+                  :src="avatarSource"
+                  :lazy-src="avatarSource"
+                  aspect-ratio="1"
+                  @error="setAvatarPlaceholder()"
+                />
               </v-avatar>
             </v-btn>
           </template>
@@ -29,7 +34,12 @@
             <v-list>
               <v-list-tile avatar>
                 <v-list-tile-avatar>
-                  <img :src="require('~/assets/images/testAvatar.jpg')" />
+                  <v-img
+                    :src="avatarSource"
+                    :lazy-src="avatarSource"
+                    aspect-ratio="1"
+                    @error="setAvatarPlaceholder()"
+                  />
                 </v-list-tile-avatar>
                 <v-list-tile-content>
                   <v-list-tile-title>{{ username }}</v-list-tile-title>
@@ -192,6 +202,11 @@ export default {
   name: 'Navbar',
   data() {
     return {
+      avatarSource: process.client
+        ? `${process.env.CVBABY_UPLOAD_HOST}/users/${
+            this.$store.state.cognito.authenticated.username
+          }/profile.jpeg`
+        : require(`~/assets/images/avatarPlaceholder.png`),
       signInData: {
         dialog: false,
         email: 'p.hartzog.koeppen@gmail.com',
@@ -217,6 +232,9 @@ export default {
     }
   },
   methods: {
+    setAvatarPlaceholder() {
+      this.avatarSource = require(`~/assets/images/avatarPlaceholder.png`);
+    },
     signIn(event) {
       event.preventDefault();
       if (!this.$refs.formSignIn.validate()) {

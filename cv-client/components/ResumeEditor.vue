@@ -57,7 +57,7 @@
           <input
             ref="imageInput"
             type="file"
-            accept="image/jpeg, image/png"
+            accept=".jpg, .jpeg, .png"
             hidden
             @change="setImagePreview"
           />
@@ -231,6 +231,7 @@ export default {
       hasAlias: false,
       hasSlug: false,
       slugAvailable: true,
+      emitPermitted: true,
       CVBABY_UPLOAD_HOST: process.env.CVBABY_UPLOAD_HOST
     };
   },
@@ -254,13 +255,21 @@ export default {
       }
     }
   },
-  created() {
-    this.watcher = this.getWatcher();
+  watch: {
+    resume: {
+      handler() {
+        this.emitDraft();
+      },
+      deep: true
+    }
   },
   methods: {
     setImagePlaceholder(event) {
-      this.resume.resumeImageSource =
-        'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png';
+      // Turn off emitPermitted to avoid emitting 'draft'.
+      this.emitPermitted = false;
+      this.resume.resumeImageSource = require('~/assets/images/avatarPlaceholder.png');
+      // Turn emitPermitted back on.
+      this.$nextTick(() => (this.emitPermitted = true));
     },
     checkSlugAvailable() {
       if (!this.resume.slug) {
@@ -291,22 +300,20 @@ export default {
     },
     emitRemoveResume() {
       this.confirmRemoveDialog = false;
-      this.$emit('remove', this.resume.index);
+      this.$emit('remove', this.resume);
     },
     emitDraft() {
-      this.resume.draft = true;
-      this.$emit('draft', this.resume);
+      if (this.emitPermitted) {
+        this.resume.draft = true;
+        this.$emit('draft', this.resume);
+      }
     },
     focusAliasField() {
       this.$refs.alias.focus();
     },
-    getWatcher() {
-      return this.$watch('resume', () => this.emitDraft(), { deep: true });
-    },
     loadResume(resume) {
-      // Called by parent.
-      // Turn off watcher to avoid emitting 'draft'.
-      this.watcher();
+      // Turn off emitPermitted to avoid emitting 'draft'.
+      this.emitPermitted = false;
       this.slugAvailable = true;
       this.$refs.formAlias.resetValidation();
       this.$refs.formSlug.resetValidation();
@@ -314,8 +321,8 @@ export default {
         this.setImagePlaceholder();
       }
       this.resume = resume;
-      // Turn watcher back on.
-      this.watcher = this.getWatcher();
+      // Turn emitPermitted back on.
+      this.$nextTick(() => (this.emitPermitted = true));
     },
     setImagePreview(event) {
       if (event.target.files && event.target.files.length) {
@@ -331,4 +338,3 @@ export default {
   }
 };
 </script>
-<style lang="stylus" scoped></style>

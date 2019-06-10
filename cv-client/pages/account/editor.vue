@@ -94,6 +94,9 @@
                       @click="editResume(index)"
                       >Edit{{ activeIndex === index ? 'ing' : '' }}</v-btn
                     >
+                    <v-btn icon alt="Clone" @click="cloneResume(index)"
+                      ><v-icon small>file_copy</v-icon></v-btn
+                    >
                   </v-card-actions>
                 </v-card>
               </v-badge>
@@ -136,6 +139,9 @@ export default {
       draftResume: getDefaultResume(),
       activeIndex: -1,
       loading: false,
+      USERNAME: process.client
+        ? this.$store.state.cognito.authenticated.username
+        : null,
       CVBABY_UPLOAD_HOST: process.env.CVBABY_UPLOAD_HOST
     };
   },
@@ -166,13 +172,13 @@ export default {
       this.$store
         .dispatch('api/getResumes')
         .then(resumes => {
-          // Add 'draft' field to each resume for the UI.
-          this.resumes = resumes.map((resume, index) => {
+          // Add 'draft' and 'resumeImageSource' fields to each resume for the UI.
+          this.resumes = resumes.map(resume => {
             return {
               draft: false,
               resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${
-                this.$store.state.cognito.authenticated.username
-              }/${index}/profile.jpeg`,
+                this.USERNAME
+              }/${resume.resumeID}/profile.jpeg`,
               ...resume
             };
           });
@@ -201,33 +207,41 @@ export default {
     window.removeEventListener('beforeunload', this.beforeUnloadHandler);
   },
   methods: {
+    /*
+     * Loads a resume into the editor.
+     */
     loadResume(resume) {
-      // Load a resume into the editor.
       this.$refs.resumeEditor.loadResume(resume);
       this.activeIndex = resume.index;
     },
+    /*
+     * Selects a resume by index and loads it.
+     */
     editResume(index) {
       // Pass a resume and index to the loader method.
       if (index === -1) {
-        this.loadResume({ index, ...this.draftResume });
+        this.loadResume({ ...this.draftResume, index });
         if (!this.draftResume.draft) {
           // If this a brand new resume, focus the 'alias'
           // field to make things obvious for the user.
           this.$refs.resumeEditor.focusAliasField();
         }
       } else {
-        this.loadResume({ index, ...this.resumes[index] });
+        this.loadResume({ ...this.resumes[index], index });
       }
     },
-    removeResume(index) {
+    /*
+     * Removes a resume from database and local arrays.
+     */
+    removeResume({ index, resumeID }) {
       // Remove resume from the database.
       this.$store
-        .dispatch('api/removeResume', index)
-        .then(resumes => {
-          // 'resumes' is the updated list of resumes from the database.
-          this.loadResume({ index: -1, ...this.draftResume });
+        .dispatch('api/removeResume', resumeID)
+        .then(() => {
+          // Remove resume from local arrays.
           this.resumes.splice(index, 1);
           this.resumesLastSaved.splice(index, 1);
+          this.loadResume({ index: -1, ...this.draftResume });
         })
         .catch(() => {
           this.$store.dispatch('showSnackbar', {
@@ -236,46 +250,30 @@ export default {
           });
         });
     },
-    saveResume(
+    /*
+     * Clones an existing resume into the draft slot.
+     */
+    cloneResume(index) {
+      this.draftResume = {
+        ...cloneDeep(this.resumes[index]),
+        draft: true,
+        slug: null
+      };
+      this.editResume(-1);
+    },
+    /*
+     * Updates an existing resume or creates a new resume in the database.
+     */
+    async saveResume(
       { index, resumeImageSource, ...unsavedResume },
       hasImage = false
     ) {
       // Save resume to the database.
-      // If index is -1, push a new resume onto the
-      // resume array on the user object in the database.
-      this.$store
+      const savedResume = await this.$store
         .dispatch('api/saveResume', {
-          index,
-          resume: omit(unsavedResume, ['draft'])
-        })
-        .then(savedResume => {
-          // savedResume is returned directly from the database.
-          const resume = { draft: false, ...savedResume };
-          if (index === -1) {
-            const newIndex = this.resumes.length - 1;
-            // Push new resume to resumes array.
-            this.resumes.push(resume);
-            this.resumesLastSaved.push(cloneDeep(resume));
-            // Load newly pushed resume from array.
-            this.loadResume({
-              index: newIndex,
-              resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${
-                this.$store.state.cognito.authenticated.username
-              }/${newIndex}/profile.jpeg`,
-              ...resume
-            });
-            // Reset draft resume slot.
-            this.draftResume = getDefaultResume();
-          } else {
-            this.setResume(index, resume, true);
-            this.loadResume({
-              index,
-              resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${
-                this.$store.state.cognito.authenticated.username
-              }/${index}/profile.jpeg`,
-              ...resume
-            });
-          }
+          resume: omit(unsavedResume, ['draft']),
+          // Attach base64 image string if present.
+          ...(hasImage && { base64Image: resumeImageSource.split(',')[1] })
         })
         .catch(({ response }) => {
           const message =
@@ -287,62 +285,87 @@ export default {
             message
           });
         });
-      // If there's an image to upload, upload it.
-      if (hasImage) {
-        this.$store
-          .dispatch('api/uploadImage', {
-            index,
-            base64Image: resumeImageSource
-          })
-          .catch(() => {
-            this.$store.dispatch('showSnackbar', {
-              color: 'red',
-              message: 'Error uploading image. Please check your connection.'
-            });
-          });
+      // Load the saved resume returned from database.
+      const resume = {
+        index,
+        draft: false,
+        resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${this.USERNAME}/${
+          savedResume.resumeID
+        }/profile.jpeg`,
+        ...savedResume
+      };
+      if (index === -1) {
+        this.setResume(index, resume, true);
+        this.editResume(this.resumes.length - 1);
+        // Reset draft resume slot.
+        this.draftResume = getDefaultResume();
+      } else {
+        this.setResume(index, resume, true);
+        this.editResume(index);
       }
     },
+    /*
+     * Reverts resume at index back to resumesLastSaved[index].
+     */
     discardChanges(index) {
       if (index === -1) {
         // Revert draft resume to default.
         this.draftResume = getDefaultResume();
         this.loadResume({ index, ...this.draftResume });
       } else {
-        // Deep clone resume from resumesLastSaved to avoid pointer conflicts.
+        // Deep clone resume from resumesLastSaved to avoid reference conflicts.
         const resume = this.resumesLastSaved[index];
         this.setResume(index, resume);
-        // Load the reverted resume.
         this.loadResume({ index, ...resume });
       }
     },
+    /*
+     * Updates the local resume array with the given resume draft.
+     */
     setDraft({ index, ...resume }) {
       // Set resume at the given index to '...resume' from the editor.
       // '...resume' should contain { draft: true }.
-      if (index === -1 && !isEqual(resume, this.draftResume)) {
-        this.draftResume = resume;
-      } else if (!isEqual(resume, this.resumes[index])) {
+      if (index === -1) {
+        if (!isEqual(omit(resume, 'draft'), omit(this.draftResume, 'draft'))) {
+          this.draftResume = resume;
+        }
+      } else if (
+        !isEqual(omit(resume, 'draft'), omit(this.resumes[index], 'draft'))
+      ) {
         this.setResume(index, resume);
       }
     },
+    /*
+     * Updates a resume in the local arrays at the given index.
+     */
     setResume(index, resume, setLastSaved = false) {
-      // Update the entire array so Vue renders the draft change.
-      const _resumes = cloneDeep(this.resumes);
-      _resumes[index] = cloneDeep(resume);
-      this.resumes = _resumes;
-      // Set resume in resumesLastSaved if specified.
-      if (setLastSaved) {
-        this.resumesLastSaved[index] = cloneDeep(resume);
+      if (index === -1) {
+        // Push new resume to local arrays.
+        this.resumes.push(resume);
+        this.resumesLastSaved.push(cloneDeep(resume));
+      } else {
+        // Update the entire array so Vue renders the draft change.
+        const _resumes = cloneDeep(this.resumes);
+        _resumes[index] = cloneDeep(resume);
+        this.resumes = _resumes;
+        // Set resume in resumesLastSaved if specified.
+        if (setLastSaved) {
+          this.resumesLastSaved[index] = cloneDeep(resume);
+        }
       }
     },
+    /*
+     * Fallback for image loading failure.
+     */
     setImagePlaceholder(index) {
       const resume = this.resumes[index];
-      resume.resumeImageSource =
-        'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png';
+      resume.resumeImageSource = require('~/assets/images/avatarPlaceholder.png');
       this.setResume(index, resume, true);
     },
-    uploadImage() {},
+    /*
+     * Check if any resumes have not been saved before navigating away.
+     */
     beforeUnloadHandler(event) {
-      // Check if any resumes have not yet been saved before navigating away.
       if (this.draftResume.draft) {
         event.preventDefault();
       }

@@ -57,11 +57,10 @@
                               <v-card-text>
                                 <v-avatar size="100">
                                   <v-img
-                                    :src="
-                                      require('~/assets/images/testAvatar.jpg')
-                                    "
-                                    :lazy-src="''"
+                                    :src="resume.resumeImageSource"
+                                    :lazy-src="resume.resumeImageSource"
                                     aspect-ratio="1"
+                                    @error="setImagePlaceholder(index)"
                                   >
                                     <template v-slot:placeholder>
                                       <v-layout
@@ -425,7 +424,8 @@ export default {
       },
       email: {
         switch: false
-      }
+      },
+      CVBABY_UPLOAD_HOST: process.env.CVBABY_UPLOAD_HOST
     };
   },
   mounted() {
@@ -433,7 +433,15 @@ export default {
     this.$store
       .dispatch('api/getResumes')
       .then(resumes => {
-        this.resumes.resumes = resumes;
+        // Add 'resumeImageSource' field to each resume for the UI.
+        this.resumes.resumes = resumes.map((resume, index) => {
+          return {
+            resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${
+              this.$store.state.cognito.authenticated.username
+            }/${resume.resumeID}/profile.jpeg`,
+            ...resume
+          };
+        });
       })
       .catch(() => {
         this.$store.dispatch('showSnackbar', {
@@ -461,6 +469,10 @@ export default {
       });
   },
   methods: {
+    setImagePlaceholder(index) {
+      const resume = this.resumes.resumes[index];
+      resume.resumeImageSource = require('~/assets/images/avatarPlaceholder.png');
+    },
     changePassword() {
       const {
         currentPassword,
@@ -468,10 +480,12 @@ export default {
         newPasswordConfirm
       } = this.password;
       if (!currentPassword || !newPassword || !newPasswordConfirm) {
+        // TODO: Show this warning
         console.error('Password fields missing');
         return;
       }
       if (this.password.newPassword !== this.password.newPasswordConfirm) {
+        // TODO: Show this warning
         console.error("Passwords don't match");
         return;
       }

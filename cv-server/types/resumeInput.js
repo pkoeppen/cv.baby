@@ -95,6 +95,9 @@ export const SocialLinkInputType = new GraphQLInputObjectType({
 export const ResumeInputType = new GraphQLInputObjectType({
   name: 'ResumeInputType',
   fields: () => ({
+    resumeID: {
+      type: GraphQLString
+    },
     alias: {
       type: new GraphQLNonNull(GraphQLString)
     },

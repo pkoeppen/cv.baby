@@ -1,10 +1,11 @@
 export function getDefaultResume() {
   return {
+    // UI fields.
     index: -1,
     draft: false,
-    resumeImageSource:
-      'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png',
+    resumeImageSource: require('~/assets/images/avatarPlaceholder.png'),
     // Database fields.
+    resumeID: null,
     alias: null,
     slug: null,
     name: null,

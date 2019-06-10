@@ -33,6 +33,7 @@ export const SubscriptionFragment = `
 `;
 export const ResumeFragment = `
   fragment ResumeFields on ResumeType {
+    resumeID,
     alias,
     slug,
     name,
@@ -116,11 +117,6 @@ export const CheckSlugAvailableQuery = `
     checkSlugAvailable (slug: $slug)
   }
 `;
-export const UploadURLQuery = `
-  query ($index: Int!, $contentType: String!) {
-    getUploadURL (index: $index, contentType: $contentType)
-  }
-`;
 
 /*
  * Mutations
@@ -131,16 +127,16 @@ export const StartSubscriptionMutation = `
   }
 `;
 export const SaveResumeMutation = `
-  mutation ($index: Int!, $resume: ResumeInputType!) {
-    saveResume (index: $index, resume: $resume) {
+  mutation ($resume: ResumeInputType!, $base64Image: String) {
+    saveResume (resume: $resume, base64Image: $base64Image) {
       ...ResumeFields
     }
   }
   ${ResumeFragment}
 `;
 export const RemoveResumeMutation = `
-  mutation ($index: Int!) {
-    removeResume (index: $index) {
+  mutation ($resumeID: ID!) {
+    removeResume (resumeID: $resumeID) {
       ...ResumeFields
     }
   }

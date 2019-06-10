@@ -1,9 +1,4 @@
-import {
-  GraphQLNonNull,
-  GraphQLInt,
-  GraphQLList,
-  GraphQLString
-} from 'graphql';
+import { GraphQLNonNull, GraphQLID, GraphQLList, GraphQLString } from 'graphql';
 import { authorize } from '../util';
 import { UserType, ResumeType, ResumeInputType } from '../types';
 import {
@@ -11,8 +6,7 @@ import {
   getResume,
   getResumes,
   saveResume,
-  removeResume,
-  getUploadURL
+  removeResume
 } from '../resolvers';
 
 export default {
@@ -46,51 +40,33 @@ export default {
   saveResume: {
     type: new GraphQLNonNull(ResumeType),
     args: {
-      index: {
-        name: 'index',
-        type: new GraphQLNonNull(GraphQLInt)
-      },
       resume: {
         name: 'resume',
         type: new GraphQLNonNull(ResumeInputType)
+      },
+      base64Image: {
+        name: 'base64Image',
+        type: GraphQLString
       }
     },
     resolve: authorize((root, args, ctx) => {
-      const { index, resume } = args;
+      const { resume, base64Image } = args;
       const { userID } = ctx;
-      return saveResume(userID, index, resume);
+      return saveResume(userID, resume, base64Image);
     })
   },
   removeResume: {
     type: new GraphQLNonNull(ResumeType),
     args: {
-      index: {
-        name: 'index',
-        type: new GraphQLNonNull(GraphQLInt)
+      resumeID: {
+        name: 'resumeID',
+        type: new GraphQLNonNull(GraphQLID)
       }
     },
     resolve: authorize((root, args, ctx) => {
-      const { index } = args;
+      const { resumeID } = args;
       const { userID } = ctx;
-      return removeResume(userID, index);
-    })
-  },
-  getUploadURL: {
-    type: new GraphQLNonNull(GraphQLString),
-    args: {
-      index: {
-        name: 'index',
-        type: new GraphQLNonNull(GraphQLInt)
-      },
-      contentType: {
-        name: 'contentType',
-        type: new GraphQLNonNull(GraphQLString)
-      }
-    },
-    resolve: authorize((root, args, ctx) => {
-      const { index, contentType } = args;
-      const { userID } = ctx;
-      return getUploadURL(userID, index, contentType);
+      return removeResume(userID, resumeID);
     })
   }
 };
