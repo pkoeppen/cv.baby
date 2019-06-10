@@ -66,9 +66,10 @@
                   <v-card-text>
                     <v-avatar size="100">
                       <v-img
-                        :src="require('~/assets/images/testAvatar.jpg')"
+                        :src="resume.resumeImageSource"
                         :lazy-src="''"
                         aspect-ratio="1"
+                        @error="setImagePlaceholder(index)"
                       >
                         <template v-slot:placeholder>
                           <v-layout
@@ -119,7 +120,7 @@
 </template>
 
 <script>
-import { cloneDeep, omit } from 'lodash';
+import { cloneDeep, isEqual, omit } from 'lodash';
 import Navbar from '~/components/Navbar';
 import ResumeEditor from '~/components/ResumeEditor';
 import { getDefaultResume } from '~/assets/js/util';
@@ -134,7 +135,8 @@ export default {
       resumesLastSaved: [],
       draftResume: getDefaultResume(),
       activeIndex: -1,
-      loading: false
+      loading: false,
+      CVBABY_UPLOAD_HOST: process.env.CVBABY_UPLOAD_HOST
     };
   },
   computed: {
@@ -165,7 +167,15 @@ export default {
         .dispatch('api/getResumes')
         .then(resumes => {
           // Add 'draft' field to each resume for the UI.
-          this.resumes = resumes.map(resume => ({ draft: false, ...resume }));
+          this.resumes = resumes.map((resume, index) => {
+            return {
+              draft: false,
+              resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${
+                this.$store.state.cognito.authenticated.username
+              }/${index}/profile.jpeg`,
+              ...resume
+            };
+          });
           this.resumesLastSaved = cloneDeep(this.resumes);
 
           const index = parseInt(this.$route.query.i);
@@ -226,7 +236,10 @@ export default {
           });
         });
     },
-    saveResume({ index, ...unsavedResume }) {
+    saveResume(
+      { index, resumeImageSource, ...unsavedResume },
+      hasImage = false
+    ) {
       // Save resume to the database.
       // If index is -1, push a new resume onto the
       // resume array on the user object in the database.
@@ -239,24 +252,29 @@ export default {
           // savedResume is returned directly from the database.
           const resume = { draft: false, ...savedResume };
           if (index === -1) {
+            const newIndex = this.resumes.length - 1;
             // Push new resume to resumes array.
             this.resumes.push(resume);
             this.resumesLastSaved.push(cloneDeep(resume));
             // Load newly pushed resume from array.
             this.loadResume({
-              index: this.resumes.length - 1,
+              index: newIndex,
+              resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${
+                this.$store.state.cognito.authenticated.username
+              }/${newIndex}/profile.jpeg`,
               ...resume
             });
             // Reset draft resume slot.
             this.draftResume = getDefaultResume();
           } else {
-            // Replace the entire array so Vue renders changes within the updated resume object.
-            const _resumes = cloneDeep(this.resumes);
-            _resumes[index] = resume;
-            this.resumes = _resumes;
-            this.resumesLastSaved[index] = cloneDeep(resume);
-            console.log(JSON.stringify(unsavedResume, null, 2));
-            this.loadResume({ index, ...resume });
+            this.setResume(index, resume, true);
+            this.loadResume({
+              index,
+              resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${
+                this.$store.state.cognito.authenticated.username
+              }/${index}/profile.jpeg`,
+              ...resume
+            });
           }
         })
         .catch(({ response }) => {
@@ -269,6 +287,20 @@ export default {
             message
           });
         });
+      // If there's an image to upload, upload it.
+      if (hasImage) {
+        this.$store
+          .dispatch('api/uploadImage', {
+            index,
+            base64Image: resumeImageSource
+          })
+          .catch(() => {
+            this.$store.dispatch('showSnackbar', {
+              color: 'red',
+              message: 'Error uploading image. Please check your connection.'
+            });
+          });
+      }
     },
     discardChanges(index) {
       if (index === -1) {
@@ -277,11 +309,8 @@ export default {
         this.loadResume({ index, ...this.draftResume });
       } else {
         // Deep clone resume from resumesLastSaved to avoid pointer conflicts.
-        const resume = cloneDeep(this.resumesLastSaved[index]);
-        // Update the entire array so Vue renders the change.
-        const _resumes = cloneDeep(this.resumes);
-        _resumes[index] = resume;
-        this.resumes = _resumes;
+        const resume = this.resumesLastSaved[index];
+        this.setResume(index, resume);
         // Load the reverted resume.
         this.loadResume({ index, ...resume });
       }
@@ -289,15 +318,29 @@ export default {
     setDraft({ index, ...resume }) {
       // Set resume at the given index to '...resume' from the editor.
       // '...resume' should contain { draft: true }.
-      if (index === -1) {
+      if (index === -1 && !isEqual(resume, this.draftResume)) {
         this.draftResume = resume;
-      } else {
-        // Update the entire array so Vue renders the draft change.
-        const _resumes = cloneDeep(this.resumes);
-        _resumes[index] = resume;
-        this.resumes = _resumes;
+      } else if (!isEqual(resume, this.resumes[index])) {
+        this.setResume(index, resume);
       }
     },
+    setResume(index, resume, setLastSaved = false) {
+      // Update the entire array so Vue renders the draft change.
+      const _resumes = cloneDeep(this.resumes);
+      _resumes[index] = cloneDeep(resume);
+      this.resumes = _resumes;
+      // Set resume in resumesLastSaved if specified.
+      if (setLastSaved) {
+        this.resumesLastSaved[index] = cloneDeep(resume);
+      }
+    },
+    setImagePlaceholder(index) {
+      const resume = this.resumes[index];
+      resume.resumeImageSource =
+        'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png';
+      this.setResume(index, resume, true);
+    },
+    uploadImage() {},
     beforeUnloadHandler(event) {
       // Check if any resumes have not yet been saved before navigating away.
       if (this.draftResume.draft) {

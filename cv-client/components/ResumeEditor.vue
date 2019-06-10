@@ -39,12 +39,13 @@
       </v-container>
       <v-flex class="text-xs-center mt-5" xs12>
         <div style="position: relative;">
-          <v-avatar size="200">
+          <v-avatar size="200" @click="$refs.imageInput.click()">
             <v-img
-              :src="require('~/assets/images/testAvatar.jpg')"
-              :lazy-src="''"
+              :src="resume.resumeImageSource"
+              :lazy-src="resume.resumeImageSource"
               aspect-ratio="1"
               class="cv-avatar"
+              @error="setImagePlaceholder"
             >
               <template v-slot:placeholder>
                 <v-layout fill-height align-center justify-center ma-0>
@@ -53,6 +54,13 @@
               </template>
             </v-img>
           </v-avatar>
+          <input
+            ref="imageInput"
+            type="file"
+            accept="image/jpeg, image/png"
+            hidden
+            @change="setImagePreview"
+          />
         </div>
       </v-flex>
       <v-flex xs12 md10>
@@ -222,7 +230,8 @@ export default {
       confirmRemoveDialog: false,
       hasAlias: false,
       hasSlug: false,
-      slugAvailable: true
+      slugAvailable: true,
+      CVBABY_UPLOAD_HOST: process.env.CVBABY_UPLOAD_HOST
     };
   },
   computed: {
@@ -249,6 +258,10 @@ export default {
     this.watcher = this.getWatcher();
   },
   methods: {
+    setImagePlaceholder(event) {
+      this.resume.resumeImageSource =
+        'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png';
+    },
     checkSlugAvailable() {
       if (!this.resume.slug) {
         return;
@@ -269,12 +282,11 @@ export default {
     },
     emitSaveResume() {
       if (this.$refs.formAlias.validate() && this.$refs.formSlug.validate()) {
-        this.$emit('save', this.resume);
+        const hasImage = /^data:image/.test(this.resume.resumeImageSource);
+        this.$emit('save', this.resume, hasImage);
       }
     },
     emitDiscardChanges() {
-      this.$refs.formAlias.resetValidation();
-      this.$refs.formSlug.resetValidation();
       this.$emit('discard', this.resume.index);
     },
     emitRemoveResume() {
@@ -282,7 +294,6 @@ export default {
       this.$emit('remove', this.resume.index);
     },
     emitDraft() {
-      console.log('emitting draft');
       this.resume.draft = true;
       this.$emit('draft', this.resume);
     },
@@ -294,15 +305,28 @@ export default {
     },
     loadResume(resume) {
       // Called by parent.
-      if (resume.index === -1) {
-        this.$refs.formAlias.resetValidation();
-        this.$refs.formSlug.resetValidation();
-      }
       // Turn off watcher to avoid emitting 'draft'.
       this.watcher();
+      this.slugAvailable = true;
+      this.$refs.formAlias.resetValidation();
+      this.$refs.formSlug.resetValidation();
+      if (resume.index === -1) {
+        this.setImagePlaceholder();
+      }
       this.resume = resume;
       // Turn watcher back on.
       this.watcher = this.getWatcher();
+    },
+    setImagePreview(event) {
+      if (event.target.files && event.target.files.length) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = event => {
+          this.resume.resumeImageSource = event.target.result;
+          this.emitDraft();
+        };
+        reader.readAsDataURL(file);
+      }
     }
   }
 };

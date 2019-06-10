@@ -11,7 +11,8 @@ import {
   getResume,
   getResumes,
   saveResume,
-  removeResume
+  removeResume,
+  getUploadURL
 } from '../resolvers';
 
 export default {
@@ -72,6 +73,24 @@ export default {
       const { index } = args;
       const { userID } = ctx;
       return removeResume(userID, index);
+    })
+  },
+  getUploadURL: {
+    type: new GraphQLNonNull(GraphQLString),
+    args: {
+      index: {
+        name: 'index',
+        type: new GraphQLNonNull(GraphQLInt)
+      },
+      contentType: {
+        name: 'contentType',
+        type: new GraphQLNonNull(GraphQLString)
+      }
+    },
+    resolve: authorize((root, args, ctx) => {
+      const { index, contentType } = args;
+      const { userID } = ctx;
+      return getUploadURL(userID, index, contentType);
     })
   }
 };

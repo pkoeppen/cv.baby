@@ -1,6 +1,9 @@
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 const pkg = require('./package');
 
+const env = process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
+const config = require(`./config.${env}.json`);
+
 module.exports = {
   mode: 'universal',
 
@@ -23,6 +26,8 @@ module.exports = {
       }
     ]
   },
+
+  env: { ...config },
 
   /*
    ** Customize the progress-bar color

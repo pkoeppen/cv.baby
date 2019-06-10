@@ -1,7 +1,8 @@
-import { _, DynamoDB } from '../util';
+import { _, DynamoDB, S3 } from '../util';
 import { createSlug, deleteSlug, getSlug } from './slug';
 
 const CVBABY_TABLE_USERS = process.env.CVBABY_TABLE_USERS;
+const CVBABY_BUCKET_PRE = process.env.CVBABY_BUCKET_PRE;
 
 export function getUser(userID) {
   // Fetch a user from the database.
@@ -25,7 +26,7 @@ export async function getResume(slug) {
     if (!resume) {
       throw new Error('![404] Not found');
     } else {
-      return resume;
+      return { userID, ...resume };
     }
   });
 }
@@ -93,4 +94,31 @@ export async function removeResume(userID, index) {
   })
     .promise()
     .then(({ Attributes }) => Attributes.resumes[index]);
+}
+
+export async function getUploadURL(userID, index, contentType) {
+  // TODO:
+  // Validate that index is within bounds of user.resumes
+  // Get resumes.length for when index === -1
+
+  // const ALLOWED_CONTENT_TYPES = ['image/jpeg', 'image/png'];
+  // if (ALLOWED_CONTENT_TYPES.includes(contentType)) {
+  //   throw new Error('![400] Invalid content type');
+  // }
+  const extension = contentType.split('/')[1];
+  const uploadKey = `users/${userID}/${index}/profile.${extension}`;
+  const params = {
+    Bucket: CVBABY_BUCKET_PRE,
+    Key: uploadKey,
+    ContentType: contentType
+  };
+  return new Promise((resolve, reject) => {
+    S3.getSignedUrl('putObject', params, (error, URL) => {
+      if (error) {
+        return reject(error);
+      } else {
+        return resolve(URL);
+      }
+    });
+  });
 }

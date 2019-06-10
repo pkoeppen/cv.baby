@@ -8,7 +8,8 @@ export const queries = {
   getSubscription: PaymentQuery.getSubscription,
   getUser: UserQuery.getUser,
   getResumes: UserQuery.getResumes,
-  checkSlugAvailable: SlugQuery.checkSlugAvailable
+  checkSlugAvailable: SlugQuery.checkSlugAvailable,
+  getUploadURL: UserQuery.getUploadURL
 };
 
 export const mutations = {

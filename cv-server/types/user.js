@@ -96,6 +96,9 @@ export const SocialLinkType = new GraphQLObjectType({
 export const ResumeType = new GraphQLObjectType({
   name: 'ResumeType',
   fields: () => ({
+    userID: {
+      type: GraphQLID
+    },
     alias: {
       type: new GraphQLNonNull(GraphQLString)
     },

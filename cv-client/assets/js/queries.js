@@ -116,6 +116,11 @@ export const CheckSlugAvailableQuery = `
     checkSlugAvailable (slug: $slug)
   }
 `;
+export const UploadURLQuery = `
+  query ($index: Int!, $contentType: String!) {
+    getUploadURL (index: $index, contentType: $contentType)
+  }
+`;
 
 /*
  * Mutations

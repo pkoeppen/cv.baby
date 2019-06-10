@@ -10,22 +10,24 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:BatchGetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-      Resource: 'arn:aws:dynamodb:${self:provider.region}:*:*'
+        - dynamodb:*
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:*
     - Effect: Allow
       Action:
         - s3:*
-      Resource: 'arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_PRE}/*'
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_PRE}
     - Effect: Allow
       Action:
         - s3:*
-      Resource: 'arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}/*'
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_PRE}/*
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}/*
     - Effect: Allow
       Action:
         - 'ses:SendEmail'
@@ -97,6 +99,7 @@ functions:
     #   - cognitoUserPool:
     #       pool: ${self:provider.environment.CVBABY_USER_POOL}
     #       trigger: PreSignUp
+
   # Cognito post-confirm hook
   createUser:
     handler: cognito/handler.createUser
@@ -107,6 +110,15 @@ functions:
     #   - cognitoUserPool:
     #       pool: ${self:provider.environment.CVBABY_USER_POOL}
     #       trigger: PostConfirmation
+
+  # Ingest and post-process image uploads.
+  ingest:
+    handler: ingest/handler.ingest
+    events:
+      - existingS3:
+          bucket: ${self:provider.environment.CVBABY_BUCKET_PRE}
+          events: 
+            - s3:ObjectCreated:*
 
 resources:
   Outputs:
