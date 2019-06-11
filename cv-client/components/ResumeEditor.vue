@@ -2,7 +2,7 @@
   <v-container>
     <v-layout justify-center align-center wrap>
       <v-container class="pa-0" grid-list-xl>
-        <v-layout>
+        <v-layout wrap>
           <v-flex xs12 md4>
             <v-btn
               class="ml-0 my-0"
@@ -63,7 +63,7 @@
           />
         </div>
       </v-flex>
-      <v-flex xs12 md10>
+      <v-flex xs12 md8>
         <v-form
           ref="formAlias"
           v-model="hasAlias"
@@ -139,7 +139,7 @@
           @change="v => (resume.website = v)"
         />
       </v-flex>
-      <v-flex xs12 md10 class="text-xs-center my-3">
+      <v-flex xs12 md8 class="text-xs-center my-3">
         <v-combobox
           v-model="resume.skills"
           hide-selected
@@ -158,7 +158,7 @@
           </template>
         </v-combobox>
       </v-flex>
-      <v-flex xs12 md10>
+      <v-flex xs12 md8>
         <v-textarea
           :value="resume.profile"
           label="Profile"

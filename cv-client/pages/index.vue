@@ -1,36 +1,41 @@
 <template>
-  <v-layout column>
-    <v-flex xs12>
-      <v-container class="pa-0">
-        <navbar />
-      </v-container>
-    </v-flex>
-    <v-flex style="position: relative;" xs12 md8>
-      <div class="cv-header font-weight-black text-xs-center px-4 mt-4">
-        Online resumes, simplified.
-      </div>
-      <div class="cv-subheader font-weight-light text-xs-center px-4 mt-3">
-        An all-in-one solution for CV and resume hosting.
-      </div>
-      <resume class="mt-4" />
-      <div class="cv-ribbon">
-        <div class="cv-ribbon-text white--text text-xs-right">
-          <div class="body-1">Summer sale!</div>
-          <div class="rate font-weight-black">$3 / mo</div>
-          <div class="caption">For a limited time</div>
+  <div>
+    <v-layout column>
+      <v-flex xs12>
+        <v-container class="pa-0">
+          <navbar />
+        </v-container>
+      </v-flex>
+      <v-flex style="position: relative;" xs12 md8>
+        <div class="cv-header font-weight-black text-xs-center px-4 mt-4">
+          Online resumes, simplified.
         </div>
-        <img src="~/assets/images/ribbon.svg" />
-      </div>
-    </v-flex>
-  </v-layout>
+        <div class="cv-subheader font-weight-light text-xs-center px-4 mt-3">
+          An all-in-one solution for CV and resume hosting.
+        </div>
+        <resume class="mt-4" />
+        <div class="cv-ribbon">
+          <div class="cv-ribbon-text white--text text-xs-right">
+            <div class="body-1">Summer sale!</div>
+            <div class="rate font-weight-black">$3 / mo</div>
+            <div class="caption">For a limited time</div>
+          </div>
+          <img src="~/assets/images/ribbon.svg" />
+        </div>
+      </v-flex>
+    </v-layout>
+    <cv-footer />
+  </div>
 </template>
 
 <script>
 import Navbar from '~/components/Navbar';
+import cvFooter from '~/components/Footer';
 import Resume from '~/components/Resume';
 export default {
   components: {
     Navbar,
+    cvFooter,
     Resume
   }
 };

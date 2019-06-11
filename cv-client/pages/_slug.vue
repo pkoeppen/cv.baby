@@ -1,18 +1,22 @@
 <template>
-  <resume :resume="resume" />
+  <div>
+    <resume :resume="resume" />
+    <cv-footer :is-resume="true" :copyright-holder="resume.name" />
+  </div>
 </template>
 
 <script>
+import cvFooter from '~/components/Footer';
 import Resume from '~/components/Resume';
 export default {
   components: {
+    cvFooter,
     Resume
   },
   asyncData({ error, store, params }) {
     return store
       .dispatch('api/getResume', params.slug)
       .then(resume => {
-        console.log(JSON.stringify(resume, null, 2));
         resume.references.map(reference => ({ dialog: false, ...reference }));
         return { resume };
       })

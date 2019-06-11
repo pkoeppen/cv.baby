@@ -87,7 +87,8 @@
         :key="index"
         class="pa-2"
         xs12
-        md6
+        sm6
+        md4
       >
         <v-card>
           <v-card-title class="justify-center">

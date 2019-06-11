@@ -14,7 +14,7 @@
           <v-toolbar class="elevation-0" style="background-color: #ffffff;">
             <v-btn to="/account" class="mx-0" exact depressed>
               <v-icon>keyboard_arrow_left</v-icon>
-              Back to account
+              {{ $mq === 'sm' ? 'Account' : 'Back to account' }}
             </v-btn>
             <v-spacer />
             <div v-if="draftResume.draft">

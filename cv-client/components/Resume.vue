@@ -64,7 +64,7 @@
       <v-flex xs12 class="my-5">
         <hr style="width: 15%; margin: 0 auto; color: #EEEEEE;" />
       </v-flex>
-      <template v-if="resume.employment.length">
+      <template v-if="employmentItemsOrdered.length">
         <v-flex xs12 lg10>
           <v-toolbar
             dark
@@ -79,14 +79,14 @@
         <v-flex v-if="$mq === 'lg'" class="px-5" xs12 lg10>
           <v-timeline>
             <v-timeline-item
-              v-for="(item, index) in resume.employment"
+              v-for="(item, index) in employmentItemsOrdered"
               :key="index"
               small
             >
               <template v-slot:opposite>
                 <span
                   :class="`headline font-weight-bold grey--text`"
-                  v-text="item.dateFrom"
+                  v-text="formatDates([item.dateFrom, item.dateTo])"
                 ></span>
               </template>
               <div class="py-3">
@@ -101,16 +101,18 @@
             </v-timeline-item>
           </v-timeline>
         </v-flex>
-        <v-flex v-else xs12 sm9 offset-sm3 md8 offset-md4>
+        <v-flex v-else xs12 sm9>
           <v-timeline align-top dense>
             <v-timeline-item
-              v-for="(item, index) in resume.employment"
+              v-for="(item, index) in employmentItemsOrdered"
               :key="index"
               small
             >
               <v-layout wrap class="pt-3">
                 <v-flex class="mb-2" xs12>
-                  <strong>{{ item.dateFrom }}</strong>
+                  <strong class="grey--text">{{
+                    formatDates([item.dateFrom, item.dateTo])
+                  }}</strong>
                 </v-flex>
                 <v-flex>
                   <strong>{{ item.title }}</strong>
@@ -122,7 +124,7 @@
           </v-timeline>
         </v-flex>
       </template>
-      <template v-if="resume.education.length">
+      <template v-if="educationItemsOrdered.length">
         <v-flex xs12 lg10>
           <v-toolbar
             dark
@@ -137,14 +139,14 @@
         <v-flex v-if="$mq === 'lg'" class="px-5" xs12 lg10>
           <v-timeline>
             <v-timeline-item
-              v-for="(item, index) in resume.education"
+              v-for="(item, index) in educationItemsOrdered"
               :key="index"
               small
             >
               <template v-slot:opposite>
                 <span
                   :class="`headline font-weight-bold grey--text`"
-                  v-text="item.dateFrom"
+                  v-text="formatDates([item.dateFrom, item.dateTo])"
                 ></span>
               </template>
               <div class="py-3">
@@ -159,16 +161,18 @@
             </v-timeline-item>
           </v-timeline>
         </v-flex>
-        <v-flex v-else xs12 sm9 offset-sm3 md8 offset-md4>
+        <v-flex v-else xs12 sm9>
           <v-timeline align-top dense>
             <v-timeline-item
-              v-for="(item, index) in resume.education"
+              v-for="(item, index) in educationItemsOrdered"
               :key="index"
               small
             >
               <v-layout wrap class="pt-3">
                 <v-flex class="mb-2" xs12>
-                  <strong>{{ item.dateFrom }}</strong>
+                  <strong class="grey--text">{{
+                    formatDates([item.dateFrom, item.dateTo])
+                  }}</strong>
                 </v-flex>
                 <v-flex>
                   <strong>{{ item.university }}</strong>
@@ -348,23 +352,16 @@
             <span class="cv-section-header" text-color="white">Personal</span>
           </v-toolbar>
         </v-flex>
-        <v-flex class="px-3" xs12 lg10>
-          <v-container class="my-3" grid-list-xl>
+        <v-flex class="pa-5" xs12 lg10>
+          <v-container grid-list-xl>
             <v-layout
-              row
+              v-for="(hobby, index) in resume.hobbies"
+              :key="index"
               wrap
-              align-items-center
+              align-center
               justify-center
-              fill-height
-              class="hobbies-layout"
             >
-              <v-flex
-                v-for="(hobby, index) in resume.hobbies"
-                :key="index"
-                xs6
-                sm4
-                md2
-              >
+              <v-flex xs2>
                 <v-img
                   :src="require(`@/assets/images/hobbies/${hobby.icon}.svg`)"
                   :lazy-src="
@@ -382,33 +379,17 @@
                     </v-layout>
                   </template>
                 </v-img>
-                <div
-                  class="caption text-xs-center text-uppercase font-weight-bold mt-2"
-                >
-                  {{ hobby.title }}
+              </v-flex>
+              <v-flex xs10>
+                <div>
+                  <div class="caption text-uppercase font-weight-bold">
+                    {{ hobby.title }}
+                  </div>
+                  <p class="ma-0">{{ hobby.description }}</p>
                 </div>
               </v-flex>
             </v-layout>
           </v-container>
-        </v-flex>
-        <v-flex
-          v-if="resume.description"
-          :class="{
-            'mt-5': !resume.hobbies,
-            'mb-4': true
-          }"
-          xs10
-          lg8
-        >
-          <h3
-            class="headline text-xs-center font-weight-light font-italic grey--text mb-3"
-          >
-            About me
-          </h3>
-          <v-divider class="mb-4" />
-          <p class="mb-5 mt-2 text-xs-center">
-            {{ resume.description }}
-          </p>
         </v-flex>
       </template>
       <template>
@@ -423,78 +404,108 @@
             <span class="cv-section-header" text-color="white">Contact</span>
           </v-toolbar>
         </v-flex>
-        <v-flex class="pa-5" xs12 lg10>
-          <v-card class="py-4">
-            <v-layout row align-center wrap>
-              <v-flex xs12 lg6>
-                <div class="cv-name text-xs-center font-weight-thin">
-                  {{ resume.name }}
-                </div>
-                <div class="cv-title text-xs-center font-weight-thin">
-                  {{ resume.title }}
-                </div>
-                <div v-if="resume.social.length" class="text-xs-center my-4">
-                  <span v-for="(platform, index) in resume.social" :key="index">
-                    <a :href="platform.link" class="cv-link">
-                      <i :class="`fab fa-${platform.name}-square fa-2x`"></i>
-                    </a>
-                  </span>
-                </div>
-              </v-flex>
-              <v-flex xs12 lg6>
-                <v-list>
-                  <v-list-tile
-                    v-if="resume.phone"
-                    :href="`tel:${resume.phone}`"
+        <v-flex class="pa-5" xs12 lg8>
+          <v-card class="pa-0">
+            <v-container class="pa-0">
+              <v-layout align-center justify-center wrap>
+                <v-flex class="text-xs-center mt-4" xs12>
+                  <v-avatar size="200">
+                    <v-img
+                      :src="resumeImageSource"
+                      :lazy-src="resumeImageSource"
+                      aspect-ratio="1"
+                      class="cv-avatar"
+                      style="border-radius: 50%"
+                      @error="setImagePlaceholder"
+                    >
+                      <template v-slot:placeholder>
+                        <v-layout fill-height align-center justify-center ma-0>
+                          <v-progress-circular
+                            indeterminate
+                            color="grey lighten-5"
+                          />
+                        </v-layout>
+                      </template>
+                    </v-img>
+                  </v-avatar>
+                  <div
+                    class="cv-name text-xs-center font-weight-thin my-2"
+                    style="line-height: 1.2"
                   >
-                    <v-list-tile-action>
-                      <v-icon>phone</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                      <v-list-tile-title>
-                        {{ resume.phone }}
-                      </v-list-tile-title>
-                    </v-list-tile-content>
-                    <v-list-tile-action>
-                      <v-icon>chat</v-icon>
-                    </v-list-tile-action>
-                  </v-list-tile>
+                    {{ resume.name }}
+                  </div>
+                  <div class="cv-title text-xs-center font-weight-thin">
+                    {{ resume.title }}
+                  </div>
+                  <div v-if="resume.social.length" class="text-xs-center my-4">
+                    <span
+                      v-for="(platform, index) in resume.social"
+                      :key="index"
+                    >
+                      <a :href="platform.link" class="cv-link">
+                        <i :class="`fab fa-facebook-square fa-2x`"></i>
+                      </a>
+                    </span>
+                  </div>
+                </v-flex>
+                <v-flex xs12>
+                  <v-list>
+                    <v-list-tile
+                      v-if="resume.phone"
+                      :href="`tel:${resume.phone}`"
+                    >
+                      <v-list-tile-action>
+                        <v-icon>phone</v-icon>
+                      </v-list-tile-action>
+                      <v-list-tile-content>
+                        <v-list-tile-title>
+                          {{ resume.phone }}
+                        </v-list-tile-title>
+                      </v-list-tile-content>
+                      <v-list-tile-action>
+                        <v-icon>chat</v-icon>
+                      </v-list-tile-action>
+                    </v-list-tile>
 
-                  <v-divider inset></v-divider>
+                    <v-divider inset></v-divider>
 
-                  <v-list-tile
-                    v-if="resume.email"
-                    :href="`mailto:${resume.email}`"
-                  >
-                    <v-list-tile-action>
-                      <v-icon>mail</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                      <v-list-tile-title>
-                        {{ resume.email }}
-                      </v-list-tile-title>
-                    </v-list-tile-content>
-                    <v-list-tile-action>
-                      <v-icon>chat</v-icon>
-                    </v-list-tile-action>
-                  </v-list-tile>
+                    <v-list-tile
+                      v-if="resume.email"
+                      :href="`mailto:${resume.email}`"
+                    >
+                      <v-list-tile-action>
+                        <v-icon>mail</v-icon>
+                      </v-list-tile-action>
+                      <v-list-tile-content>
+                        <v-list-tile-title>
+                          {{ resume.email }}
+                        </v-list-tile-title>
+                      </v-list-tile-content>
+                      <v-list-tile-action>
+                        <v-icon>chat</v-icon>
+                      </v-list-tile-action>
+                    </v-list-tile>
 
-                  <v-divider inset></v-divider>
+                    <v-divider inset></v-divider>
 
-                  <v-list-tile v-if="resume.email" :href="`${resume.website}`">
-                    <v-list-tile-action>
-                      <v-icon>public</v-icon>
-                    </v-list-tile-action>
+                    <v-list-tile
+                      v-if="resume.email"
+                      :href="`${resume.website}`"
+                    >
+                      <v-list-tile-action>
+                        <v-icon>public</v-icon>
+                      </v-list-tile-action>
 
-                    <v-list-tile-content>
-                      <v-list-tile-title>
-                        {{ resume.website }}
-                      </v-list-tile-title>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                </v-list>
-              </v-flex>
-            </v-layout>
+                      <v-list-tile-content>
+                        <v-list-tile-title>
+                          {{ resume.website }}
+                        </v-list-tile-title>
+                      </v-list-tile-content>
+                    </v-list-tile>
+                  </v-list>
+                </v-flex>
+              </v-layout>
+            </v-container>
           </v-card>
         </v-flex>
       </template>
@@ -529,11 +540,38 @@ export default {
         skills: this.resume.skills.slice(0, 3),
         additional: this.resume.skills.slice(3)
       };
+    },
+    employmentItemsOrdered() {
+      const employmentItems = [...this.resume.employment];
+      return employmentItems.sort((a, b) => {
+        return new Date(b.dateFrom) - new Date(a.dateFrom);
+      });
+    },
+    educationItemsOrdered() {
+      const educationItems = [...this.resume.education];
+      return educationItems.sort((a, b) => {
+        return new Date(b.dateFrom) - new Date(a.dateFrom);
+      });
     }
   },
   methods: {
     setImagePlaceholder(event) {
       console.log('event:', JSON.stringify(event));
+    },
+    formatDates([dateFrom, dateTo]) {
+      const dateFromPretty = new Date(dateFrom).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long'
+        // day: 'numeric'
+      });
+      const dateToPretty = dateTo
+        ? new Date(dateTo).toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long'
+            // day: 'numeric'
+          })
+        : 'present';
+      return `${dateFromPretty} - ${dateToPretty}`;
     }
   }
 };
@@ -565,7 +603,6 @@ export default {
   font-weight: 800
   letter-spacing: 2px
   font-size: 12px
-.hobbies-layout,
 .references-layout
   margin: 0 -24px !important
 .spark
@@ -616,26 +653,6 @@ export default {
   .spark
     animation-name: explode-smaller
     animation-delay: 150ms
-.paper-wrap-right
-  display: none
-  position: absolute
-  right: -47.9px
-  top: 0
-  height: 48px
-  width: 48px
-  background-color: $blue.lighten-1
-  &:before
-    content: ''
-    position: absolute
-    top: 48px
-    right: 0
-    width: 0
-    height: 0
-    border-style: solid
-    border-width: 48px 48px 0 0
-    border-color: $blue.darken-2 transparent transparent transparent
-.paper-wrap-left
-  position: absolute
 .label-wrap
   position: relative
   width: calc(100% + 40px)
@@ -662,7 +679,6 @@ export default {
     border-color: $blue.darken-2 transparent transparent transparent
 
 @media only screen and (min-width: 960px)
-  .hobbies-layout,
   .references-layout
     margin: 0 -36px !important
 
