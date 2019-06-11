@@ -20,6 +20,9 @@ export const EmploymentType = new GraphQLObjectType({
     },
     company: {
       type: new GraphQLNonNull(GraphQLString)
+    },
+    description: {
+      type: new GraphQLNonNull(GraphQLString)
     }
   })
 });
@@ -37,6 +40,9 @@ export const EducationType = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLString)
     },
     degree: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    description: {
       type: new GraphQLNonNull(GraphQLString)
     }
   })
@@ -76,6 +82,9 @@ export const HobbyType = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLString)
     },
     title: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    description: {
       type: new GraphQLNonNull(GraphQLString)
     }
   })
@@ -124,9 +133,6 @@ export const ResumeType = new GraphQLObjectType({
       type: GraphQLString
     },
     profile: {
-      type: GraphQLString
-    },
-    description: {
       type: GraphQLString
     },
     skills: {

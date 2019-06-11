@@ -1,15 +1,13 @@
 <template>
   <v-container>
     <v-layout justify-center align-center wrap>
-      <v-flex xs7 sm5 md4 lg3 class="py-3">
+      <v-flex xs7 sm5 md4 lg3>
         <div style="position: relative;">
           <v-img
-            :src="resumeImageSource"
-            :lazy-src="resumeImageSource"
+            :src="require('@/assets/images/avatar.svg')"
+            :lazy-src="require('@/assets/images/avatar.svg')"
             aspect-ratio="1"
             class="cv-avatar"
-            style="border-radius: 50%"
-            @error="setImagePlaceholder"
           >
             <template v-slot:placeholder>
               <v-layout fill-height align-center justify-center ma-0>
@@ -17,6 +15,24 @@
               </v-layout>
             </template>
           </v-img>
+          <div class="spark-container spark-container-1">
+            <div class="spark" />
+          </div>
+          <div class="spark-container spark-container-2">
+            <div class="spark" />
+          </div>
+          <div class="spark-container spark-container-3">
+            <div class="spark" />
+          </div>
+          <div class="spark-container spark-container-4">
+            <div class="spark" />
+          </div>
+          <div class="spark-container spark-container-5">
+            <div class="spark" />
+          </div>
+          <div class="spark-container spark-container-6">
+            <div class="spark" />
+          </div>
         </div>
       </v-flex>
       <v-flex xs12>
@@ -90,13 +106,15 @@
                 ></span>
               </template>
               <div class="py-3">
-                <h2 :class="`headline font-weight-light mb-1`">
+                <h2 :class="`headline font-weight-light mb-3`">
                   {{ item.title }}
                 </h2>
-                <h4 :class="`text-uppercase mb-3 grey--text text--darken-3`">
-                  {{ item.company }}
-                </h4>
-                <p>{{ item.description }}</p>
+                <p>
+                  {{ item.company }} Lorem ipsum dolor sit amet, no nam oblique
+                  veritus. Commune scaevola imperdiet nec ut, sed euismod
+                  convenire principes at. Est et nobis iisque percipit, an vim
+                  zril disputando voluptatibus, vix an salutandi sententiae.
+                </p>
               </div>
             </v-timeline-item>
           </v-timeline>
@@ -108,14 +126,28 @@
               :key="index"
               small
             >
-              <v-layout wrap class="pt-3">
-                <v-flex class="mb-2" xs12>
+              <v-layout pt-3>
+                <v-flex xs3>
                   <strong>{{ item.dateFrom }}</strong>
                 </v-flex>
                 <v-flex>
                   <strong>{{ item.title }}</strong>
-                  <div class="caption mb-2">{{ item.company }}</div>
-                  <p>{{ item.description }}</p>
+                  <div class="caption">{{ item.company }}</div>
+                  <v-avatar>
+                    <v-img
+                      src="https://avataaars.io/?avatarStyle=Circle&topType=LongHairFrida&accessoriesType=Kurt&hairColor=Red&facialHairType=BeardLight&facialHairColor=BrownDark&clotheType=GraphicShirt&clotheColor=Gray01&graphicType=Skull&eyeType=Wink&eyebrowType=RaisedExcitedNatural&mouthType=Disbelief&skinColor=Brown"
+                    ></v-img>
+                  </v-avatar>
+                  <v-avatar>
+                    <v-img
+                      src="https://avataaars.io/?avatarStyle=Circle&topType=ShortHairFrizzle&accessoriesType=Prescription02&hairColor=Black&facialHairType=MoustacheMagnum&facialHairColor=BrownDark&clotheType=BlazerSweater&clotheColor=Black&eyeType=Default&eyebrowType=FlatNatural&mouthType=Default&skinColor=Tanned"
+                    ></v-img>
+                  </v-avatar>
+                  <v-avatar>
+                    <v-img
+                      src="https://avataaars.io/?avatarStyle=Circle&topType=LongHairMiaWallace&accessoriesType=Sunglasses&hairColor=BlondeGolden&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Surprised&eyebrowType=RaisedExcited&mouthType=Smile&skinColor=Pale"
+                    ></v-img>
+                  </v-avatar>
                 </v-flex>
               </v-layout>
             </v-timeline-item>
@@ -148,13 +180,15 @@
                 ></span>
               </template>
               <div class="py-3">
-                <h2 :class="`headline font-weight-light mb-1`">
+                <h2 :class="`headline font-weight-light mb-3`">
                   {{ item.university }}
                 </h2>
-                <h4 :class="`text-uppercase mb-3 grey--text text--darken-3`">
-                  {{ item.degree }}
-                </h4>
-                <p>{{ item.description }}</p>
+                <p>
+                  {{ item.degree }} Lorem ipsum dolor sit amet, no nam oblique
+                  veritus. Commune scaevola imperdiet nec ut, sed euismod
+                  convenire principes at. Est et nobis iisque percipit, an vim
+                  zril disputando voluptatibus, vix an salutandi sententiae.
+                </p>
               </div>
             </v-timeline-item>
           </v-timeline>
@@ -166,14 +200,28 @@
               :key="index"
               small
             >
-              <v-layout wrap class="pt-3">
-                <v-flex class="mb-2" xs12>
+              <v-layout pt-3>
+                <v-flex xs3>
                   <strong>{{ item.dateFrom }}</strong>
                 </v-flex>
                 <v-flex>
                   <strong>{{ item.university }}</strong>
-                  <div class="caption mb-2">{{ item.degree }}</div>
-                  <p>{{ item.description }}</p>
+                  <div class="caption">{{ item.degree }}</div>
+                  <v-avatar>
+                    <v-img
+                      src="https://avataaars.io/?avatarStyle=Circle&topType=LongHairFrida&accessoriesType=Kurt&hairColor=Red&facialHairType=BeardLight&facialHairColor=BrownDark&clotheType=GraphicShirt&clotheColor=Gray01&graphicType=Skull&eyeType=Wink&eyebrowType=RaisedExcitedNatural&mouthType=Disbelief&skinColor=Brown"
+                    ></v-img>
+                  </v-avatar>
+                  <v-avatar>
+                    <v-img
+                      src="https://avataaars.io/?avatarStyle=Circle&topType=ShortHairFrizzle&accessoriesType=Prescription02&hairColor=Black&facialHairType=MoustacheMagnum&facialHairColor=BrownDark&clotheType=BlazerSweater&clotheColor=Black&eyeType=Default&eyebrowType=FlatNatural&mouthType=Default&skinColor=Tanned"
+                    ></v-img>
+                  </v-avatar>
+                  <v-avatar>
+                    <v-img
+                      src="https://avataaars.io/?avatarStyle=Circle&topType=LongHairMiaWallace&accessoriesType=Sunglasses&hairColor=BlondeGolden&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Surprised&eyebrowType=RaisedExcited&mouthType=Smile&skinColor=Pale"
+                    ></v-img>
+                  </v-avatar>
                 </v-flex>
               </v-layout>
             </v-timeline-item>
@@ -513,9 +561,6 @@ export default {
   },
   data() {
     return {
-      resumeImageSource: `${process.env.CVBABY_UPLOAD_HOST}/users/${
-        this.resume.userID
-      }/profile.jpeg`,
       contactDialog: {
         '0': false,
         '1': false,
@@ -529,11 +574,6 @@ export default {
         skills: this.resume.skills.slice(0, 3),
         additional: this.resume.skills.slice(3)
       };
-    }
-  },
-  methods: {
-    setImagePlaceholder(event) {
-      console.log('event:', JSON.stringify(event));
     }
   }
 };

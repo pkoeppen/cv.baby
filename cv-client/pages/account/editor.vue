@@ -17,7 +17,25 @@
               Back to account
             </v-btn>
             <v-spacer />
+            <div v-if="draftResume.draft">
+              <v-badge color="error" overlap style="width: 100%;">
+                <template v-slot:badge>
+                  <v-icon dark>save</v-icon>
+                </template>
+                <v-btn
+                  :disabled="activeIndex === -1 && draftResume.draft"
+                  class="mx-0"
+                  color="primary"
+                  depressed
+                  @click="editResume(-1)"
+                >
+                  {{ newResumeButtonText }}
+                  <v-icon class="ml-1">note_add</v-icon>
+                </v-btn>
+              </v-badge>
+            </div>
             <v-btn
+              v-else
               :disabled="activeIndex === -1 && draftResume.draft"
               class="mx-0"
               color="primary"
@@ -88,15 +106,33 @@
                     </v-avatar>
                   </v-card-text>
                   <v-card-actions class="justify-center">
+                    <v-tooltip v-if="resume.slug" top>
+                      <template v-slot:activator="{ on }">
+                        <v-btn :to="`/${resume.slug}`" icon v-on="on"
+                          ><v-icon small>link</v-icon></v-btn
+                        >
+                      </template>
+                      <span>View</span>
+                    </v-tooltip>
                     <v-btn
                       depressed
                       :disabled="activeIndex === index"
+                      :class="{ 'ml-2': !!resume.slug }"
                       @click="editResume(index)"
                       >Edit{{ activeIndex === index ? 'ing' : '' }}</v-btn
                     >
-                    <v-btn icon alt="Clone" @click="cloneResume(index)"
-                      ><v-icon small>file_copy</v-icon></v-btn
-                    >
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on }">
+                        <v-btn
+                          icon
+                          alt="Clone"
+                          v-on="on"
+                          @click="cloneResume(index)"
+                          ><v-icon small>file_copy</v-icon></v-btn
+                        >
+                      </template>
+                      <span>Clone</span>
+                    </v-tooltip>
                   </v-card-actions>
                 </v-card>
               </v-badge>
@@ -174,6 +210,8 @@ export default {
         .then(resumes => {
           // Add 'draft' and 'resumeImageSource' fields to each resume for the UI.
           this.resumes = resumes.map(resume => {
+            // Not necessary here.
+            delete resume.userID;
             return {
               draft: false,
               resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${
@@ -292,7 +330,7 @@ export default {
         resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${this.USERNAME}/${
           savedResume.resumeID
         }/profile.jpeg`,
-        ...savedResume
+        ...omit(savedResume, ['userID'])
       };
       if (index === -1) {
         this.setResume(index, resume, true);

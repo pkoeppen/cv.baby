@@ -19,6 +19,9 @@ export const EmploymentInputType = new GraphQLInputObjectType({
     },
     company: {
       type: new GraphQLNonNull(GraphQLString)
+    },
+    description: {
+      type: new GraphQLNonNull(GraphQLString)
     }
   })
 });
@@ -36,6 +39,9 @@ export const EducationInputType = new GraphQLInputObjectType({
       type: new GraphQLNonNull(GraphQLString)
     },
     degree: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    description: {
       type: new GraphQLNonNull(GraphQLString)
     }
   })
@@ -75,6 +81,9 @@ export const HobbyInputType = new GraphQLInputObjectType({
       type: new GraphQLNonNull(GraphQLString)
     },
     title: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    description: {
       type: new GraphQLNonNull(GraphQLString)
     }
   })
@@ -120,9 +129,6 @@ export const ResumeInputType = new GraphQLInputObjectType({
       type: GraphQLString
     },
     profile: {
-      type: GraphQLString
-    },
-    description: {
       type: GraphQLString
     },
     skills: {

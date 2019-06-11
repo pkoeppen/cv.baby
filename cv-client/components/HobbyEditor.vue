@@ -29,6 +29,15 @@
                       required
                     />
                   </v-flex>
+                  <v-flex xs12>
+                    <v-textarea
+                      v-model="hobbyItem.description"
+                      :rules="[v => !!v || 'Description is required']"
+                      label="Description"
+                      rows="2"
+                      required
+                    />
+                  </v-flex>
                   <v-flex
                     v-for="(icon, index) in hobbyIcons"
                     :key="index"
@@ -119,7 +128,8 @@ function getDefaultHobbyItem() {
   return {
     index: -1,
     icon: null,
-    title: null
+    title: null,
+    description: null
   };
 }
 export default {

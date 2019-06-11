@@ -34,6 +34,7 @@ export const SubscriptionFragment = `
 export const ResumeFragment = `
   fragment ResumeFields on ResumeType {
     resumeID,
+    userID,
     alias,
     slug,
     name,
@@ -42,19 +43,20 @@ export const ResumeFragment = `
     phone,
     website,
     profile,
-    description,
     skills,
     employment {
       dateFrom,
       dateTo,
       title,
-      company
+      company,
+      description
     },
     education {
       dateFrom,
       dateTo,
       university,
-      degree
+      degree,
+      description
     },
     references {
       name,
@@ -66,7 +68,8 @@ export const ResumeFragment = `
     },
     hobbies {
       icon,
-      title
+      title,
+      description
     },
     social {
       title,

@@ -147,6 +147,7 @@
           label="Skills"
           multiple
         >
+          <!-- TODO: Set maximum 10 skills -->
           <template v-slot:selection="{ item, parent, selected }">
             <v-chip :color="`grey lighten-3`" :selected="selected" label>
               <span class="pr-2">

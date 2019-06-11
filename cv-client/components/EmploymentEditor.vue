@@ -61,6 +61,15 @@
                       required
                     />
                   </v-flex>
+                  <v-flex xs12>
+                    <v-textarea
+                      v-model="employmentItem.description"
+                      :rules="[v => !!v || 'Description is required']"
+                      label="Description"
+                      rows="2"
+                      required
+                    />
+                  </v-flex>
                 </v-layout>
               </v-container>
             </v-card-text>
@@ -133,7 +142,8 @@ function getDefaultEmploymentItem() {
     dateFrom: null,
     dateTo: null,
     title: null,
-    company: null
+    company: null,
+    description: null
   };
 }
 export default {

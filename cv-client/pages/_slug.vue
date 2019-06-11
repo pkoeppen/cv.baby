@@ -12,6 +12,7 @@ export default {
     return store
       .dispatch('api/getResume', params.slug)
       .then(resume => {
+        console.log(JSON.stringify(resume, null, 2));
         resume.references.map(reference => ({ dialog: false, ...reference }));
         return { resume };
       })

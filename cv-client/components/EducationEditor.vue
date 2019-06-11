@@ -61,6 +61,15 @@
                       required
                     />
                   </v-flex>
+                  <v-flex xs12>
+                    <v-textarea
+                      v-model="educationItem.description"
+                      :rules="[v => !!v || 'Description is required']"
+                      label="Description"
+                      rows="2"
+                      required
+                    />
+                  </v-flex>
                 </v-layout>
               </v-container>
             </v-card-text>
@@ -131,7 +140,8 @@ function getDefaultEducationItem() {
     dateFrom: null,
     dateTo: null,
     degree: null,
-    university: null
+    university: null,
+    description: null
   };
 }
 export default {

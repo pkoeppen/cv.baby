@@ -21,11 +21,12 @@
           <template v-slot:activator="{ on }">
             <v-btn class="mx-0" icon v-on="on">
               <v-avatar size="36">
-                <v-img
+                <img
                   :src="avatarSource"
-                  :lazy-src="avatarSource"
-                  aspect-ratio="1"
-                  @error="setAvatarPlaceholder()"
+                  @error="
+                    event =>
+                      (event.target.src = require(`~/assets/images/avatarPlaceholder.png`))
+                  "
                 />
               </v-avatar>
             </v-btn>
@@ -34,11 +35,12 @@
             <v-list>
               <v-list-tile avatar>
                 <v-list-tile-avatar>
-                  <v-img
+                  <img
                     :src="avatarSource"
-                    :lazy-src="avatarSource"
-                    aspect-ratio="1"
-                    @error="setAvatarPlaceholder()"
+                    @error="
+                      event =>
+                        (event.target.src = require(`~/assets/images/avatarPlaceholder.png`))
+                    "
                   />
                 </v-list-tile-avatar>
                 <v-list-tile-content>
@@ -202,11 +204,6 @@ export default {
   name: 'Navbar',
   data() {
     return {
-      avatarSource: process.client
-        ? `${process.env.CVBABY_UPLOAD_HOST}/users/${
-            this.$store.state.cognito.authenticated.username
-          }/profile.jpeg`
-        : require(`~/assets/images/avatarPlaceholder.png`),
       signInData: {
         dialog: false,
         email: 'p.hartzog.koeppen@gmail.com',
@@ -229,12 +226,18 @@ export default {
     username() {
       return (this.$store.state.cognito.authenticated || {}).signInUserSession
         .idToken.payload.email;
+    },
+    avatarSource() {
+      if (process.client && this.$store.state.cognito.authenticated) {
+        return `${process.env.CVBABY_UPLOAD_HOST}/users/${
+          this.$store.state.cognito.authenticated.username
+        }/profile.jpeg`;
+      } else {
+        return require(`~/assets/images/avatarPlaceholder.png`);
+      }
     }
   },
   methods: {
-    setAvatarPlaceholder() {
-      this.avatarSource = require(`~/assets/images/avatarPlaceholder.png`);
-    },
     signIn(event) {
       event.preventDefault();
       if (!this.$refs.formSignIn.validate()) {
