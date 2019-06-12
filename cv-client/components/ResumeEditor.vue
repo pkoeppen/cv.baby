@@ -3,7 +3,7 @@
     <v-layout justify-center align-center wrap>
       <v-container class="pa-0" grid-list-xl>
         <v-layout wrap>
-          <v-flex xs12 md4>
+          <v-flex xs12 sm4>
             <v-btn
               class="ml-0 my-0"
               color="primary"
@@ -11,20 +11,22 @@
               depressed
               block
               @click="emitSaveResume"
-              >{{ resume.index === -1 ? 'Save Resume' : 'Save Changes' }}</v-btn
+              >{{
+                resume.index === -1 ? $t('saveResume') : $t('saveChanges')
+              }}</v-btn
             >
           </v-flex>
-          <v-flex xs12 md4>
+          <v-flex xs12 sm4>
             <v-btn
               class="my-0"
               :disabled="!resume.draft"
               depressed
               block
               @click="emitDiscardChanges"
-              >Discard changes</v-btn
+              >{{ $t('discardChanges') }}</v-btn
             >
           </v-flex>
-          <v-flex xs12 md4>
+          <v-flex xs12 sm4>
             <v-btn
               :disabled="resume.index === -1"
               class="my-0"
@@ -32,7 +34,7 @@
               depressed
               block
               @click="confirmRemoveDialog = true"
-              >Remove</v-btn
+              >{{ $t('remove') }}</v-btn
             >
           </v-flex>
         </v-layout>
@@ -72,10 +74,10 @@
           <v-text-field
             ref="alias"
             :value="resume.alias"
-            :rules="[v => !!v || 'Resume alias is required']"
+            :rules="[v => !!v || $t('resumeAliasIsRequired')]"
             prepend-inner-icon="bookmark"
-            label="Resume alias"
-            hint="Give your resume a name"
+            :label="$t('resumeAlias')"
+            :hint="$t('giveYourResumeAName')"
             required
             @change="v => (resume.alias = v)"
           />
@@ -89,13 +91,15 @@
           <v-text-field
             :value="resume.slug"
             :rules="[
-              v => !!v || 'Resume slug is required',
-              v => (!!v && slugAvailable) || 'Slug is taken'
+              v => !!v || $t('resumeSlugIsRequired'),
+              v => (!!v && slugAvailable) || $t('slugIsTaken')
             ]"
             prepend-inner-icon="link"
-            label="Resume slug"
+            :label="$t('resumeSlug')"
             :hint="
-              `https://cv.baby/${resume.slug ? resume.slug : 'your-slug-here'}`
+              `https://cv.baby/${
+                resume.slug ? resume.slug : $t('yourSlugHere')
+              }`
             "
             persistent-hint
             required
@@ -115,27 +119,27 @@
         </v-form>
         <v-text-field
           :value="resume.name"
-          label="Name"
+          :label="$t('name')"
           @change="v => (resume.name = v)"
         />
         <v-text-field
           :value="resume.title"
-          label="Title"
+          :label="$t('title')"
           @change="v => (resume.title = v)"
         />
         <v-text-field
           :value="resume.email"
-          label="Email"
+          :label="$t('email')"
           @change="v => (resume.email = v)"
         />
         <v-text-field
           :value="resume.phone"
-          label="Phone"
+          :label="$t('phone')"
           @change="v => (resume.phone = v)"
         />
         <v-text-field
           :value="resume.website"
-          label="Website"
+          :label="$t('website')"
           @change="v => (resume.website = v)"
         />
       </v-flex>
@@ -143,8 +147,8 @@
         <v-combobox
           v-model="resume.skills"
           hide-selected
-          hint="Enter a maximum of 10 skills"
-          label="Skills"
+          :hint="$t('enterAMaximumOf10Skills')"
+          :label="$t('skills')"
           multiple
         >
           <!-- TODO: Set maximum 10 skills -->
@@ -161,8 +165,8 @@
       <v-flex xs12 md8>
         <v-textarea
           :value="resume.profile"
-          label="Profile"
-          hint="A brief synopsis of who you are"
+          :label="$t('profile')"
+          :hint="$t('aBriefSynopsisOfWhoYouAre')"
           rows="2"
           @change="v => (resume.profile = v)"
         ></v-textarea>
@@ -190,20 +194,24 @@
         <v-card-title
           class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
         >
-          <span class="cv-dialog-header headline">Remove resume</span>
+          <span class="cv-dialog-header headline">{{
+            $t('removeResume')
+          }}</span>
         </v-card-title>
         <v-card-text>
           <v-container class="py-0" grid-list-md>
             <v-layout wrap>
               <v-flex class="text-xs-center" xs12>
-                Are you sure you want to remove this resume?
+                {{ $t('areYouSureYouWantToRemove') }}
               </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
         <v-card-actions class="justify-center pb-4">
-          <v-btn @click="confirmRemoveDialog = false">Cancel</v-btn>
-          <v-btn color="error" @click="emitRemoveResume">Remove</v-btn>
+          <v-btn @click="confirmRemoveDialog = false">{{ $t('cancel') }}</v-btn>
+          <v-btn color="error" @click="emitRemoveResume">{{
+            $t('remove')
+          }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -285,8 +293,7 @@ export default {
         .catch(() => {
           this.$store.dispatch('showSnackbar', {
             color: 'red',
-            message:
-              'Error checking slug availability. Please check your connection.'
+            message: this.$t('errorCheckingSlugAvailability')
           });
         });
     },

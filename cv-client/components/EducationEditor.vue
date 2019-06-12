@@ -3,18 +3,18 @@
     <v-flex class="text-xs-center" xs12>
       <v-dialog v-model="dialog" max-width="400" persistent>
         <template v-slot:activator="{ on }">
-          <v-btn class="text-none" color="primary" flat depressed v-on="on"
-            >Add education</v-btn
-          >
+          <v-btn class="text-none" color="primary" flat depressed v-on="on">{{
+            $t('addEducation')
+          }}</v-btn>
         </template>
         <v-form ref="form" lazy-validation @submit="saveEducationItem">
           <v-card>
             <v-card-title
               class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
             >
-              <span class="cv-dialog-header headline"
-                >{{ dialogTitlePrefix }} education</span
-              >
+              <span class="cv-dialog-header headline">{{
+                dialogTitlePrefix
+              }}</span>
             </v-card-title>
             <v-card-text>
               <v-container class="py-0" grid-list-md>
@@ -22,9 +22,9 @@
                   <v-flex xs12>
                     <v-text-field
                       v-model="educationItem.dateFrom"
-                      :rules="[v => !!v || 'Date is required']"
-                      label="Date from"
-                      hint="(mm/dd/yyyy)"
+                      :rules="[v => !!v || $t('dateIsRequired')]"
+                      :label="$t('dateFrom')"
+                      :hint="$t('mmddyyyy')"
                       mask="##/##/####"
                       return-masked-value
                       validate-on-blur
@@ -35,8 +35,8 @@
                   <v-flex xs12>
                     <v-text-field
                       v-model="educationItem.dateTo"
-                      :rules="[v => !!v || 'Date is required']"
-                      label="Date to"
+                      :rules="[v => !!v || $t('dateIsRequired')]"
+                      :label="$t('dateTo')"
                       mask="##/##/####"
                       return-masked-value
                       validate-on-blur
@@ -46,8 +46,8 @@
                   <v-flex xs12>
                     <v-text-field
                       v-model="educationItem.university"
-                      :rules="[v => !!v || 'University is required']"
-                      label="University"
+                      :rules="[v => !!v || $t('universityIsRequired')]"
+                      :label="$t('university')"
                       single-line
                       required
                     />
@@ -55,8 +55,8 @@
                   <v-flex xs12>
                     <v-text-field
                       v-model="educationItem.degree"
-                      :rules="[v => !!v || 'Degree is required']"
-                      label="Degree"
+                      :rules="[v => !!v || $t('degreeIsRequired')]"
+                      :label="$t('degree')"
                       single-line
                       required
                     />
@@ -64,8 +64,8 @@
                   <v-flex xs12>
                     <v-textarea
                       v-model="educationItem.description"
-                      :rules="[v => !!v || 'Description is required']"
-                      label="Description"
+                      :rules="[v => !!v || $t('descriptionIsRequired')]"
+                      :label="$t('description')"
                       rows="2"
                       required
                     />
@@ -74,8 +74,8 @@
               </v-container>
             </v-card-text>
             <v-card-actions class="justify-center pb-4">
-              <v-btn @click="dialog = false">Cancel</v-btn>
-              <v-btn color="primary" type="submit">Save</v-btn>
+              <v-btn @click="dialog = false">{{ $t('cancel') }}</v-btn>
+              <v-btn color="primary" type="submit">{{ $t('save') }}</v-btn>
             </v-card-actions>
           </v-card>
         </v-form>
@@ -100,10 +100,12 @@
           </v-card-text>
           <v-divider />
           <v-card-actions class="justify-center">
-            <v-btn flat @click="editEducationItem(item, index)">Edit</v-btn>
-            <v-btn color="error" flat @click="showConfirmRemoveDialog(index)"
-              >Remove</v-btn
-            >
+            <v-btn flat @click="editEducationItem(item, index)">{{
+              $t('edit')
+            }}</v-btn>
+            <v-btn color="error" flat @click="showConfirmRemoveDialog(index)">{{
+              $t('remove')
+            }}</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -112,20 +114,26 @@
           <v-card-title
             class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
           >
-            <span class="cv-dialog-header headline">Remove education item</span>
+            <span class="cv-dialog-header headline">{{
+              $t('removeEducationItem')
+            }}</span>
           </v-card-title>
           <v-card-text>
             <v-container class="py-0" grid-list-md>
               <v-layout wrap>
                 <v-flex class="text-xs-center" xs12>
-                  Are you sure you want to remove this item?
+                  {{ $t('areYouSureYouWantToRemoveThisItem') }}
                 </v-flex>
               </v-layout>
             </v-container>
           </v-card-text>
           <v-card-actions class="justify-center pb-4">
-            <v-btn @click="confirmRemoveDialog = false">Cancel</v-btn>
-            <v-btn color="error" @click="removeEducationItem">Remove</v-btn>
+            <v-btn @click="confirmRemoveDialog = false">{{
+              $t('cancel')
+            }}</v-btn>
+            <v-btn color="error" @click="removeEducationItem">{{
+              $t('remove')
+            }}</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -162,7 +170,9 @@ export default {
   },
   computed: {
     dialogTitlePrefix() {
-      return this.educationItem.index < 0 ? 'Add' : 'Edit';
+      return this.educationItem.index < 0
+        ? this.$t('addEducation')
+        : this.$t('editEducation');
     }
   },
   watch: {

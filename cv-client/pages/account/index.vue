@@ -1,422 +1,439 @@
 <template>
   <no-ssr>
-    <v-layout style="min-height: 100vh;" column wrap>
-      <v-flex xs12>
-        <v-container class="pa-0">
-          <navbar />
-        </v-container>
-      </v-flex>
-      <v-flex xs12>
-        <v-divider />
-      </v-flex>
-      <v-flex xs12>
-        <v-container class="py-0">
-          <v-layout row justify-center>
-            <v-flex style="border-right: 1px solid #E0E0E0;" shrink>
-              <h2 class="mt-5 mb-4">Account</h2>
-              <div class="vertical-tabs vertical-tabs--horizontal-text">
-                <v-tabs v-model="tabs" @change="$emit('input', $event)">
-                  <v-tab>Resumes</v-tab>
-                  <v-tab>Password</v-tab>
-                  <v-tab>Billing &amp; Subscription</v-tab>
-                  <v-tab>Invoices</v-tab>
-                  <v-tab>Email Notifications</v-tab>
-                </v-tabs>
-              </div>
-            </v-flex>
-            <v-flex>
-              <v-tabs-items v-model="tabs">
-                <v-tab-item>
-                  <v-container class="py-5 pl-5 pr-0" grid-list-xl>
-                    <v-layout wrap>
-                      <v-flex
-                        v-if="resumes.loading"
-                        class="py-5 text-xs-center"
-                      >
-                        <v-progress-circular
-                          color="primary"
-                          indeterminate
-                        ></v-progress-circular>
-                      </v-flex>
-                      <template v-else-if="resumes.resumes.length">
+    <div>
+      <v-layout style="min-height: 100vh;" column wrap>
+        <v-flex xs12>
+          <v-container class="pa-0">
+            <navbar />
+          </v-container>
+        </v-flex>
+        <v-flex xs12>
+          <v-divider />
+        </v-flex>
+        <v-flex xs12>
+          <v-container class="py-0">
+            <v-layout row justify-center>
+              <v-flex style="border-right: 1px solid #E0E0E0;" shrink>
+                <h2 class="mt-5 mb-4">Account</h2>
+                <div class="vertical-tabs vertical-tabs--horizontal-text">
+                  <v-tabs v-model="tabs" @change="$emit('input', $event)">
+                    <v-tab>{{ $t('resumes') }}</v-tab>
+                    <v-tab>{{ $t('password') }}</v-tab>
+                    <v-tab>{{ $t('billingAndSubscription') }}</v-tab>
+                    <v-tab>{{ $t('invoices') }}</v-tab>
+                    <v-tab>{{ $t('emailNotifications') }}</v-tab>
+                  </v-tabs>
+                </div>
+              </v-flex>
+              <v-flex>
+                <v-tabs-items v-model="tabs">
+                  <v-tab-item>
+                    <v-container class="py-5 pl-5 pr-0" grid-list-xl>
+                      <v-layout wrap>
                         <v-flex
-                          v-for="(resume, index) in resumes.resumes"
-                          :key="index"
-                          xs12
-                          sm6
-                          md4
+                          v-if="resumes.loading"
+                          class="py-5 text-xs-center"
                         >
-                          <v-badge color="success" overlap style="width: 100%;">
-                            <template v-slot:badge>
-                              <v-icon dark>save</v-icon>
-                            </template>
-                            <v-card class="text-xs-center">
-                              <v-card-title class="title justify-center">
-                                {{ resume.alias }}
-                              </v-card-title>
-                              <v-card-text>
-                                <v-avatar size="100">
-                                  <v-img
-                                    :src="resume.resumeImageSource"
-                                    :lazy-src="resume.resumeImageSource"
-                                    aspect-ratio="1"
-                                    @error="setImagePlaceholder(index)"
-                                  >
-                                    <template v-slot:placeholder>
-                                      <v-layout
-                                        fill-height
-                                        align-center
-                                        justify-center
-                                        ma-0
-                                      >
-                                        <v-progress-circular
-                                          indeterminate
-                                          color="grey lighten-5"
-                                        />
-                                      </v-layout>
-                                    </template>
-                                  </v-img>
-                                </v-avatar>
-                              </v-card-text>
-                              <v-card-actions class="justify-center">
-                                <v-btn
-                                  icon
-                                  depressed
-                                  :to="`/${$i18n.locale}/${resume.slug}`"
-                                  ><v-icon>link</v-icon></v-btn
-                                >
-                                <v-btn
-                                  icon
-                                  depressed
-                                  :to="
-                                    localePath({
-                                      name: 'account-editor',
-                                      query: { i: index }
-                                    })
-                                  "
-                                  ><v-icon>edit</v-icon></v-btn
-                                >
-                                <v-btn
-                                  icon
-                                  depressed
-                                  :to="
-                                    localePath({
-                                      name: 'account-analytics',
-                                      query: { i: index }
-                                    })
-                                  "
-                                >
-                                  <v-icon>trending_up</v-icon>
-                                </v-btn>
-                              </v-card-actions>
-                            </v-card>
-                          </v-badge>
+                          <v-progress-circular
+                            color="primary"
+                            indeterminate
+                          ></v-progress-circular>
                         </v-flex>
-                      </template>
-                      <v-flex v-else class="text-xs-center py-5" xs12>
-                        <div class="title">
-                          You haven't saved any resumes yet.
-                        </div>
-                        <div class="mt-2 open-sans">
-                          <nuxt-link to="/account/editor">Click here</nuxt-link>
-                          to launch the editor.
-                        </div>
-                        <v-btn
-                          to="/account/editor"
-                          color="primary"
-                          class="mx-0 mt-4"
-                          depressed
-                        >
-                          Launch Editor
-                          <v-icon class="ml-1" small>launch</v-icon>
-                        </v-btn>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-tab-item>
-                <v-tab-item>
-                  <v-container class="pa-5" style="margin: 0; max-width: 600px">
-                    <h2>Change password</h2>
-                    <v-text-field
-                      v-model="password.currentPassword"
-                      prepend-icon="lock"
-                      label="Old password"
-                      type="password"
-                      required
-                    />
-                    <v-text-field
-                      v-model="password.newPassword"
-                      prepend-icon="lock"
-                      label="New password"
-                      type="password"
-                      required
-                    />
-                    <v-text-field
-                      v-model="password.newPasswordConfirm"
-                      prepend-icon="lock"
-                      label="Repeat password"
-                      type="password"
-                      required
-                    />
-                    <v-btn
-                      :loading="password.loading"
-                      :color="password.success ? 'success' : 'primary'"
-                      class="mt-4"
-                      depressed
-                      @click="changePassword"
+                        <template v-else-if="resumes.resumes.length">
+                          <v-flex
+                            v-for="(resume, index) in resumes.resumes"
+                            :key="index"
+                            xs12
+                            sm6
+                            md4
+                          >
+                            <v-badge
+                              color="success"
+                              overlap
+                              style="width: 100%;"
+                            >
+                              <template v-slot:badge>
+                                <v-icon dark>save</v-icon>
+                              </template>
+                              <v-card class="text-xs-center">
+                                <v-card-title class="title justify-center">
+                                  {{ resume.alias }}
+                                </v-card-title>
+                                <v-card-text>
+                                  <v-avatar size="100">
+                                    <v-img
+                                      :src="resume.resumeImageSource"
+                                      :lazy-src="resume.resumeImageSource"
+                                      aspect-ratio="1"
+                                      @error="setImagePlaceholder(index)"
+                                    >
+                                      <template v-slot:placeholder>
+                                        <v-layout
+                                          fill-height
+                                          align-center
+                                          justify-center
+                                          ma-0
+                                        >
+                                          <v-progress-circular
+                                            indeterminate
+                                            color="grey lighten-5"
+                                          />
+                                        </v-layout>
+                                      </template>
+                                    </v-img>
+                                  </v-avatar>
+                                </v-card-text>
+                                <v-card-actions class="justify-center">
+                                  <v-btn
+                                    icon
+                                    depressed
+                                    :to="`/${$i18n.locale}/${resume.slug}`"
+                                    ><v-icon>link</v-icon></v-btn
+                                  >
+                                  <v-btn
+                                    icon
+                                    depressed
+                                    :to="
+                                      localePath({
+                                        name: 'account-editor',
+                                        query: { i: index }
+                                      })
+                                    "
+                                    ><v-icon>edit</v-icon></v-btn
+                                  >
+                                  <v-btn
+                                    icon
+                                    depressed
+                                    :to="
+                                      localePath({
+                                        name: 'account-analytics',
+                                        query: { i: index }
+                                      })
+                                    "
+                                  >
+                                    <v-icon>trending_up</v-icon>
+                                  </v-btn>
+                                </v-card-actions>
+                              </v-card>
+                            </v-badge>
+                          </v-flex>
+                        </template>
+                        <v-flex v-else class="text-xs-center py-5" xs12>
+                          <div class="title">
+                            {{ $t('youHaventSavedAnyResumesYet') }}
+                          </div>
+                          <div class="mt-2 open-sans">
+                            {{ $t('clickHereToLaunchTheEditor') }}
+                          </div>
+                          <v-btn
+                            to="/account/editor"
+                            color="primary"
+                            class="mx-0 mt-4"
+                            depressed
+                          >
+                            {{ $t('launchEditor') }}
+                            <v-icon class="ml-1" small>launch</v-icon>
+                          </v-btn>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                  </v-tab-item>
+                  <v-tab-item>
+                    <v-container
+                      class="pa-5"
+                      style="margin: 0; max-width: 600px"
                     >
-                      <v-icon v-if="password.success">check_circle</v-icon>
-                      {{
-                        password.success
-                          ? '&nbsp;Password changed'
-                          : 'Change password'
-                      }}
-                    </v-btn>
-                  </v-container>
-                </v-tab-item>
-                <v-tab-item>
-                  <v-container
-                    class="pa-5"
-                    style="margin: 0; max-width: 600px;"
-                  >
-                    <div style="display: flex; align-items: center;">
-                      <h2>Subscription</h2>
-                      <v-icon
-                        v-if="payment.subscription"
-                        :class="
-                          payment.subscription.status === 'Active'
-                            ? 'bluegrass'
-                            : 'red--text'
-                        "
-                        class="ml-2"
-                        style="font-size: 16px;"
+                      <h2>{{ $t('changePassword') }}</h2>
+                      <v-text-field
+                        v-model="password.currentPassword"
+                        prepend-icon="lock"
+                        :label="$t('oldPassword')"
+                        type="password"
+                        required
+                      />
+                      <v-text-field
+                        v-model="password.newPassword"
+                        prepend-icon="lock"
+                        :label="$t('newPassword')"
+                        type="password"
+                        required
+                      />
+                      <v-text-field
+                        v-model="password.newPasswordConfirm"
+                        prepend-icon="lock"
+                        :label="$t('repeatPassword')"
+                        type="password"
+                        required
+                      />
+                      <v-btn
+                        :loading="password.loading"
+                        :color="password.success ? 'success' : 'primary'"
+                        class="mt-4"
+                        depressed
+                        @click="changePassword"
                       >
-                        play_circle_filled
-                      </v-icon>
-                    </div>
-                    <v-divider class="mt-2 mb-3" />
-                    <div
-                      style="display: flex; align-items: center; justify-content: space-between;"
+                        <v-icon v-if="password.success">check_circle</v-icon>
+                        {{
+                          password.success
+                            ? $t('passwordChanged')
+                            : $t('changePassword')
+                        }}
+                      </v-btn>
+                    </v-container>
+                  </v-tab-item>
+                  <v-tab-item>
+                    <v-container
+                      class="pa-5"
+                      style="margin: 0; max-width: 600px;"
                     >
-                      <div>
-                        <div
-                          class="cv-logo font-weight-black"
-                          style="display: inline; font-size: 16px;"
+                      <div style="display: flex; align-items: center;">
+                        <h2>{{ $t('subscription') }}</h2>
+                        <v-icon
+                          v-if="payment.subscription"
+                          :class="
+                            payment.subscription.status === 'Active'
+                              ? 'bluegrass'
+                              : 'red--text'
+                          "
+                          class="ml-2"
+                          style="font-size: 16px;"
                         >
-                          <span>cv</span><span>baby</span> pro
+                          play_circle_filled
+                        </v-icon>
+                      </div>
+                      <v-divider class="mt-2 mb-3" />
+                      <div
+                        style="display: flex; align-items: center; justify-content: space-between;"
+                      >
+                        <div>
+                          <div
+                            class="cv-logo font-weight-black"
+                            style="display: inline; font-size: 16px;"
+                          >
+                            <span>cv</span><span>baby</span> pro
+                          </div>
+                          <div
+                            class="open-sans grey--text"
+                            style="display: inline;"
+                          >
+                            {{
+                              (payment.subscription || {}).trialPeriod
+                                ? $t('trial')
+                                : ''
+                            }}
+                          </div>
                         </div>
                         <div
-                          class="open-sans grey--text"
-                          style="display: inline;"
+                          v-if="payment.subscription"
+                          :class="
+                            payment.subscription.status === 'Active'
+                              ? 'bluegrass'
+                              : 'red--text'
+                          "
+                          class="text-uppercase font-weight-black"
                         >
+                          <!-- TODO: translate this -->
+                          {{ payment.subscription.status }}
+                        </div>
+                      </div>
+                      <div class="mt-5">
+                        <h2>{{ $t('billing') }}</h2>
+                      </div>
+                      <v-divider class="mt-2 mb-3" />
+                      <div
+                        style="display: flex; align-items: center; justify-content: space-between;"
+                        class="mb-2"
+                      >
+                        <div class="open-sans">{{ $t('amount') }}</div>
+                        <div v-if="payment.subscription">
+                          USD
+                          {{ parseInt(payment.subscription.nextBillAmount) }}
+                        </div>
+                      </div>
+                      <div
+                        style="display: flex; align-items: center; justify-content: space-between;"
+                      >
+                        <div class="open-sans">{{ $t('billingCycle') }}</div>
+                        <div v-if="payment.subscription">
                           {{
-                            (payment.subscription || {}).trialPeriod
-                              ? '(trial)'
-                              : ''
+                            payment.subscription.planId === 'cvbaby-yearly'
+                              ? $t('yearly')
+                              : $t('monthly')
                           }}
                         </div>
                       </div>
                       <div
-                        v-if="payment.subscription"
-                        :class="
-                          payment.subscription.status === 'Active'
-                            ? 'bluegrass'
-                            : 'red--text'
-                        "
-                        class="text-uppercase font-weight-black"
+                        class="mt-5"
+                        style="display: flex; align-items: center; justify-content: space-between;"
                       >
-                        {{ payment.subscription.status }}
-                      </div>
-                    </div>
-                    <div class="mt-5">
-                      <h2>Billing</h2>
-                    </div>
-                    <v-divider class="mt-2 mb-3" />
-                    <div
-                      style="display: flex; align-items: center; justify-content: space-between;"
-                      class="mb-2"
-                    >
-                      <div class="open-sans">Amount</div>
-                      <div v-if="payment.subscription">
-                        USD {{ parseInt(payment.subscription.nextBillAmount) }}
-                      </div>
-                    </div>
-                    <div
-                      style="display: flex; align-items: center; justify-content: space-between;"
-                    >
-                      <div class="open-sans">Billing cycle</div>
-                      <div v-if="payment.subscription">
-                        {{
-                          payment.subscription.planId === 'cvbaby-yearly'
-                            ? 'Yearly'
-                            : 'Monthly'
-                        }}
-                      </div>
-                    </div>
-                    <div
-                      class="mt-5"
-                      style="display: flex; align-items: center; justify-content: space-between;"
-                    >
-                      <h2>Payment method</h2>
-                      <div>
-                        <v-dialog v-model="payment.dialog" max-width="400px">
-                          <template v-slot:activator="{ on }">
-                            <v-btn
-                              class="ma-0"
-                              color="primary"
-                              small
-                              depressed
-                              v-on="on"
-                            >
-                              Change
-                            </v-btn>
-                          </template>
-                          <v-card>
-                            <v-card-title
-                              class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
-                            >
-                              <span class="cv-dialog-header headline">
-                                Update payment method
-                              </span>
-                            </v-card-title>
-                            <v-card-text>
-                              <v-card class="cv-payment elevation-0 ma-3">
-                                <v-tabs v-model="payment.tabs" grow>
-                                  <v-tab ripple>Debit/Credit Card</v-tab>
-                                  <v-tab-item>
-                                    <v-container>
-                                      credit card fields go here
-                                    </v-container>
-                                  </v-tab-item>
-                                  <v-tab ripple>PayPal</v-tab>
-                                  <v-tab-item>
-                                    <v-container>
-                                      <div class="cv-billing-detail">
-                                        <div class="font-weight-black">
-                                          You will be redirected to PayPal to
-                                          finish your payment.
-                                        </div>
-                                      </div>
-                                    </v-container>
-                                  </v-tab-item>
-                                </v-tabs>
-                              </v-card>
-                            </v-card-text>
-                            <v-card-actions class="justify-center pb-4">
+                        <h2>{{ $t('paymentMethod') }}</h2>
+                        <div>
+                          <v-dialog v-model="payment.dialog" max-width="400px">
+                            <template v-slot:activator="{ on }">
                               <v-btn
+                                class="ma-0"
                                 color="primary"
-                                @click="loginDialog = false"
+                                small
+                                depressed
+                                v-on="on"
                               >
-                                Update now
+                                {{ $t('change') }}
                               </v-btn>
-                            </v-card-actions>
-                          </v-card>
-                        </v-dialog>
-                      </div>
-                    </div>
-                    <v-divider class="mt-2 mb-3" />
-                    <div
-                      style="display: flex; align-items: center; justify-content: space-between;"
-                      class="mb-2"
-                    >
-                      <div class="open-sans">PayPal</div>
-                      <v-icon>lock</v-icon>
-                    </div>
-                    <div
-                      style="display: flex; align-items: center; justify-content: space-between;"
-                      class="mt-4 mb-2"
-                    >
-                      <v-spacer />
-                      <div class="red--text caption">Cancel subscription</div>
-                    </div>
-                  </v-container>
-                </v-tab-item>
-                <v-tab-item>
-                  <v-container
-                    class="pa-5"
-                    style="margin: 0; max-width: 600px;"
-                  >
-                    <h2>Invoices</h2>
-                    <v-list v-if="payment.subscription" two-line>
-                      <v-card
-                        v-for="(transaction, index) in payment.subscription
-                          .transactions"
-                        :key="index"
-                      >
-                        <v-container class="open-sans">
-                          <v-layout row justify-space-between align-center>
-                            <v-flex>
-                              <div class="grey--text">
-                                <div class="caption" style="line-height: 1;">
-                                  {{ transaction.currencyIsoCode }}
-                                </div>
-                                <div class="title">
-                                  {{ transaction.amount }}
-                                </div>
-                              </div>
-                            </v-flex>
-                            <v-flex>
-                              <div class="text-uppercase title">
-                                {{ transaction.creditCard.cardType }}
-                                {{ transaction.creditCard.last4 }}
-                              </div>
-                            </v-flex>
-                            <v-flex>
-                              <div class="text-uppercase title">
-                                {{ transaction.createdAt }}
-                              </div>
-                            </v-flex>
-                            <v-flex>
-                              <div
-                                :class="{
-                                  bluegrass: transaction.processorResponseType.match(
-                                    'approved'
-                                  )
-                                }"
-                                class="text-uppercase title"
+                            </template>
+                            <v-card>
+                              <v-card-title
+                                class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
                               >
-                                {{
-                                  transaction.processorResponseType.match(
-                                    'approved'
-                                  )
-                                    ? 'Approved'
-                                    : 'Declined'
-                                }}
-                              </div>
-                            </v-flex>
-                          </v-layout>
-                        </v-container>
-                      </v-card>
-                    </v-list>
-                  </v-container>
-                </v-tab-item>
-                <v-tab-item>
-                  <v-container
-                    class="pa-5"
-                    style="margin: 0; max-width: 600px;"
-                  >
-                    <h2>Email notifications</h2>
-                    <v-switch
-                      v-model="email.switch"
-                      :label="`Switch 1: foobar`"
-                      color="primary"
-                    ></v-switch>
-                  </v-container>
-                </v-tab-item>
-              </v-tabs-items>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-flex>
-    </v-layout>
+                                <span class="cv-dialog-header headline">
+                                  {{ $t('updatePaymentMethod') }}
+                                </span>
+                              </v-card-title>
+                              <v-card-text>
+                                <v-card class="cv-payment elevation-0 ma-3">
+                                  <v-tabs v-model="payment.tabs" grow>
+                                    <!-- TODO -->
+                                    <v-tab ripple>Debit/Credit Card</v-tab>
+                                    <v-tab-item>
+                                      <v-container>
+                                        credit card fields go here
+                                      </v-container>
+                                    </v-tab-item>
+                                    <v-tab ripple>PayPal</v-tab>
+                                    <v-tab-item>
+                                      <v-container>
+                                        <div class="cv-billing-detail">
+                                          <div class="font-weight-black">
+                                            You will be redirected to PayPal to
+                                            finish your payment.
+                                          </div>
+                                        </div>
+                                      </v-container>
+                                    </v-tab-item>
+                                  </v-tabs>
+                                </v-card>
+                              </v-card-text>
+                              <v-card-actions class="justify-center pb-4">
+                                <v-btn
+                                  color="primary"
+                                  @click="loginDialog = false"
+                                >
+                                  Update now
+                                </v-btn>
+                              </v-card-actions>
+                            </v-card>
+                          </v-dialog>
+                        </div>
+                      </div>
+                      <v-divider class="mt-2 mb-3" />
+                      <div
+                        style="display: flex; align-items: center; justify-content: space-between;"
+                        class="mb-2"
+                      >
+                        <div class="open-sans">PayPal</div>
+                        <v-icon>lock</v-icon>
+                      </div>
+                      <div
+                        style="display: flex; align-items: center; justify-content: space-between;"
+                        class="mt-4 mb-2"
+                      >
+                        <v-spacer />
+                        <div class="red--text caption">
+                          {{ $t('cancelSubscription') }}
+                        </div>
+                      </div>
+                    </v-container>
+                  </v-tab-item>
+                  <v-tab-item>
+                    <v-container
+                      class="pa-5"
+                      style="margin: 0; max-width: 600px;"
+                    >
+                      <h2>{{ $t('invoices') }}</h2>
+                      <v-list v-if="payment.subscription" two-line>
+                        <v-card
+                          v-for="(transaction, index) in payment.subscription
+                            .transactions"
+                          :key="index"
+                        >
+                          <v-container class="open-sans">
+                            <v-layout row justify-space-between align-center>
+                              <v-flex>
+                                <div class="grey--text">
+                                  <div class="caption" style="line-height: 1;">
+                                    {{ transaction.currencyIsoCode }}
+                                  </div>
+                                  <div class="title">
+                                    {{ transaction.amount }}
+                                  </div>
+                                </div>
+                              </v-flex>
+                              <v-flex>
+                                <div class="text-uppercase title">
+                                  {{ transaction.creditCard.cardType }}
+                                  {{ transaction.creditCard.last4 }}
+                                </div>
+                              </v-flex>
+                              <v-flex>
+                                <div class="text-uppercase title">
+                                  <!-- TODO: translate date -->
+                                  {{ transaction.createdAt }}
+                                </div>
+                              </v-flex>
+                              <v-flex>
+                                <div
+                                  :class="{
+                                    bluegrass: transaction.processorResponseType.match(
+                                      'approved'
+                                    )
+                                  }"
+                                  class="text-uppercase title"
+                                >
+                                  {{
+                                    transaction.processorResponseType.match(
+                                      'approved'
+                                    )
+                                      ? $t('approved')
+                                      : $t('declined')
+                                  }}
+                                </div>
+                              </v-flex>
+                            </v-layout>
+                          </v-container>
+                        </v-card>
+                      </v-list>
+                    </v-container>
+                  </v-tab-item>
+                  <v-tab-item>
+                    <v-container
+                      class="pa-5"
+                      style="margin: 0; max-width: 600px;"
+                    >
+                      <h2>{{ $t('emailNotifications') }}</h2>
+                      <v-switch
+                        v-model="email.switch"
+                        :label="`Switch 1: foobar`"
+                        color="primary"
+                      ></v-switch>
+                    </v-container>
+                  </v-tab-item>
+                </v-tabs-items>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-flex>
+      </v-layout>
+      <cv-footer />
+    </div>
   </no-ssr>
 </template>
 
 <script>
 import Navbar from '~/components/Navbar';
+import cvFooter from '~/components/Footer';
 export default {
   components: {
-    Navbar
+    Navbar,
+    cvFooter
   },
   data() {
     return {
@@ -462,7 +479,7 @@ export default {
       .catch(() => {
         this.$store.dispatch('showSnackbar', {
           color: 'red',
-          message: 'Error fetching resumes. Please check your connection.'
+          message: this.$t('errorFetchingResumes')
         });
       })
       .finally(() => {
@@ -477,7 +494,7 @@ export default {
       .catch(() => {
         this.$store.dispatch('showSnackbar', {
           color: 'red',
-          message: 'Error fetching subscription. Please check your connection.'
+          message: this.$t('errorFetchingSubscription')
         });
       })
       .finally(() => {
