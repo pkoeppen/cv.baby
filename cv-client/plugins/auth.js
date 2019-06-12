@@ -6,7 +6,7 @@ export default function({ $axios, store }) {
     }
     let accessToken = await store.dispatch('cognito/getAccessToken');
     if (accessToken) {
-      if (process.client) {
+      if (process.client && accessToken.payload.exp) {
         // If token is expired, refresh it.
         const expiration = accessToken.payload.exp;
         const now = Math.floor(new Date().getTime() / 1000);
@@ -15,8 +15,10 @@ export default function({ $axios, store }) {
             'cognito/checkAuthentication'
           ));
         }
+        config.headers.common.Authorization = accessToken.jwtToken;
+      } else if (accessToken.jwtToken) {
+        config.headers.common.Authorization = accessToken.jwtToken;
       }
-      config.headers.common.Authorization = accessToken.jwtToken;
     }
     return config;
   });

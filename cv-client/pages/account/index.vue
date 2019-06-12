@@ -82,13 +82,29 @@
                                 <v-btn
                                   icon
                                   depressed
-                                  :to="`/account/editor?i=${index}`"
+                                  :to="`/${$i18n.locale}/${resume.slug}`"
+                                  ><v-icon>link</v-icon></v-btn
+                                >
+                                <v-btn
+                                  icon
+                                  depressed
+                                  :to="
+                                    localePath({
+                                      name: 'account-editor',
+                                      query: { i: index }
+                                    })
+                                  "
                                   ><v-icon>edit</v-icon></v-btn
                                 >
                                 <v-btn
                                   icon
                                   depressed
-                                  :to="`/account/analytics?i=${index}`"
+                                  :to="
+                                    localePath({
+                                      name: 'account-analytics',
+                                      query: { i: index }
+                                    })
+                                  "
                                 >
                                   <v-icon>trending_up</v-icon>
                                 </v-btn>

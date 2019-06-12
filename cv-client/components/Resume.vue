@@ -73,7 +73,9 @@
             color="primary"
             class="text-xs-center label-wrap"
           >
-            <span class="cv-section-header" text-color="white">Employment</span>
+            <span class="cv-section-header" text-color="white">{{
+              $t('employment')
+            }}</span>
           </v-toolbar>
         </v-flex>
         <v-flex v-if="$mq === 'lg'" class="px-5" xs12 lg10>
@@ -133,7 +135,9 @@
             color="primary"
             class="text-xs-center label-wrap"
           >
-            <span class="cv-section-header" text-color="white">Education</span>
+            <span class="cv-section-header" text-color="white">{{
+              $t('education')
+            }}</span>
           </v-toolbar>
         </v-flex>
         <v-flex v-if="$mq === 'lg'" class="px-5" xs12 lg10>
@@ -186,14 +190,10 @@
       </template>
       <template v-if="resume.references.length">
         <v-flex xs12 lg10>
-          <v-toolbar
-            dark
-            dense
-            flat
-            color="primary"
-            class="text-xs-center label-wrap"
-          >
-            <span class="cv-section-header" text-color="white">References</span>
+          <v-toolbar dark dense flat class="primary text-xs-center label-wrap">
+            <span class="cv-section-header" text-color="white">{{
+              $t('references')
+            }}</span>
           </v-toolbar>
         </v-flex>
         <v-flex class="py-3 px-4" xs12 lg10>
@@ -349,7 +349,9 @@
             color="primary"
             class="text-xs-center label-wrap"
           >
-            <span class="cv-section-header" text-color="white">Personal</span>
+            <span class="cv-section-header" text-color="white">{{
+              $t('personal')
+            }}</span>
           </v-toolbar>
         </v-flex>
         <v-flex class="pa-5" xs12 lg10>
@@ -394,14 +396,10 @@
       </template>
       <template>
         <v-flex xs12 lg10>
-          <v-toolbar
-            dark
-            dense
-            flat
-            color="primary"
-            class="text-xs-center label-wrap"
-          >
-            <span class="cv-section-header" text-color="white">Contact</span>
+          <v-toolbar dark dense flat class="primary text-xs-center label-wrap">
+            <span class="cv-section-header" text-color="white">{{
+              $t('contact')
+            }}</span>
           </v-toolbar>
         </v-flex>
         <v-flex class="pa-5" xs12 lg8>
@@ -559,18 +557,21 @@ export default {
       console.log('event:', JSON.stringify(event));
     },
     formatDates([dateFrom, dateTo]) {
-      const dateFromPretty = new Date(dateFrom).toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'long'
-        // day: 'numeric'
-      });
+      const dateFromPretty = new Date(dateFrom).toLocaleString(
+        this.$i18n.locale,
+        {
+          year: 'numeric',
+          month: 'long'
+          // day: 'numeric'
+        }
+      );
       const dateToPretty = dateTo
-        ? new Date(dateTo).toLocaleString('en-US', {
+        ? new Date(dateTo).toLocaleString(this.$i18n.locale, {
             year: 'numeric',
             month: 'long'
             // day: 'numeric'
           })
-        : 'present';
+        : this.$t('present');
       return `${dateFromPretty} - ${dateToPretty}`;
     }
   }

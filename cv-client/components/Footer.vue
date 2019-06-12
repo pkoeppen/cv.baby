@@ -8,16 +8,31 @@
         <div v-if="isResume" class="py-3 text-xs-center white--text">
           <nuxt-link
             style="color: #FFFFFF; text-decoration: none;"
-            to="/pricing"
-            >Impressed? Create your own resume with
-            <span class="font-weight-bold">cvbaby pro</span></nuxt-link
+            :to="localePath('pricing')"
           >
+            {{ $t('createYourOwnResume') }}
+            <!-- Impressed? Create your own resume with
+            <span class="font-weight-bold">cvbaby pro</span> -->
+          </nuxt-link>
         </div>
         <div v-else class="py-3 text-xs-center white--text">
-          <v-btn class="ma-0 caption" flat dark small>
-            <v-icon class="mr-2" small>language</v-icon>
-            English
-          </v-btn>
+          <v-menu top offset-y>
+            <template v-slot:activator="{ on }">
+              <v-btn class="ma-0 caption" flat dark small v-on="on">
+                <v-icon class="mr-2" small>language</v-icon>
+                {{ currentLocale }}
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-tile
+                v-for="locale in availableLocales"
+                :key="locale.code"
+                :to="switchLocalePath(locale.code)"
+              >
+                <v-list-tile-title>{{ locale.name }}</v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
         </div>
       </v-layout>
     </v-container>
@@ -25,6 +40,7 @@
 </template>
 
 <script>
+import { find } from 'lodash';
 export default {
   name: 'Footer',
   props: {
@@ -41,6 +57,16 @@ export default {
       default: 'Peter Koeppen'
     }
   },
-  computed: {}
+  computed: {
+    currentLocale() {
+      return find(
+        this.$i18n.locales,
+        locale => locale.code === this.$i18n.locale
+      ).name;
+    },
+    availableLocales() {
+      return this.$i18n.locales.filter(i => i.code !== this.$i18n.locale);
+    }
+  }
 };
 </script>

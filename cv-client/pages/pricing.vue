@@ -4,7 +4,10 @@
       <v-flex xs12 md8>
         <v-toolbar class="elevation-0">
           <v-toolbar-title class="cv-logo font-weight-black">
-            <nuxt-link to="/" style="text-decoration: none; color: inherit;">
+            <nuxt-link
+              :to="localePath('index')"
+              style="text-decoration: none; color: inherit;"
+            >
               <span>cv</span><span>baby&nbsp;</span>
             </nuxt-link>
           </v-toolbar-title>
@@ -15,10 +18,11 @@
       </v-flex>
       <v-flex class="mt-4 mb-1" xs12 md8>
         <div class="cv-trial-text text-xs-center font-weight-black">
-          Free 14-day trial for
+          {{ $t('free14DayTrialForCvBabyPro') }}
+          <!-- Free 14-day trial for
           <div class="cv-logo" style="display: inline;">
             <span>cv</span><span>baby</span> pro
-          </div>
+          </div> -->
         </div>
       </v-flex>
       <v-flex xs12>
@@ -27,46 +31,59 @@
             <v-flex xs12 sm6 md4 lg3>
               <v-card class="cv-tier elevation-0 pb-3">
                 <v-card-title class="cv-pricing-header" primary-title>
-                  <div class="cv-period mb-0 py-3">Monthly</div>
+                  <div class="cv-period mb-0 py-3">{{ $t('monthly') }}</div>
                   <br />
                   <div>
                     <div class="cv-price pt-3">9</div>
                   </div>
                   <br />
-                  <span class="grey--text text--darken-1">per month</span>
-                  <span class="grey--text text--darken-1">cancel any time</span>
+                  <span class="grey--text text--darken-1">{{
+                    $t('perMonth')
+                  }}</span>
+                  <span class="grey--text text--darken-1">{{
+                    $t('cancelAnyTime')
+                  }}</span>
                 </v-card-title>
                 <v-card-text>
                   <v-layout column align-center justify-center>
-                    <v-btn color="primary" to="/payment?cycle=monthly" large>
-                      Start Free Trial
+                    <v-btn
+                      color="primary"
+                      :to="
+                        localePath({
+                          name: 'payment',
+                          query: { cycle: 'monthly' }
+                        })
+                      "
+                      large
+                    >
+                      {{ $t('startFreeTrial') }}
                     </v-btn>
                     <v-list class="cv-features pb-4">
                       <v-list-tile style="height: 36px">
                         <v-icon class="bluegrass mr-2">
                           check
                         </v-icon>
-                        <div>Unlimited usage</div>
+                        <div>{{ $t('unlimitedUsage') }}</div>
                       </v-list-tile>
                       <v-list-tile style="height: 36px">
                         <v-icon class="bluegrass mr-2">
                           check
                         </v-icon>
-                        <div>24/7 support</div>
+                        <div>{{ $t('twentyFourSevenSupport') }}</div>
                       </v-list-tile>
                       <v-list-tile style="height: 36px">
                         <v-icon class="bluegrass mr-2">
                           check
                         </v-icon>
-                        <div>No ads</div>
+                        <div>{{ $t('noAds') }}</div>
                       </v-list-tile>
                       <v-list-tile class="grey--text" style="height: 36px">
                         <v-icon class="grey--text mr-2">close</v-icon>
-                        <div>Shorter license</div>
+                        <div>{{ $t('shorterLicense') }}</div>
                       </v-list-tile>
                       <v-list-tile class="grey--text" style="height: 36px">
                         <v-icon class="grey--text mr-2">close</v-icon>
-                        <div>More expensive</div>
+                        <div>{{ $t('moreExpensive') }}</div>
                       </v-list-tile>
                     </v-list>
                   </v-layout>
@@ -76,53 +93,66 @@
             <v-flex xs12 sm6 md4 lg3>
               <v-card class="cv-tier elevation-0 pb-3">
                 <div class="cv-award white--text caption font-weight-bold px-2">
-                  Most Popular
+                  {{ $t('mostPopular') }}
                 </div>
                 <v-card-title class="cv-pricing-header" primary-title>
-                  <div class="cv-period mb-0 py-3">Yearly</div>
+                  <div class="cv-period mb-0 py-3">{{ $t('yearly') }}</div>
                   <br />
                   <div>
                     <div class="cv-price pt-3">3</div>
                   </div>
                   <br />
-                  <span class="grey--text text--darken-1">per month</span>
-                  <span class="grey--text text--darken-1">cancel any time</span>
+                  <span class="grey--text text--darken-1">{{
+                    $t('perMonth')
+                  }}</span>
+                  <span class="grey--text text--darken-1">{{
+                    $t('cancelAnyTime')
+                  }}</span>
                 </v-card-title>
                 <v-card-text>
                   <v-layout column align-center justify-center>
-                    <v-btn color="primary" to="/payment?cycle=yearly" large>
-                      Start Free Trial
+                    <v-btn
+                      color="primary"
+                      :to="
+                        localePath({
+                          name: 'payment',
+                          query: { cycle: 'yearly' }
+                        })
+                      "
+                      large
+                    >
+                      {{ $t('startFreeTrial') }}
                     </v-btn>
                     <v-list class="cv-features pb-4">
                       <v-list-tile style="height: 36px">
                         <v-icon class="bluegrass mr-2">
                           check
                         </v-icon>
-                        <div>Unlimited usage</div>
+                        <div>{{ $t('unlimitedUsage') }}</div>
                       </v-list-tile>
                       <v-list-tile style="height: 36px">
                         <v-icon class="bluegrass mr-2">
                           check
                         </v-icon>
-                        <div>24/7 support</div>
+                        <div>{{ $t('twentyFourSevenSupport') }}</div>
                       </v-list-tile>
                       <v-list-tile style="height: 36px">
                         <v-icon class="bluegrass mr-2">
                           check
                         </v-icon>
-                        <div>No ads</div>
+                        <div>{{ $t('noAds') }}</div>
                       </v-list-tile>
                       <v-list-tile style="height: 36px">
                         <v-icon class="bluegrass mr-2">
                           check
                         </v-icon>
-                        <div>Extended license</div>
+                        <div>{{ $t('extendedLicense') }}</div>
                       </v-list-tile>
                       <v-list-tile style="height: 36px">
                         <v-icon class="bluegrass mr-2">
                           check
                         </v-icon>
-                        <div>Less expensive</div>
+                        <div>{{ $t('lessExpensive') }}</div>
                       </v-list-tile>
                     </v-list>
                   </v-layout>
@@ -134,7 +164,8 @@
       </v-flex>
       <v-flex class="text-xs-center px-3" xs12>
         <h2 class="bluegrass mb-4">
-          Trusted by over 20 thousand users every month
+          {{ $t('trustedByOver20ThousandUsers') }}
+          <!-- Trusted by over 20 thousand users every month -->
         </h2>
       </v-flex>
       <v-flex class="text-xs-center mt-5 pt-5" style="background: white" xs12>
@@ -142,7 +173,7 @@
           <v-layout justify-center align-center wrap>
             <v-flex xs12>
               <h1 class="mb-5">
-                What's included with your Pro subscription
+                {{ $t('whatsIncludedWithYourProSubscription') }}
               </h1>
               <v-layout justify-center align-center wrap>
                 <v-flex
@@ -256,7 +287,16 @@
               </v-layout>
             </v-flex>
             <v-flex class="mt-5" xs12>
-              <v-btn to="/payment?cycle=yearly" class="mb-5" color="primary">
+              <v-btn
+                :to="
+                  localePath({
+                    name: 'payment',
+                    query: { cycle: 'yearly' }
+                  })
+                "
+                class="mb-5"
+                color="primary"
+              >
                 Get started
               </v-btn>
             </v-flex>
@@ -332,7 +372,15 @@
               <span>pro</span>
             </div>
           </div>
-          <v-btn to="/payment?cycle=yearly" class="my-4" color="primary"
+          <v-btn
+            :to="
+              localePath({
+                name: 'payment',
+                query: { cycle: 'yearly' }
+              })
+            "
+            class="my-4"
+            color="primary"
             >Get started</v-btn
           >
           <div class="questions">
