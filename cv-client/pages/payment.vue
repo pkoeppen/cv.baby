@@ -8,7 +8,10 @@
               class="cv-logo font-weight-black"
               style="font-size: 28px"
             >
-              <nuxt-link to="/" style="text-decoration: none; color: inherit;">
+              <nuxt-link
+                :to="localePath('index')"
+                style="text-decoration: none; color: inherit;"
+              >
                 <span>cv</span><span>baby&nbsp;</span>
               </nuxt-link>
             </v-toolbar-title>
@@ -19,41 +22,44 @@
         </v-flex>
         <v-flex class="mt-4 mb-2" xs12 md8>
           <div class="cv-trial-text text-xs-center font-weight-black">
-            Free 14-day trial for
+            <!-- Free 14-day trial for
             <div class="cv-logo" style="display: inline;">
               <span>cv</span><span>baby</span> pro
-            </div>
+            </div> -->
+            {{ $t('free14DayTrialForCvBabyPro') }}
           </div>
         </v-flex>
         <v-flex xs12>
           <v-container grid-list-xl fill-height>
             <v-layout justify-center>
               <v-flex class="px-5" xs12 md5>
-                <div class="mb-3">1. Choose a billing cycle</div>
+                <div class="mb-3">1. {{ $t('chooseABillingCycle') }}</div>
                 <v-card class="cv-step elevation-0">
                   <v-tabs v-model="activeBillingCycleTab" grow>
-                    <v-tab ripple>Monthly</v-tab>
+                    <v-tab ripple>{{ $t('monthly') }}</v-tab>
                     <v-tab-item>
                       <v-container>
                         <div class="cv-billing-detail mb-2">
                           <div class="font-weight-black">
-                            First 14 days
+                            {{ $t('first14Days') }}
                           </div>
-                          <div class="font-weight-black text-xs-right">
-                            FREE
+                          <div
+                            class="font-weight-black text-xs-right text-uppercase"
+                          >
+                            {{ $t('free') }}
                           </div>
                         </div>
                         <div class="cv-billing-detail mb-2">
                           <div>
-                            Price per month
+                            {{ $t('pricePerMonth') }}
                           </div>
                           <div class="text-xs-right">
-                            USD 9/month
+                            USD 9/{{ $t('month') }}
                           </div>
                         </div>
                         <div class="cv-billing-detail mb-2">
                           <div>
-                            Billed monthly
+                            {{ $t('billedMonthly') }}
                           </div>
                           <div class="text-xs-right">
                             USD 9
@@ -61,28 +67,30 @@
                         </div>
                       </v-container>
                     </v-tab-item>
-                    <v-tab ripple>Yearly</v-tab>
+                    <v-tab ripple>{{ $t('yearly') }}</v-tab>
                     <v-tab-item>
                       <v-container>
                         <div class="cv-billing-detail mb-2">
                           <div class="font-weight-black">
-                            First 14 days
+                            {{ $t('first14Days') }}
                           </div>
-                          <div class="font-weight-black text-xs-right">
-                            FREE
+                          <div
+                            class="font-weight-black text-xs-right text-uppercase"
+                          >
+                            {{ $t('free') }}
                           </div>
                         </div>
                         <div class="cv-billing-detail mb-2">
                           <div>
-                            Price per month
+                            {{ $t('pricePerMonth') }}
                           </div>
                           <div class="text-xs-right">
-                            USD 3/month
+                            USD 3/{{ $t('month') }}
                           </div>
                         </div>
                         <div class="cv-billing-detail mb-2">
                           <div>
-                            Billed yearly
+                            {{ $t('billedYearly') }}
                           </div>
                           <div class="text-xs-right">
                             USD 36
@@ -93,27 +101,28 @@
                   </v-tabs>
                 </v-card>
                 <template v-if="!authenticated">
-                  <div class="mb-3 mt-4">2. Create your account</div>
+                  <div class="mb-3 mt-4">2. {{ $t('createYourAccount') }}</div>
+                  <!-- TODO: add rules for these fields -->
                   <v-text-field
                     v-model="signUpData.email"
-                    label="Email"
+                    :label="$t('email')"
                     outline
                     required
                   />
                   <v-text-field
                     v-model="signUpData.password"
-                    label="Password"
+                    :label="$t('password')"
                     type="password"
                     outline
                     required
                   />
                 </template>
                 <div class="mb-3 mt-4">
-                  {{ authenticated ? '2' : '3' }}. Choose payment
+                  {{ authenticated ? '2' : '3' }}. {{ $t('choosePayment') }}
                 </div>
                 <v-card class="cv-step elevation-0">
                   <v-tabs v-model="activePaymentTypeTab" grow>
-                    <v-tab ripple>Debit/Credit Card</v-tab>
+                    <v-tab ripple>{{ $t('debitCreditCard') }}</v-tab>
                     <v-tab-item>
                       <payment-fields ref="paymentFields" />
                     </v-tab-item>
@@ -122,8 +131,7 @@
                       <v-container>
                         <div class="cv-billing-detail">
                           <div class="font-weight-black">
-                            You will be redirected to PayPal to finish your
-                            payment.
+                            {{ $t('youWillBeRedirectedToPayPal') }}
                           </div>
                         </div>
                       </v-container>
@@ -139,7 +147,7 @@
                       check_circle
                     </v-icon>
                   </div>
-                  <div>You won't be charged today</div>
+                  <div>{{ $t('youWontBeChargedToday') }}</div>
                 </div>
                 <div
                   class="mb-1"
@@ -150,9 +158,7 @@
                       check_circle
                     </v-icon>
                   </div>
-                  <div>
-                    Cancel your trial any time before {{ paidStartDate }}
-                  </div>
+                  <div>{{ $t('cancelAnyTimeBefore') }} {{ paidStartDate }}</div>
                 </div>
                 <div class="text-xs-center">
                   <v-btn
@@ -165,8 +171,8 @@
                     <v-icon v-if="signUpData.success">check_circle</v-icon>
                     {{
                       signUpData.success
-                        ? '&nbsp;Free trial started'
-                        : 'Start free trial'
+                        ? $t('freeTrialStarted')
+                        : $t('startFreeTrial')
                     }}
                   </v-btn>
                   <div
@@ -176,7 +182,7 @@
                     <v-icon class="bluegrass mr-1" style="font-size: 16px">
                       lock
                     </v-icon>
-                    All transactions are secured with SSL encryption
+                    {{ $t('allTransactionsAreSecuredWithSSL') }}
                   </div>
                 </div>
               </v-flex>
@@ -199,7 +205,7 @@
                           check
                         </v-icon>
                       </div>
-                      <div>Unlimited usage</div>
+                      <div>{{ $t('unlimitedUsage') }}</div>
                     </div>
                     <div
                       class="mb-2"
@@ -210,7 +216,7 @@
                           check
                         </v-icon>
                       </div>
-                      <div>24/7 support</div>
+                      <div>{{ $t('twentyFourSevenSupport') }}</div>
                     </div>
                     <div
                       style="display: flex; justify-content: flex-start; align-items: center;"
@@ -220,14 +226,16 @@
                           check
                         </v-icon>
                       </div>
-                      <div>No ads</div>
+                      <div>{{ $t('noAds') }}</div>
                     </div>
                     <v-divider class="my-4" />
                     <div
                       style="display: flex; justify-content: space-between; align-items: center;"
                     >
                       <div class="bluegrass font-weight-black">
-                        Renews automatically.<br />Cancel anytime.
+                        {{ $t('renewsAutomatically') }}<br />{{
+                          $t('cancelAnyTime')
+                        }}.
                       </div>
                       <div>
                         <v-icon>autorenew</v-icon>
@@ -242,8 +250,8 @@
             class="text-xs-center my-5"
             style="font-family: 'Open Sans', sans-serif; font-size: 16px"
           >
-            Having trouble?
-            <a href="">Contact us</a>
+            {{ $t('havingTrouble') }}
+            <a href="mailto:support@cv.baby">{{ $t('contactUs') }}</a>
           </div>
         </v-flex>
       </v-layout>

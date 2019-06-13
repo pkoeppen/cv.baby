@@ -98,6 +98,7 @@ module.exports = {
         import: ['~assets/style/variables.styl']
       }
     },
+    vendor: ['html2canvas'],
     /*
      ** You can extend webpack config here
      */

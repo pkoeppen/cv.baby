@@ -389,8 +389,9 @@ module.exports = {
     de: 'cvbaby pro gratis testen'
   },
   accountCreated: {
-    en: 'Account Created',
-    de: 'Konto erstellt'
+    // Leave the spaces.
+    en: ' Account Created',
+    de: ' Konto erstellt'
   },
   startFreeTrial: {
     en: 'Start Free Trial',
@@ -398,7 +399,7 @@ module.exports = {
   },
   free14DayTrialForCvBabyPro: {
     en: 'Free 14-day trial for cvbaby pro',
-    de: 'Kostenlose 14-Tage Testphase von cvbaby pro'
+    de: '14-Tage-Gratistest für cvbaby pro'
   },
   monthly: {
     en: 'Monthly',
@@ -413,8 +414,8 @@ module.exports = {
     de: 'pro Monat'
   },
   cancelAnyTime: {
-    en: 'cancel any time',
-    de: 'jederzeit kündbar'
+    en: 'Cancel any time',
+    de: 'Jederzeit kündbar'
   },
   unlimitedUsage: {
     en: 'Unlimited usage',
@@ -455,6 +456,81 @@ module.exports = {
   whatsIncludedWithYourProSubscription: {
     en: "What's included with your pro subscription",
     de: 'Was in einem Pro-Abonnement enthalten ist'
+  },
+  /*
+   *  Payment
+   */
+  chooseABillingCycle: {
+    en: 'Choose a billing cycle',
+    de: 'Abrechnungsrhythmus wählen'
+  },
+  first14Days: {
+    en: 'First 14 days',
+    de: 'Erste 14 Tage'
+  },
+  free: {
+    en: 'Free',
+    de: 'Gratis'
+  },
+  pricePerMonth: {
+    en: 'Price per month',
+    de: 'Monatsbetrag'
+  },
+  month: {
+    en: 'month',
+    de: 'Monat'
+  },
+  billedMonthly: {
+    en: 'Billed monthly',
+    de: 'Monatlich abgerechnet'
+  },
+  billedYearly: {
+    en: 'Billed yearly',
+    de: 'Jährlich abgerechnet'
+  },
+  createYourAccount: {
+    en: 'Create your account',
+    de: 'Ihr Konto erstellen'
+  },
+  choosePayment: {
+    en: 'Choose payment',
+    de: 'Zahlungsmethode wählen'
+  },
+  debitCreditCard: {
+    en: 'Debit/Credit Card',
+    de: 'Debit-/Kreditkarte'
+  },
+  youWillBeRedirectedToPayPal: {
+    en: 'You will be redirected to PayPal to finish your payment.',
+    de: 'Für die Zahlung werden Sie an PayPal weitergeleitet.'
+  },
+  youWontBeChargedToday: {
+    en: "You won't be charged today",
+    de: 'Ihre Kreditkarte wird heute nicht belastet'
+  },
+  cancelAnyTimeBefore: {
+    en: 'Cancel your trial any time before',
+    de: 'Jederzeit kündbar bis'
+  },
+  freeTrialStarted: {
+    en: ' Free trial started',
+    de: ' Gratisttest gestartet'
+  },
+  allTransactionsAreSecuredWithSSL: {
+    en: 'All transactions are secured with SSL encryption',
+    de: 'Alle Transaktionen sind durch SSL-Verschlüsselung abgesichert'
+  },
+  renewsAutomatically: {
+    en: 'Renews automatically.',
+    de: 'Verlängert sich automatisch.'
+  },
+  havingTrouble: {
+    en: 'Having trouble?',
+    de: 'Probleme?'
+  },
+  contactUs: {
+    en: 'Contact us',
+    de: 'Kontaktieren Sie uns'
   },
   /*
    *  Footer

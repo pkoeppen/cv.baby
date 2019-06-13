@@ -32,11 +32,9 @@
               <v-card class="cv-tier elevation-0 pb-3">
                 <v-card-title class="cv-pricing-header" primary-title>
                   <div class="cv-period mb-0 py-3">{{ $t('monthly') }}</div>
-                  <br />
                   <div>
                     <div class="cv-price pt-3">9</div>
                   </div>
-                  <br />
                   <span class="grey--text text--darken-1">{{
                     $t('perMonth')
                   }}</span>
@@ -92,20 +90,16 @@
             </v-flex>
             <v-flex xs12 sm6 md4 lg3>
               <v-card class="cv-tier elevation-0 pb-3">
-                <div class="cv-award white--text caption font-weight-bold px-2">
-                  {{ $t('mostPopular') }}
-                </div>
+                <ribbon :text="$t('mostPopular')" left />
                 <v-card-title class="cv-pricing-header" primary-title>
                   <div class="cv-period mb-0 py-3">{{ $t('yearly') }}</div>
-                  <br />
                   <div>
                     <div class="cv-price pt-3">3</div>
                   </div>
-                  <br />
                   <span class="grey--text text--darken-1">{{
                     $t('perMonth')
                   }}</span>
-                  <span class="grey--text text--darken-1">{{
+                  <span class="grey--text text--darken-1 text-lowercase">{{
                     $t('cancelAnyTime')
                   }}</span>
                 </v-card-title>
@@ -396,9 +390,11 @@
 </template>
 
 <script>
+import Ribbon from '~/components/Ribbon';
 import cvFooter from '~/components/Footer';
 export default {
   components: {
+    Ribbon,
     cvFooter
   }
 };
