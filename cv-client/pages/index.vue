@@ -13,7 +13,6 @@
         <div class="cv-subheader font-weight-light text-xs-center px-4 mt-3">
           {{ $t('anAllInOneSolution') }}
         </div>
-        <resume class="mt-4" />
         <div class="cv-ribbon">
           <div class="cv-ribbon-text white--text text-xs-right">
             <div class="body-1">{{ $t('summerSale') }}</div>
@@ -26,6 +25,7 @@
         </div>
       </v-flex>
     </v-layout>
+    <resume :resume="demoResume" is-demo />
     <cv-footer />
   </div>
 </template>
@@ -34,11 +34,17 @@
 import Navbar from '~/components/Navbar';
 import cvFooter from '~/components/Footer';
 import Resume from '~/components/Resume';
+import { getDemoResume } from '~/assets/js/util';
 export default {
   components: {
     Navbar,
     cvFooter,
     Resume
+  },
+  data() {
+    return {
+      demoResume: getDemoResume()
+    };
   }
 };
 </script>

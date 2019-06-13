@@ -17,6 +17,26 @@
               </v-layout>
             </template>
           </v-img>
+          <template v-if="isDemo">
+            <div class="spark-container spark-container-1">
+              <div class="spark" />
+            </div>
+            <div class="spark-container spark-container-2">
+              <div class="spark" />
+            </div>
+            <div class="spark-container spark-container-3">
+              <div class="spark" />
+            </div>
+            <div class="spark-container spark-container-4">
+              <div class="spark" />
+            </div>
+            <div class="spark-container spark-container-5">
+              <div class="spark" />
+            </div>
+            <div class="spark-container spark-container-6">
+              <div class="spark" />
+            </div>
+          </template>
         </div>
       </v-flex>
       <v-flex xs12>
@@ -402,7 +422,7 @@
             }}</span>
           </v-toolbar>
         </v-flex>
-        <v-flex class="pa-5" xs12 lg8>
+        <v-flex class="pa-5" xs12 sm10 md8 lg6>
           <v-card class="pa-0">
             <v-container class="pa-0">
               <v-layout align-center justify-center wrap>
@@ -518,18 +538,19 @@ export default {
     resume: {
       type: Object,
       default: () => getDefaultResume()
+    },
+    isDemo: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      resumeImageSource: `${process.env.CVBABY_UPLOAD_HOST}/users/${
-        this.resume.userID
-      }/profile.jpeg`,
-      contactDialog: {
-        '0': false,
-        '1': false,
-        '2': false
-      }
+      resumeImageSource: this.isDemo
+        ? require('~/assets/images/avatar.svg')
+        : `${process.env.CVBABY_UPLOAD_HOST}/users/${
+            this.resume.userID
+          }/profile.jpeg`
     };
   },
   computed: {
@@ -554,6 +575,7 @@ export default {
   },
   methods: {
     setImagePlaceholder(event) {
+      // TODO
       console.log('event:', JSON.stringify(event));
     },
     formatDates([dateFrom, dateTo]) {
