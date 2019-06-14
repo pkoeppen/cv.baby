@@ -26,6 +26,30 @@
       </v-flex>
     </v-layout>
     <resume :resume="demoResume" is-demo />
+    <v-flex style="background: white" xs12>
+      <v-divider class="my-5" />
+    </v-flex>
+    <v-flex class="text-xs-center py-5" style="background: white" xs12>
+      <div class="cv-footer-background py-4">
+        <div class="call-to-action" v-html="$t('subscribeToCvBabyPro')" />
+        <v-btn
+          :to="
+            localePath({
+              name: 'payment',
+              query: { cycle: 'yearly' }
+            })
+          "
+          class="my-4"
+          color="primary"
+          >{{ $t('getStarted') }}</v-btn
+        >
+        <div class="questions">
+          {{ $t('stillHaveQuestions') }}
+          <a href="mailto:support@cv.baby">{{ $t('contactUs') }}</a>
+        </div>
+      </div>
+      <div class="mb-5" />
+    </v-flex>
     <cv-footer />
   </div>
 </template>
@@ -49,6 +73,14 @@ export default {
 };
 </script>
 <style lang="stylus" scoped>
+.cv-footer-background
+  .call-to-action
+    font-family: 'Open Sans', sans-serif !important
+    font-size: 26px
+  .questions
+    font-family: 'Open Sans', sans-serif !important
+  .cv-logo
+    font-size: 30px !important
 .cv-toolbar
   background-color: #ffffff !important
 .cv-logo

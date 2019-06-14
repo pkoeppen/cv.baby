@@ -21,13 +21,10 @@
           <v-divider />
         </v-flex>
         <v-flex class="mt-4 mb-2" xs12 md8>
-          <div class="cv-trial-text text-xs-center font-weight-black">
-            <!-- Free 14-day trial for
-            <div class="cv-logo" style="display: inline;">
-              <span>cv</span><span>baby</span> pro
-            </div> -->
-            {{ $t('free14DayTrialForCvBabyPro') }}
-          </div>
+          <div
+            class="cv-trial-text text-xs-center font-weight-black"
+            v-html="$t('free14DayTrialForCvBabyPro')"
+          ></div>
         </v-flex>
         <v-flex xs12>
           <v-container grid-list-xl fill-height>

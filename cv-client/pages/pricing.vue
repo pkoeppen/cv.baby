@@ -3,7 +3,7 @@
     <v-layout class="cv-background-grey" justify-center align-center wrap>
       <v-flex xs12 md8>
         <v-toolbar class="elevation-0">
-          <v-toolbar-title class="cv-logo font-weight-black">
+          <v-toolbar-title class="cv-logo">
             <nuxt-link
               :to="localePath('index')"
               style="text-decoration: none; color: inherit;"
@@ -17,13 +17,10 @@
         <v-divider />
       </v-flex>
       <v-flex class="mt-4 mb-1" xs12 md8>
-        <div class="cv-trial-text text-xs-center font-weight-black">
-          {{ $t('free14DayTrialForCvBabyPro') }}
-          <!-- Free 14-day trial for
-          <div class="cv-logo" style="display: inline;">
-            <span>cv</span><span>baby</span> pro
-          </div> -->
-        </div>
+        <div
+          class="cv-trial-text text-xs-center font-weight-bold"
+          v-html="$t('free14DayTrialForCvBabyPro')"
+        />
       </v-flex>
       <v-flex xs12>
         <v-container grid-list-xl fill-height>
@@ -38,7 +35,7 @@
                   <span class="grey--text text--darken-1">{{
                     $t('perMonth')
                   }}</span>
-                  <span class="grey--text text--darken-1">{{
+                  <span class="grey--text text--darken-1 text-lowercase">{{
                     $t('cancelAnyTime')
                   }}</span>
                 </v-card-title>
@@ -176,15 +173,12 @@
                   md6
                 >
                   <div class="pr-4">
-                    <v-icon x-large>lock</v-icon>
+                    <v-icon x-large>cloud_done</v-icon>
                   </div>
                   <div>
-                    <h3>Foobar Title</h3>
+                    <h3>{{ $t('featureUnlimitedAccess') }}</h3>
                     <p class="ma-0">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      tempor incididunt ut labore et dolore magna aliqua. Ut,
-                      quis quis nostrud exercitation ullamco laboris nisi ut
-                      aliquip.
+                      {{ $t('featureDescriptionUnlimitedAccess') }}
                     </p>
                   </div>
                 </v-flex>
@@ -194,15 +188,12 @@
                   md6
                 >
                   <div class="pr-4">
-                    <v-icon x-large>lock</v-icon>
+                    <v-icon x-large>file_copy</v-icon>
                   </div>
                   <div>
-                    <h3>Foobar Title</h3>
+                    <h3>{{ $t('featureMultipleResumes') }}</h3>
                     <p class="ma-0">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      tempor incididunt ut labore et dolore magna aliqua. Ut,
-                      quis quis nostrud exercitation ullamco laboris nisi ut
-                      aliquip.
+                      {{ $t('featureDescriptionMultipleResumes') }}
                     </p>
                   </div>
                 </v-flex>
@@ -212,15 +203,12 @@
                   md6
                 >
                   <div class="pr-4">
-                    <v-icon x-large>lock</v-icon>
+                    <v-icon x-large>money_off</v-icon>
                   </div>
                   <div>
-                    <h3>Foobar Title</h3>
+                    <h3>{{ $t('featureNoAds') }}</h3>
                     <p class="ma-0">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      tempor incididunt ut labore et dolore magna aliqua. Ut,
-                      quis quis nostrud exercitation ullamco laboris nisi ut
-                      aliquip.
+                      {{ $t('featureDescriptionNoAds') }}
                     </p>
                   </div>
                 </v-flex>
@@ -230,15 +218,12 @@
                   md6
                 >
                   <div class="pr-4">
-                    <v-icon x-large>lock</v-icon>
+                    <v-icon x-large>save</v-icon>
                   </div>
                   <div>
-                    <h3>Foobar Title</h3>
+                    <h3>{{ $t('featureSaveAsPDF') }}</h3>
                     <p class="ma-0">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      tempor incididunt ut labore et dolore magna aliqua. Ut,
-                      quis quis nostrud exercitation ullamco laboris nisi ut
-                      aliquip.
+                      {{ $t('featureDescriptionSaveAsPDF') }}
                     </p>
                   </div>
                 </v-flex>
@@ -248,15 +233,12 @@
                   md6
                 >
                   <div class="pr-4">
-                    <v-icon x-large>lock</v-icon>
+                    <v-icon x-large>bar_chart</v-icon>
                   </div>
                   <div>
-                    <h3>Foobar Title</h3>
+                    <h3>{{ $t('featureAnalytics') }}</h3>
                     <p class="ma-0">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      tempor incididunt ut labore et dolore magna aliqua. Ut,
-                      quis quis nostrud exercitation ullamco laboris nisi ut
-                      aliquip.
+                      {{ $t('featureDescriptionAnalytics') }}
                     </p>
                   </div>
                 </v-flex>
@@ -266,15 +248,12 @@
                   md6
                 >
                   <div class="pr-4">
-                    <v-icon x-large>lock</v-icon>
+                    <v-icon x-large>verified_user</v-icon>
                   </div>
                   <div>
-                    <h3>Foobar Title</h3>
+                    <h3>{{ $t('featureCustomEndpoint') }}</h3>
                     <p class="ma-0">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      tempor incididunt ut labore et dolore magna aliqua. Ut,
-                      quis quis nostrud exercitation ullamco laboris nisi ut
-                      aliquip.
+                      {{ $t('featureDescriptionCustomEndpoint') }}
                     </p>
                   </div>
                 </v-flex>
@@ -301,54 +280,37 @@
           <v-layout justify-center align-center wrap>
             <v-flex xs12>
               <h1 class="mb-5">
-                Frequently asked questions:
+                {{ $t('faq') }}
               </h1>
             </v-flex>
             <v-flex class="text-xs-left mt-3" xs12 md6>
               <div class="mb-5">
-                <h3>Some question about the nature of the service?</h3>
+                <h3>{{ $t('faqAutomaticRenewal') }}</h3>
                 <p class="ma-0">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                  foobar tempor incididunt ut labore et dolore magna aliqua. Ut,
-                  quis quis nostrud exercitation ullamco laboris nisi ut
-                  aliquip.
+                  {{ $t('faqAnswerAutomaticRenewal') }}
                 </p>
               </div>
               <div class="mb-5">
-                <h3>Some question about the nature of the service?</h3>
+                <h3>{{ $t('faqHowCanIPay') }}</h3>
                 <p class="ma-0">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                  foobar tempor incididunt ut labore et dolore magna aliqua. Ut,
-                  quis quis nostrud exercitation ullamco laboris nisi ut
-                  aliquip.
+                  {{ $t('faqAnswerHowCanIPay') }}
                 </p>
               </div>
               <div class="mb-5">
-                <h3>Some question about the nature of the service?</h3>
+                <h3>{{ $t('faqHowCanICancel') }}</h3>
                 <p class="ma-0">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                  foobar tempor incididunt ut labore et dolore magna aliqua. Ut,
-                  quis quis nostrud exercitation ullamco laboris nisi ut
-                  aliquip.
+                  {{ $t('faqAnswerHowCanICancel') }}
                 </p>
               </div>
               <div class="mb-5">
-                <h3>Some question about the nature of the service?</h3>
+                <h3>{{ $t('faqPrivateResume') }}</h3>
                 <p class="ma-0">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                  foobar tempor incididunt ut labore et dolore magna aliqua. Ut,
-                  quis quis nostrud exercitation ullamco laboris nisi ut
-                  aliquip.
+                  {{ $t('faqAnswerPrivateResume') }}
                 </p>
               </div>
               <div class="mb-5">
-                <h3>Some question about the nature of the service?</h3>
-                <p class="ma-0">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                  foobar tempor incididunt ut labore et dolore magna aliqua. Ut,
-                  quis quis nostrud exercitation ullamco laboris nisi ut
-                  aliquip.
-                </p>
+                <h3>{{ $t('faqFeatureRequests') }}</h3>
+                <p class="ma-0" v-html="$t('faqAnswerFeatureRequests')" />
               </div>
             </v-flex>
           </v-layout>
@@ -359,13 +321,7 @@
       </v-flex>
       <v-flex class="text-xs-center py-5" style="background: white" xs12>
         <div class="cv-footer-background py-4">
-          <div class="call-to-action">
-            Subscribe to
-            <div class="cv-logo font-weight-black" style="display: inline;">
-              <span>cv</span><span>baby</span>
-              <span>pro</span>
-            </div>
-          </div>
+          <div class="call-to-action" v-html="$t('subscribeToCvBabyPro')" />
           <v-btn
             :to="
               localePath({
@@ -375,11 +331,11 @@
             "
             class="my-4"
             color="primary"
-            >Get started</v-btn
+            >{{ $t('getStarted') }}</v-btn
           >
           <div class="questions">
-            Still have questions?
-            <a href="mailto:support@cv.baby">Contact us</a>
+            {{ $t('stillHaveQuestions') }}
+            <a href="mailto:support@cv.baby">{{ $t('contactUs') }}</a>
           </div>
         </div>
         <div class="mb-5" />
@@ -402,16 +358,8 @@ export default {
 <style lang="stylus" scoped>
 .cv-background-grey
   background: rgb(245, 245, 245)
-.cv-logo
-  font-size: 28px
-  span
-    letter-spacing: -.03em
-  span:nth-child(2)
-    color: #2196f3
 .cv-trial-text
   font-size: 28px
-  .cv-logo
-    font-size: 32px
 .cv-pricing-header, .cv-pricing-header *
   font-family: 'Open Sans'
   font-weight: 200
@@ -463,8 +411,10 @@ export default {
   align-items: center
 .cv-footer-background
   .call-to-action
-    font-family: 'Open Sans', sans-serif
+    font-family: 'Open Sans', sans-serif !important
     font-size: 26px
   .questions
-    font-family: 'Open Sans', sans-serif
+    font-family: 'Open Sans', sans-serif !important
+  .cv-logo
+    font-size: 30px !important
 </style>

@@ -385,8 +385,10 @@ module.exports = {
     de: 'Gratis Testen'
   },
   tryCvBabyForFree: {
-    en: 'Try cvbaby for free',
-    de: 'cvbaby pro gratis testen'
+    en:
+      'Try <div class="cv-logo"><span>cv</span><span>baby</span><span>pro</span></div> for free',
+    de:
+      '<div class="cv-logo"><span>cv</span><span>baby</span><span>pro</span></div> gratis testen'
   },
   accountCreated: {
     // Leave the spaces.
@@ -398,8 +400,10 @@ module.exports = {
     de: 'Gratistest starten'
   },
   free14DayTrialForCvBabyPro: {
-    en: 'Free 14-day trial for cvbaby pro',
-    de: '14-Tage-Gratistest für cvbaby pro'
+    en:
+      'Free 14-day trial for <div class="cv-logo" style="font-size: 32px;"><span>cv</span><span>baby</span><span>pro</span></div>',
+    de:
+      '14-Tage-Gratistest für <div class="cv-logo" style="font-size: 32px;"><span>cv</span><span>baby</span><span>pro</span></div>'
   },
   monthly: {
     en: 'Monthly',
@@ -457,9 +461,141 @@ module.exports = {
     en: "What's included with your pro subscription",
     de: 'Was in einem Pro-Abonnement enthalten ist'
   },
+
+  featureUnlimitedAccess: {
+    en: 'Unlimited Access',
+    de: ''
+  },
+  featureDescriptionUnlimitedAccess: {
+    en:
+      'Draft, save, and share as many resumes as you like with 24/7 availability, guaranteed. No data limits or throttling.',
+    de: ''
+  },
+  featureMultipleResumes: {
+    en: 'Multiple Resumes',
+    de: ''
+  },
+  featureDescriptionMultipleResumes: {
+    en:
+      'Save multiple resumes for multiple employers. Fine-tune each resume for impressive customized applications.',
+    de: ''
+  },
+  featureNoAds: {
+    en: 'No Ads',
+    de: ''
+  },
+  featureDescriptionNoAds: {
+    en:
+      'Premium or bust: Stay focused on the job hunt and enjoy our streamlined, distraction-free experience.',
+    de: ''
+  },
+  featureSaveAsPDF: {
+    en: 'Save As PDF',
+    de: ''
+  },
+  featureDescriptionSaveAsPDF: {
+    en:
+      'Allow employer downloads and export your resumes to a high quality PDF format to do with as you please.',
+    de: ''
+  },
+  featureAnalytics: {
+    en: 'Resume Analytics',
+    de: ''
+  },
+  featureDescriptionAnalytics: {
+    en:
+      'Use our powerful analytics suite to keep track of who views your resumes, when, from where, and how often.',
+    de: ''
+  },
+  featureCustomEndpoint: {
+    en: 'Custom Endpoint',
+    de: ''
+  },
+  featureDescriptionCustomEndpoint: {
+    en:
+      'Claim your own personal vanity URL for each resume to send to employers. Change it as often as you like.',
+    de: ''
+  },
+  // FAQ
+  faq: {
+    en: 'Frequently asked questions:',
+    de: 'Häufig gestellte Fragen:'
+  },
+  faqAutomaticRenewal: {
+    en: 'Will my plan be automatically renewed?',
+    de: ''
+  },
+  faqAnswerAutomaticRenewal: {
+    en:
+      'Yes. Your subscription will be automatically renewed every month or year, depending which subscription plan you choose.',
+    de: ''
+  },
+  faqHowCanIPay: {
+    en: 'How can I pay?',
+    de: ''
+  },
+  faqAnswerHowCanIPay: {
+    en:
+      'We currently support Visa, Mastercard, American Express, Maestro, JCB, Discover, and Paypal. Support for Venmo and other third-party providers is in the works.',
+    de: ''
+  },
+  faqHowCanICancel: {
+    en: 'How can I cancel my subscription?',
+    de: ''
+  },
+  faqAnswerHowCanICancel: {
+    en:
+      'You can easily cancel your subscription at any time by visiting your account page, under the subscription section. We hope you got the job!',
+    de: ''
+  },
+  faqPrivateResume: {
+    en: 'Can I make my resumes private?',
+    de: ''
+  },
+  faqAnswerPrivateResume: {
+    en:
+      'Yes. In the resume editor, simply deselect the "Live" switch to take your resume offline. To permanently delete your resume, click the "Remove" button.',
+    de: ''
+  },
+  faqFeatureRequests: {
+    en: 'Where can I submit feature requests?',
+    de: ''
+  },
+  faqAnswerFeatureRequests: {
+    en:
+      'Send bugs and feature requests to <a href="mailto:dev@cv.baby">dev@cv.baby</a>. We\'d love to hear your ideas!',
+    de: ''
+  },
+  subscribeToCvBabyPro: {
+    en:
+      'Subscribe to <div class="cv-logo" style="font-size: 30px;"><span>cv</span><span>baby</span><span>pro</span></div>',
+    de:
+      '<div class="cv-logo" style="font-size: 30px;"><span>cv</span><span>baby</span><span>pro</span></div> abbonieren'
+  },
+  getStarted: {
+    en: 'Get started',
+    de: 'Loslegen'
+  },
+  stillHaveQuestions: {
+    en: 'Still have questions?',
+    de: 'Sie haben noch Fragen?'
+  },
+
   /*
    *  Payment
    */
+  cardNumber: {
+    en: 'Card number',
+    de: 'Kartennummer'
+  },
+  cvv: {
+    en: 'CVV',
+    de: 'Kartenprüfnummer'
+  },
+  expirationDate: {
+    en: 'Expiration date',
+    de: 'Auslaufdatum'
+  },
   chooseABillingCycle: {
     en: 'Choose a billing cycle',
     de: 'Abrechnungsrhythmus wählen'
@@ -536,8 +672,10 @@ module.exports = {
    *  Footer
    */
   createYourOwnResume: {
-    en: 'Impressed? Create your own resume with cvbaby pro',
-    de: 'Beeindruckt? Erstellen Sie Ihren eigenen Lebenslauf mit cvbaby pro'
+    en:
+      'Impressed? Create your own resume with <a href="/pricing" style="color: white; text-decoration: none;">cvbaby pro</a>',
+    de:
+      'Beeindruckt? Erstellen Sie Ihren eigenen Lebenslauf mit <a href="/de/pricing" style="color: white; text-decoration: none;">cvbaby pro</a>'
   },
   /*
    *  Errors

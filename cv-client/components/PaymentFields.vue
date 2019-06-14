@@ -22,7 +22,7 @@
                   class="v-label theme--light"
                   style="left:0px;right:auto;position:absolute;"
                 >
-                  Card number
+                  {{ $t('cardNumber') }}
                 </label>
                 <div style="position: relative; top: 10px">
                   <div id="card-number" />
@@ -52,7 +52,7 @@
                   class="v-label theme--light"
                   style="left:0px;right:auto;position:absolute;"
                 >
-                  CVV
+                  {{ $t('cvv') }}
                 </label>
                 <div style="position: relative; top: 10px">
                   <div id="cvv" />
@@ -84,7 +84,7 @@
                   class="v-label theme--light"
                   style="left:0px;right:auto;position:absolute;"
                 >
-                  Expiration date
+                  {{ $t('expirationDate') }}
                 </label>
                 <div style="position: relative; top: 10px">
                   <div id="expiration-date" />

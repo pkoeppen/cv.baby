@@ -1,12 +1,12 @@
 <template>
   <no-ssr>
     <v-toolbar class="cv-toolbar elevation-0">
-      <v-toolbar-title class="cv-logo font-weight-black">
+      <v-toolbar-title>
         <nuxt-link
           :to="localePath('index')"
           style="text-decoration: none; color: inherit;"
         >
-          <span>cv</span><span>baby&nbsp;</span>
+          <div class="cv-logo"><span>cv</span><span>baby&nbsp;</span></div>
         </nuxt-link>
       </v-toolbar-title>
       <v-spacer />
@@ -148,15 +148,10 @@
               <v-card-title
                 class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
               >
-                <span class="cv-dialog-header headline">
-                  {{ $t('tryCvBabyForFree') }}
-                  <!-- Try
-                  <div class="cv-logo" style="display: inline;">
-                    <span>cv</span>
-                    <span>baby</span>
-                  </div>
-                  for free -->
-                </span>
+                <div
+                  class="cv-dialog-header headline"
+                  v-html="$t('tryCvBabyForFree')"
+                />
               </v-card-title>
               <v-card-text>
                 <v-container class="py-0" grid-list-md>
@@ -317,18 +312,6 @@ export default {
 <style lang="stylus" scoped>
 .cv-toolbar {
   background-color: #ffffff !important;
-}
-
-.cv-logo {
-  font-size: 28px;
-
-  span {
-    letter-spacing: -0.03em;
-  }
-
-  span:nth-child(2) {
-    color: #2196f3;
-  }
 }
 
 .cv-header, .cv-subheader {

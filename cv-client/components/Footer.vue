@@ -5,16 +5,11 @@
         <div class="py-3 text-xs-center white--text">
           &copy;2019 — <strong>{{ copyrightHolder }}</strong>
         </div>
-        <div v-if="isResume" class="py-3 text-xs-center white--text">
-          <nuxt-link
-            style="color: #FFFFFF; text-decoration: none;"
-            :to="localePath('pricing')"
-          >
-            {{ $t('createYourOwnResume') }}
-            <!-- Impressed? Create your own resume with
-            <span class="font-weight-bold">cvbaby pro</span> -->
-          </nuxt-link>
-        </div>
+        <div
+          v-if="isResume"
+          class="py-3 text-xs-center white--text"
+          v-html="$t('createYourOwnResume')"
+        />
         <div v-else class="py-3 text-xs-center white--text">
           <v-menu top offset-y>
             <template v-slot:activator="{ on }">
