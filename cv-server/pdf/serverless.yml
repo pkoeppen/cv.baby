@@ -1,0 +1,44 @@
+service: cvbaby-ingest
+
+plugins:
+  - serverless-plugin-existing-s3
+
+package:
+  artifact: ingest.zip
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: us-east-1
+  stage: ${opt:stage, "dev"}
+  environment: ${file(../config.${opt:stage, "dev"}.json)}
+  timeout: 30
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_PRE}
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_PRE}/*
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}/*
+
+functions:
+  # Process image uploads.
+  processImage:
+    handler: handler.processImage
+  # ingest:
+  #   handler: handler.ingest
+  #   events:
+  #     - existingS3:
+  #         bucket: ${self:provider.environment.CVBABY_BUCKET_PRE}
+  #         events:
+  #           - s3:ObjectCreated:*

@@ -39,7 +39,43 @@
           </v-flex>
         </v-layout>
       </v-container>
-      <v-flex class="text-xs-center mt-5" xs12>
+      <v-flex class="mt-5" xs12 md8>
+        <v-layout justify-space-between align-center>
+          <div>
+            <v-switch v-model="resume.live" label="Live" color="primary" />
+          </div>
+          <div>
+            <v-menu top offset-y>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  class="ma-0 caption"
+                  :color="resume.color"
+                  depressed
+                  small
+                  dark
+                  v-on="on"
+                >
+                  Color
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-tile
+                  v-for="(color, index) in resumeColors"
+                  :key="index"
+                  @click="resume.color = color.id"
+                >
+                  <v-list-tile-title :class="`${color.id}--text`"
+                    ><v-icon class="mr-2" :class="`${color.id}--text`"
+                      >format_color_fill</v-icon
+                    >{{ color.name }}</v-list-tile-title
+                  >
+                </v-list-tile>
+              </v-list>
+            </v-menu>
+          </div>
+        </v-layout>
+      </v-flex>
+      <v-flex class="text-xs-center" xs12 md8>
         <div style="position: relative;">
           <v-avatar size="200" @click="$refs.imageInput.click()">
             <v-img
@@ -262,6 +298,29 @@ export default {
       } else {
         return 'error';
       }
+    },
+    resumeColors() {
+      return [
+        { name: 'Red', id: 'red' },
+        { name: 'Pink', id: 'pink' },
+        { name: 'Purple', id: 'purple' },
+        { name: 'Deep Purple', id: 'deep-purple' },
+        { name: 'Indigo', id: 'indigo' },
+        { name: 'Blue', id: 'blue' },
+        { name: 'Light Blue', id: 'light-blue' },
+        { name: 'Cyan', id: 'cyan' },
+        { name: 'Teal', id: 'teal' },
+        { name: 'Green', id: 'green' },
+        { name: 'Light Green', id: 'light-green' },
+        { name: 'Lime', id: 'lime' },
+        { name: 'Yellow', id: 'yellow' },
+        { name: 'Amber', id: 'amber' },
+        { name: 'Orange', id: 'orange' },
+        { name: 'Deep Orange', id: 'deep-orange' },
+        { name: 'Brown', id: 'brown' },
+        { name: 'Blue-Grey', id: 'blue-grey' },
+        { name: 'Grey', id: 'grey' }
+      ];
     }
   },
   watch: {

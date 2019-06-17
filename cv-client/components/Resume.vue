@@ -1,14 +1,20 @@
 <template>
-  <v-container>
+  <v-container :class="{ 'pa-5': headless }">
     <v-layout justify-center align-center wrap>
-      <v-flex xs7 sm5 md4 lg3 class="py-3">
-        <div style="position: relative;">
+      <v-flex v-if="!isDemo && !headless" class="text-xs-right" xs12 lg10>
+        <v-btn depressed small @click="foo">
+          <v-icon small>save_alt</v-icon>
+          <span class="ml-1">PDF</span>
+        </v-btn>
+      </v-flex>
+      <v-flex class="py-3" xs12>
+        <div class="d-flex justify-center" style="position: relative;">
           <v-img
             :src="resumeImageSource"
             :lazy-src="resumeImageSource"
             aspect-ratio="1"
             class="cv-avatar"
-            style="border-radius: 50%"
+            style="border-radius: 50%; max-width: 270px;"
             @error="setImagePlaceholder"
           >
             <template v-slot:placeholder>
@@ -39,44 +45,52 @@
           </template>
         </div>
       </v-flex>
-      <v-flex xs12>
+      <v-flex class="text-xs-center" xs12 sm8 md6>
         <div class="cv-name text-xs-center font-weight-thin">
           {{ resume.name }}
         </div>
         <div class="cv-title text-xs-center font-weight-thin">
           {{ resume.title }}
         </div>
-      </v-flex>
-      <v-flex xs12 class="text-xs-center my-3">
-        <v-chip
-          v-for="(skill, index) in skillsCurated.skills"
-          :key="index"
-          outline
-        >
-          {{ skill }}
-        </v-chip>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
+        <div class="my-3">
+          <template v-if="headless">
             <v-chip
-              v-if="skillsCurated.additional.length > 0"
-              color="primary"
-              text-color="white"
-              class="cv-chip-additional"
-              v-on="on"
+              v-for="(skill, index) in resume.skills"
+              :key="index"
+              outline
             >
-              +{{ skillsCurated.additional.length }}
+              {{ skill }}
             </v-chip>
           </template>
-          <div
-            v-for="(skill, index) in skillsCurated.additional"
-            :key="index"
-            class="text-xs-center"
-          >
-            {{ skill }}
-          </div>
-        </v-tooltip>
-      </v-flex>
-      <v-flex xs12 sm8 md6>
+          <template v-else>
+            <v-chip
+              v-for="(skill, index) in skillsCurated.skills"
+              :key="index"
+              outline
+            >
+              {{ skill }}
+            </v-chip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-chip
+                  v-if="skillsCurated.additional.length > 0"
+                  :color="resume.color"
+                  :text-color="resumeTextColor"
+                  v-on="on"
+                >
+                  +{{ skillsCurated.additional.length }}
+                </v-chip>
+              </template>
+              <div
+                v-for="(skill, index) in skillsCurated.additional"
+                :key="index"
+                class="text-xs-center"
+              >
+                {{ skill }}
+              </div>
+            </v-tooltip>
+          </template>
+        </div>
         <p class="cv-profile font-weight-light text-xs-center my-0">
           {{ resume.profile }}
         </p>
@@ -87,15 +101,13 @@
       <template v-if="employmentItemsOrdered.length">
         <v-flex xs12 lg10>
           <v-toolbar
-            dark
+            :dark="resumeTextColor === 'white'"
             dense
             flat
-            color="primary"
-            class="text-xs-center label-wrap"
+            :color="resume.color"
+            :class="`text-xs-center ribbon-wrap ribbon-${resume.color}`"
           >
-            <span class="cv-section-header" text-color="white">{{
-              $t('employment')
-            }}</span>
+            <span class="cv-section-header">{{ $t('employment') }}</span>
           </v-toolbar>
         </v-flex>
         <v-flex v-if="$mq === 'lg'" class="px-5" xs12 lg10>
@@ -103,6 +115,7 @@
             <v-timeline-item
               v-for="(item, index) in employmentItemsOrdered"
               :key="index"
+              :color="resume.color"
               small
             >
               <template v-slot:opposite>
@@ -128,6 +141,7 @@
             <v-timeline-item
               v-for="(item, index) in employmentItemsOrdered"
               :key="index"
+              :color="resume.color"
               small
             >
               <v-layout wrap class="pt-3">
@@ -149,15 +163,13 @@
       <template v-if="educationItemsOrdered.length">
         <v-flex xs12 lg10>
           <v-toolbar
-            dark
+            :dark="resumeTextColor === 'white'"
             dense
             flat
-            color="primary"
-            class="text-xs-center label-wrap"
+            :color="resume.color"
+            :class="`text-xs-center ribbon-wrap ribbon-${resume.color}`"
           >
-            <span class="cv-section-header" text-color="white">{{
-              $t('education')
-            }}</span>
+            <span class="cv-section-header">{{ $t('education') }}</span>
           </v-toolbar>
         </v-flex>
         <v-flex v-if="$mq === 'lg'" class="px-5" xs12 lg10>
@@ -165,6 +177,7 @@
             <v-timeline-item
               v-for="(item, index) in educationItemsOrdered"
               :key="index"
+              :color="resume.color"
               small
             >
               <template v-slot:opposite>
@@ -190,6 +203,7 @@
             <v-timeline-item
               v-for="(item, index) in educationItemsOrdered"
               :key="index"
+              :color="resume.color"
               small
             >
               <v-layout wrap class="pt-3">
@@ -210,10 +224,14 @@
       </template>
       <template v-if="resume.references.length">
         <v-flex xs12 lg10>
-          <v-toolbar dark dense flat class="primary text-xs-center label-wrap">
-            <span class="cv-section-header" text-color="white">{{
-              $t('references')
-            }}</span>
+          <v-toolbar
+            :dark="resumeTextColor === 'white'"
+            dense
+            flat
+            :color="resume.color"
+            :class="`text-xs-center ribbon-wrap ribbon-${resume.color}`"
+          >
+            <span class="cv-section-header">{{ $t('references') }}</span>
           </v-toolbar>
         </v-flex>
         <v-flex class="py-3 px-4" xs12 lg10>
@@ -263,7 +281,7 @@
                         width="400"
                       >
                         <template v-slot:activator="{ on }">
-                          <v-btn color="blue" flat v-on="on">
+                          <v-btn :color="resume.color" flat v-on="on">
                             Show Contact
                             <v-icon class="pl-1">lock</v-icon>
                           </v-btn>
@@ -343,7 +361,7 @@
                           <v-card-actions>
                             <v-spacer></v-spacer>
                             <v-btn
-                              color="primary"
+                              :color="resume.color"
                               flat
                               @click="resume.references[index].dialog = false"
                             >
@@ -363,15 +381,13 @@
       <template v-if="resume.hobbies.length">
         <v-flex xs12 lg10>
           <v-toolbar
-            dark
+            :dark="resumeTextColor === 'white'"
             dense
             flat
-            color="primary"
-            class="text-xs-center label-wrap"
+            :color="resume.color"
+            :class="`text-xs-center ribbon-wrap ribbon-${resume.color}`"
           >
-            <span class="cv-section-header" text-color="white">{{
-              $t('personal')
-            }}</span>
+            <span class="cv-section-header">{{ $t('personal') }}</span>
           </v-toolbar>
         </v-flex>
         <v-flex class="pa-5" xs12 lg10>
@@ -416,10 +432,14 @@
       </template>
       <template>
         <v-flex xs12 lg10>
-          <v-toolbar dark dense flat class="primary text-xs-center label-wrap">
-            <span class="cv-section-header" text-color="white">{{
-              $t('contact')
-            }}</span>
+          <v-toolbar
+            :dark="resumeTextColor === 'white'"
+            dense
+            flat
+            :color="resume.color"
+            :class="`text-xs-center ribbon-wrap ribbon-${resume.color}`"
+          >
+            <span class="cv-section-header">{{ $t('contact') }}</span>
           </v-toolbar>
         </v-flex>
         <v-flex class="pa-5" xs12 sm10 md8 lg6>
@@ -532,6 +552,7 @@
 </template>
 
 <script>
+// import * as color from 'color';
 import { getDefaultResume } from '~/assets/js/util';
 export default {
   props: {
@@ -540,6 +561,10 @@ export default {
       default: () => getDefaultResume()
     },
     isDemo: {
+      type: Boolean,
+      default: false
+    },
+    headless: {
       type: Boolean,
       default: false
     }
@@ -571,9 +596,14 @@ export default {
       return educationItems.sort((a, b) => {
         return new Date(b.dateFrom) - new Date(a.dateFrom);
       });
+    },
+    resumeTextColor() {
+      const lightColors = ['yellow'];
+      return lightColors.indexOf(this.resume.color) > -1 ? 'black' : 'white';
     }
   },
   methods: {
+    async foo() {},
     setImagePlaceholder(event) {
       // TODO
       console.log('event:', JSON.stringify(event));
@@ -606,12 +636,6 @@ export default {
 .cv-title
   font-family: 'Open Sans', sans-serif
   font-size: 22px
-.cv-chip-additional
-  background-color: $blue.base !important
-  border-color: $blue.base !important
-  &:hover
-    background-color: $blue.darken-1 !important
-    border-color: $blue.darken-1 !important
 .cv-profile
   font-size: 18px
 .cv-link
@@ -676,7 +700,7 @@ export default {
   .spark
     animation-name: explode-smaller
     animation-delay: 150ms
-.label-wrap
+.ribbon-wrap
   position: relative
   width: calc(100% + 40px)
   left: -20px
@@ -689,7 +713,6 @@ export default {
     height: 0
     border-style: solid
     border-width: 0 20px 20px 0
-    border-color: transparent $blue.darken-2 transparent transparent
   &:after
     content: ''
     position: absolute
@@ -699,7 +722,82 @@ export default {
     height: 0
     border-style: solid
     border-width: 20px 20px 0 0
+  &.ribbon-red:before
+      border-color: transparent $red.darken-2 transparent transparent
+  &.ribbon-red:after
+      border-color: $red.darken-2 transparent transparent transparent
+  &.ribbon-pink:before
+    border-color: transparent $pink.darken-2 transparent transparent
+  &.ribbon-pink:after
+    border-color: $pink.darken-2 transparent transparent transparent
+  &.ribbon-purple:before
+    border-color: transparent $purple.darken-2 transparent transparent
+  &.ribbon-purple:after
+    border-color: $purple.darken-2 transparent transparent transparent
+  &.ribbon-deep-purple:before
+    border-color: transparent $deep-purple.darken-2 transparent transparent
+  &.ribbon-deep-purple:after
+    border-color: $deep-purple.darken-2 transparent transparent transparent
+  &.ribbon-indigo:before
+    border-color: transparent $indigo.darken-2 transparent transparent
+  &.ribbon-indigo:after
+    border-color: $indigo.darken-2 transparent transparent transparent
+  &.ribbon-blue:before
+    border-color: transparent $blue.darken-2 transparent transparent
+  &.ribbon-blue:after
     border-color: $blue.darken-2 transparent transparent transparent
+  &.ribbon-light-blue:before
+    border-color: transparent $light-blue.darken-2 transparent transparent
+  &.ribbon-light-blue:after
+    border-color: $light-blue.darken-2 transparent transparent transparent
+  &.ribbon-cyan:before
+    border-color: transparent $cyan.darken-2 transparent transparent
+  &.ribbon-cyan:after
+    border-color: $cyan.darken-2 transparent transparent transparent
+  &.ribbon-teal:before
+    border-color: transparent $teal.darken-2 transparent transparent
+  &.ribbon-teal:after
+    border-color: $teal.darken-2 transparent transparent transparent
+  &.ribbon-green:before
+    border-color: transparent $green.darken-2 transparent transparent
+  &.ribbon-green:after
+    border-color: $green.darken-2 transparent transparent transparent
+  &.ribbon-light-green:before
+    border-color: transparent $light-green.darken-2 transparent transparent
+  &.ribbon-light-green:after
+    border-color: $light-green.darken-2 transparent transparent transparent
+  &.ribbon-lime:before
+    border-color: transparent $lime.darken-2 transparent transparent
+  &.ribbon-lime:after
+    border-color: $lime.darken-2 transparent transparent transparent
+  &.ribbon-yellow:before
+    border-color: transparent $yellow.darken-2 transparent transparent
+  &.ribbon-yellow:after
+    border-color: $yellow.darken-2 transparent transparent transparent
+  &.ribbon-amber:before
+    border-color: transparent $amber.darken-2 transparent transparent
+  &.ribbon-amber:after
+    border-color: $amber.darken-2 transparent transparent transparent
+  &.ribbon-orange:before
+    border-color: transparent $orange.darken-2 transparent transparent
+  &.ribbon-orange:after
+    border-color: $orange.darken-2 transparent transparent transparent
+  &.ribbon-deep-orange:before
+    border-color: transparent $deep-orange.darken-2 transparent transparent
+  &.ribbon-deep-orange:after
+    border-color: $deep-orange.darken-2 transparent transparent transparent
+  &.ribbon-brown:before
+    border-color: transparent $brown.darken-2 transparent transparent
+  &.ribbon-brown:after
+    border-color: $brown.darken-2 transparent transparent transparent
+  &.ribbon-blue-grey:before
+    border-color: transparent $blue-grey.darken-2 transparent transparent
+  &.ribbon-blue-grey:after
+    border-color: $blue-grey.darken-2 transparent transparent transparent
+  &.ribbon-grey:before
+    border-color: transparent $grey.darken-2 transparent transparent
+  &.ribbon-grey:after
+    border-color: $grey.darken-2 transparent transparent transparent
 
 @media only screen and (min-width: 960px)
   .references-layout

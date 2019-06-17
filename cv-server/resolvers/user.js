@@ -27,6 +27,8 @@ export async function getResume(slug) {
     const resume = _.find(resumes, ['slug', slug]);
     if (!resume) {
       throw new Error('![404] Not found');
+    } else if (!resume.live) {
+      throw new Error('![404] Not found');
     } else {
       return { userID, ...resume };
     }

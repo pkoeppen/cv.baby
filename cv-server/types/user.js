@@ -3,7 +3,8 @@ import {
   GraphQLNonNull,
   GraphQLID,
   GraphQLString,
-  GraphQLList
+  GraphQLList,
+  GraphQLBoolean
 } from 'graphql';
 
 export const EmploymentType = new GraphQLObjectType({
@@ -112,10 +113,19 @@ export const ResumeType = new GraphQLObjectType({
       type: GraphQLID
     },
     alias: {
-      type: new GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString),
+      defaultValue: 'Untitled Resume'
     },
     slug: {
       type: new GraphQLNonNull(GraphQLString)
+    },
+    color: {
+      type: GraphQLString,
+      defaultValue: '#2196F3'
+    },
+    live: {
+      type: GraphQLBoolean,
+      defaultValue: true
     },
     name: {
       type: GraphQLString

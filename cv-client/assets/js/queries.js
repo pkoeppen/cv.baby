@@ -37,6 +37,8 @@ export const ResumeFragment = `
     userID,
     alias,
     slug,
+    color,
+    live,
     name,
     title,
     email,

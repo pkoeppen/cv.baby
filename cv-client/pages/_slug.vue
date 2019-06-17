@@ -1,10 +1,12 @@
 <template>
   <div>
-    <v-btn @click="foo">pdf</v-btn>
-    <canvas ref="canvas" width="1500" height="1500"></canvas>
-    <img :src="svg" />
-    <resume ref="resume" :resume="resume" />
-    <cv-footer :is-resume="true" :copyright-holder="resume.name" />
+    <resume ref="resume" :resume="resume" :headless="headless" />
+    <cv-footer
+      v-if="!headless"
+      :is-resume="true"
+      :copyright-holder="resume.name"
+      :color="resume.color"
+    />
   </div>
 </template>
 
@@ -23,12 +25,12 @@ export default {
       svg: null
     };
   },
-  asyncData({ error, store, params }) {
+  asyncData({ error, store, params, query }) {
     return store
       .dispatch('api/getResume', params.slug)
       .then(resume => {
         resume.references.map(reference => ({ dialog: false, ...reference }));
-        return { resume };
+        return { resume, headless: query.headless };
       })
       .catch(({ response }) =>
         error({
@@ -41,18 +43,6 @@ export default {
     if (process.client) {
       this.html2canvas = require('html2canvas');
       this.rasterize = require('rasterizehtml');
-    }
-  },
-  methods: {
-    async foo() {
-      const element = document;
-      const canvas = this.$refs.canvas;
-      const { svg } = await this.rasterize.drawDocument(element, canvas);
-      const blob = new Blob([svg], { type: 'image/svg+xml' });
-      this.svg = URL.createObjectURL(blob);
-    },
-    blah() {
-      console.log('got error');
     }
   }
 };

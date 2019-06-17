@@ -673,9 +673,9 @@ module.exports = {
    */
   createYourOwnResume: {
     en:
-      'Impressed? Create your own resume with <a href="/pricing" style="color: white; text-decoration: none;">cvbaby pro</a>',
+      '<a href="/pricing" style="color: inherit; text-decoration: none;">Impressed? Create your own resume with <span class="font-weight-bold">cvbaby pro</span></a>',
     de:
-      'Beeindruckt? Erstellen Sie Ihren eigenen Lebenslauf mit <a href="/de/pricing" style="color: white; text-decoration: none;">cvbaby pro</a>'
+      '<a href="/de/pricing" style="color: inherit; text-decoration: none;">Beeindruckt? Erstellen Sie Ihren eigenen Lebenslauf mit <span class="font-weight-bold">cvbaby pro</span></a>'
   },
   /*
    *  Errors

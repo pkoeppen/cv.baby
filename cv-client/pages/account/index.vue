@@ -84,10 +84,7 @@
                                   </v-avatar>
                                 </v-card-text>
                                 <v-card-actions class="justify-center">
-                                  <v-btn
-                                    icon
-                                    depressed
-                                    :to="`/${$i18n.locale}/${resume.slug}`"
+                                  <v-btn icon depressed :to="resume.slug"
                                     ><v-icon>link</v-icon></v-btn
                                   >
                                   <v-btn

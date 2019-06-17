@@ -8,6 +8,8 @@ export function getDefaultResume() {
     resumeID: null,
     alias: null,
     slug: null,
+    color: 'blue',
+    live: true,
     name: null,
     title: null,
     email: null,
@@ -25,6 +27,8 @@ export function getDefaultResume() {
 
 export function getDemoResume() {
   return {
+    color: 'blue',
+    live: true,
     name: 'Joe Example',
     title: 'Full Stack Developer',
     email: 'example@cv.baby',

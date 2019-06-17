@@ -2,7 +2,8 @@ import {
   GraphQLInputObjectType,
   GraphQLNonNull,
   GraphQLString,
-  GraphQLList
+  GraphQLList,
+  GraphQLBoolean
 } from 'graphql';
 
 export const EmploymentInputType = new GraphQLInputObjectType({
@@ -108,10 +109,19 @@ export const ResumeInputType = new GraphQLInputObjectType({
       type: GraphQLString
     },
     alias: {
-      type: new GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString),
+      defaultValue: 'Untitled Resume'
     },
     slug: {
       type: new GraphQLNonNull(GraphQLString)
+    },
+    color: {
+      type: GraphQLString,
+      defaultValue: '#2196F3'
+    },
+    live: {
+      type: GraphQLBoolean,
+      defaultValue: true
     },
     name: {
       type: GraphQLString

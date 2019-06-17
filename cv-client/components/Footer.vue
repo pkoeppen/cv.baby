@@ -1,19 +1,26 @@
 <template>
-  <v-footer height="auto" color="primary lighten-2">
+  <v-footer height="auto" :color="`${color} lighten-2`">
     <v-container class="py-0">
       <v-layout class="caption" justify-space-between align-center>
-        <div class="py-3 text-xs-center white--text">
+        <div :class="`${resumeTextColor}--text`" class="py-3 text-xs-center">
           &copy;2019 — <strong>{{ copyrightHolder }}</strong>
         </div>
         <div
           v-if="isResume"
-          class="py-3 text-xs-center white--text"
+          :class="`${resumeTextColor}--text`"
+          class="py-3 text-xs-center"
           v-html="$t('createYourOwnResume')"
         />
         <div v-else class="py-3 text-xs-center white--text">
           <v-menu top offset-y>
             <template v-slot:activator="{ on }">
-              <v-btn class="ma-0 caption" flat dark small v-on="on">
+              <v-btn
+                :dark="resumeTextColor === 'white'"
+                class="ma-0 caption"
+                flat
+                small
+                v-on="on"
+              >
                 <v-icon class="mr-2" small>language</v-icon>
                 {{ currentLocale }}
               </v-btn>
@@ -50,6 +57,10 @@ export default {
     copyrightHolder: {
       type: String,
       default: 'Peter Koeppen'
+    },
+    color: {
+      type: String,
+      default: 'blue'
     }
   },
   computed: {
@@ -61,6 +72,10 @@ export default {
     },
     availableLocales() {
       return this.$i18n.locales.filter(i => i.code !== this.$i18n.locale);
+    },
+    resumeTextColor() {
+      const lightColors = ['yellow'];
+      return lightColors.indexOf(this.color) > -1 ? 'black' : 'white';
     }
   }
 };
