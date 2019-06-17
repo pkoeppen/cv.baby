@@ -1,5 +1,5 @@
 import * as uuid from 'uuid/v1';
-import { _, Lambda, DynamoDB, S3 } from '../util';
+import { _, invokeLambda, DynamoDB, S3 } from '../util';
 import { createSlug, deleteSlug, getSlug } from './slug';
 
 const CVBABY_ENV = process.env.CVBABY_ENV;
@@ -40,23 +40,30 @@ export function getResumes(userID) {
 }
 
 export async function saveResume(userID, resume, base64Image) {
-  if (resume.resumeID) {
-    return updateResume(userID, resume, base64Image);
-  } else {
-    return createResume(userID, resume, base64Image);
-  }
+  // Save the resume.
+  const [savedResume] = resume.resumeID
+    ? await updateResume(userID, resume, base64Image)
+    : await createResume(userID, resume, base64Image);
+  console.log(JSON.stringify(savedResume, null, 2));
+  // Render the new resume to a downloadable PDF.
+  const payload = JSON.stringify({
+    slug: resume.slug,
+    alias: resume.alias,
+    path: `users/${userID}/${savedResume.resumeID}`
+  });
+  invokeLambda(`cvbaby-pdf-${CVBABY_ENV}-renderPDF`, JSON.stringify(payload));
+  // Return the updated resumes array.
+  return savedResume;
 }
 
 async function createResume(userID, resume, base64Image) {
   // Create a new slug.
   await createSlug(resume.slug, userID);
-
   // Convert all empty strings to null for DynamoDB.
   const resumeSaveable = _.deep(_.mapValues)(resume, value => {
     return value === '' ? null : value;
   });
   resumeSaveable.resumeID = uuid();
-
   // Append the resume to the user document.
   const resumes = await DynamoDB.update({
     TableName: CVBABY_TABLE_USERS,
@@ -73,37 +80,32 @@ async function createResume(userID, resume, base64Image) {
 
   const index = resumes.length - 1;
   const savedResume = resumes[index];
-
   // If there's an image to process, process it.
   if (base64Image) {
     await uploadImage(userID, savedResume.resumeID, base64Image);
   }
 
-  return savedResume;
+  return [savedResume, resumes];
 }
 
 async function updateResume(userID, resume, base64Image) {
   // Get the user.
   const user = await getUser(userID);
-
   // Assert the resume exists.
   const index = _.findIndex(user.resumes, ['resumeID', resume.resumeID]);
   if (index === -1) {
     throw new Error('![404] Resume not found');
   }
-
   // If slug has changed, create a new slug and delete the old.
   const { slug } = user.resumes[index];
   if (slug !== resume.slug) {
     await createSlug(resume.slug, userID);
     slug && (await deleteSlug(slug, userID));
   }
-
   // Convert all empty strings to null for DynamoDB.
   const resumeSaveable = _.deep(_.mapValues)(resume, value => {
     return value === '' ? null : value;
   });
-
   // Update the resume on the user document.
   const resumes = await DynamoDB.update({
     TableName: CVBABY_TABLE_USERS,
@@ -122,23 +124,20 @@ async function updateResume(userID, resume, base64Image) {
     await uploadImage(userID, savedResume.resumeID, base64Image);
   }
 
-  return savedResume;
+  return [savedResume, resumes];
 }
 
 export async function removeResume(userID, resumeID) {
   // Get the user.
   const user = await getUser(userID);
-
   // Assert the resume exists.
   const index = _.findIndex(user.resumes, ['resumeID', resumeID]);
   if (index === -1) {
     throw new Error('![404] Resume not found');
   }
-
   // Delete the slug.
   const { slug } = user.resumes[index];
   slug && (await deleteSlug(slug, userID));
-
   // Update the resumes array on the user document.
   const deletedResume = await DynamoDB.update({
     TableName: CVBABY_TABLE_USERS,
@@ -148,7 +147,6 @@ export async function removeResume(userID, resumeID) {
   })
     .promise()
     .then(({ Attributes }) => Attributes.resumes[index]);
-
   // Delete the resume image.
   await S3.deleteObject({
     Bucket: CVBABY_BUCKET_POST,
@@ -164,19 +162,8 @@ function uploadImage(userID, resumeID, base64Image) {
     resumeID,
     base64Image
   };
-  return new Promise((resolve, reject) => {
-    Lambda.invoke(
-      {
-        FunctionName: `cvbaby-ingest-${CVBABY_ENV}-processImage`,
-        Payload: JSON.stringify(payload)
-      },
-      (error, data) => {
-        if (error) {
-          return reject(error);
-        }
-        // TODO: Do something with this data/error
-        resolve(data);
-      }
-    );
-  });
+  return invokeLambda(
+    `cvbaby-ingest-${CVBABY_ENV}-processImage`,
+    JSON.stringify(payload)
+  );
 }

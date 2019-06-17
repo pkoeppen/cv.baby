@@ -38,12 +38,6 @@ export default {
           message: (response || {}).data || 'An unknown error occurred.'
         })
       );
-  },
-  created() {
-    if (process.client) {
-      this.html2canvas = require('html2canvas');
-      this.rasterize = require('rasterizehtml');
-    }
   }
 };
 </script>

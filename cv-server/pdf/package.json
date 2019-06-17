@@ -1,14 +1,13 @@
 {
-  "name": "cvbaby-ingest",
+  "name": "cvbaby-pdf",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "deploy:dev": "serverless deploy --stage dev && serverless s3deploy --stage dev",
-    "deploy:prod": "serverless deploy --stage prod && serverless s3deploy --stage prod",
-    "install-sharp": "rm -rf ./node_modules && npm install --arch=x64 --platform=linux --target=8.10.0 sharp",
-    "package": "rm -f ingest.zip && zip a -r ingest.zip ./*"
+    "deploy:dev": "npm run package && serverless deploy --stage dev && serverless s3deploy --stage dev",
+    "deploy:prod": "npm run package && serverless deploy --stage prod && serverless s3deploy --stage prod",
+    "package": "rm -f package.zip && make package.zip"
   },
-  "dependencies": {
-    "serverless-plugin-existing-s3": "^2.4.0",
-    "sharp": "^0.22.1"
+  "devDependencies": {
+    "serverless-plugin-existing-s3": "^2.4.0"
   }
 }

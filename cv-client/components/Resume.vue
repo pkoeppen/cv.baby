@@ -251,7 +251,77 @@
                 sm6
                 md4
               >
-                <v-hover>
+                <v-card v-if="headless">
+                  <v-card-title
+                    class="justify-space-between align-center"
+                    primary-title
+                  >
+                    <div>
+                      <div class="headline">{{ reference.name }}</div>
+                      <div class="caption pl-1">
+                        {{ reference.title }} @
+                        <a :href="reference.companyLink">{{
+                          reference.company
+                        }}</a>
+                      </div>
+                    </div>
+                    <v-icon class="green--text">vpn_lock</v-icon>
+                  </v-card-title>
+
+                  <v-divider />
+
+                  <v-list class="py-0">
+                    <template v-if="reference.phone">
+                      <v-list-tile :href="`tel:${reference.phone}`">
+                        <v-list-tile-action>
+                          <v-icon>phone</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                          <v-list-tile-title>
+                            {{ reference.phone }}
+                          </v-list-tile-title>
+                        </v-list-tile-content>
+                        <v-list-tile-action>
+                          <v-icon>chat</v-icon>
+                        </v-list-tile-action>
+                      </v-list-tile>
+                      <v-divider />
+                    </template>
+
+                    <template v-if="reference.email">
+                      <v-list-tile :href="`mailto:${reference.email}`">
+                        <v-list-tile-action>
+                          <v-icon>mail</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                          <v-list-tile-title>
+                            {{ reference.email }}
+                          </v-list-tile-title>
+                        </v-list-tile-content>
+                        <v-list-tile-action>
+                          <v-icon>chat</v-icon>
+                        </v-list-tile-action>
+                      </v-list-tile>
+                      <v-divider />
+                    </template>
+
+                    <template v-if="reference.website">
+                      <v-list-tile :href="`${reference.website}`">
+                        <v-list-tile-action>
+                          <v-icon>public</v-icon>
+                        </v-list-tile-action>
+
+                        <v-list-tile-content>
+                          <v-list-tile-title>
+                            {{ reference.website }}
+                          </v-list-tile-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                      <v-divider />
+                    </template>
+                  </v-list>
+                </v-card>
+                <v-hover v-else>
                   <v-card
                     slot-scope="{ hover }"
                     :class="`elevation-${hover ? 12 : 2}`"
@@ -443,8 +513,8 @@
           </v-toolbar>
         </v-flex>
         <v-flex class="pa-5" xs12 sm10 md8 lg6>
-          <v-card class="pa-0">
-            <v-container class="pa-0">
+          <v-card>
+            <v-container>
               <v-layout align-center justify-center wrap>
                 <v-flex class="text-xs-center mt-4" xs12>
                   <v-avatar size="200">
@@ -467,7 +537,7 @@
                     </v-img>
                   </v-avatar>
                   <div
-                    class="cv-name text-xs-center font-weight-thin my-2"
+                    class="cv-name text-xs-center font-weight-thin mb-2 mt-4"
                     style="line-height: 1.2"
                   >
                     {{ resume.name }}
@@ -487,7 +557,7 @@
                   </div>
                 </v-flex>
                 <v-flex xs12>
-                  <v-list>
+                  <v-list class="py-0">
                     <v-list-tile
                       v-if="resume.phone"
                       :href="`tel:${resume.phone}`"
@@ -505,7 +575,7 @@
                       </v-list-tile-action>
                     </v-list-tile>
 
-                    <v-divider inset></v-divider>
+                    <v-divider></v-divider>
 
                     <v-list-tile
                       v-if="resume.email"
@@ -524,7 +594,7 @@
                       </v-list-tile-action>
                     </v-list-tile>
 
-                    <v-divider inset></v-divider>
+                    <v-divider></v-divider>
 
                     <v-list-tile
                       v-if="resume.email"
@@ -539,6 +609,9 @@
                           {{ resume.website }}
                         </v-list-tile-title>
                       </v-list-tile-content>
+                      <v-list-tile-action>
+                        <v-icon>launch</v-icon>
+                      </v-list-tile-action>
                     </v-list-tile>
                   </v-list>
                 </v-flex>

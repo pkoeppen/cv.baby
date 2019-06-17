@@ -4,7 +4,7 @@ plugins:
   - serverless-plugin-existing-s3
 
 package:
-  artifact: ingest.zip
+  artifact: package.zip
 
 provider:
   name: aws

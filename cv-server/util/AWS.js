@@ -12,6 +12,24 @@ export const S3 = new AWS.S3({
 });
 export const SES = new AWS.SES({ apiVersion: '2010-12-01' });
 
+export function invokeLambda(functionName, payload) {
+  return new Promise((resolve, reject) => {
+    Lambda.invoke(
+      {
+        FunctionName: functionName,
+        Payload: payload
+      },
+      (error, data) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(data);
+        }
+      }
+    );
+  });
+}
+
 // import * as AmazonDAXClient from 'amazon-dax-client';
 // const DAXClient = new AmazonDAXClient({
 //   endpoints: ["xxxxxxx.clustercfg.dax.use1.cache.amazonaws.com:8111"],
