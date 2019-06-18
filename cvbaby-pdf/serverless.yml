@@ -1,0 +1,37 @@
+service: cvbaby-pdf
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+      port: 3003
+
+package:
+  artifact: ./package.zip
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  memorySize: 1600
+  region: us-east-1
+  stage: ${opt:stage, "dev"}
+  environment: ${file(./config.${opt:stage, "dev"}.json)}
+  timeout: 30
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}/*
+
+functions:
+  renderPDF:
+    handler: handler.renderPDF
+    events:
+      - http:
+          path: /renderPDF
+          method: post

@@ -1,0 +1,13 @@
+{
+  "name": "cvbaby-images",
+  "private": true,
+  "scripts": {
+    "deploy:dev": "npm run package && serverless deploy --stage dev && serverless s3deploy --stage dev",
+    "deploy:prod": "npm run package && serverless deploy --stage prod && serverless s3deploy --stage prod",
+    "dev": "npm run package && serverless offline start",
+    "package": "rm -f package.zip && make package.zip"
+  },
+  "devDependencies": {
+    "serverless-offline": "^5.3.3"
+  }
+}

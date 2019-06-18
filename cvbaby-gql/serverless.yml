@@ -1,0 +1,205 @@
+service: cvbaby-gql
+
+plugins:
+  - serverless-offline
+  - serverless-webpack
+  #- serverless-domain-manager
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: us-east-1
+  stage: ${opt:stage, "dev"}
+  environment: ${file(./config.${opt:stage, "dev"}.json)}
+  timeout: 30
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:*
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}/*
+    - Effect: Allow
+      Action:
+        - 'ses:SendEmail'
+      Resource: '*'
+
+custom:
+  serverless-offline:
+    port: 3001
+  s3:
+    host: 0.0.0.0
+    port: 8000
+    directory: ./tmp
+    cors: ./cors.xml
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules:
+      forceExclude:
+        - aws-sdk
+  # customDomain:
+  #   domainName: ${opt:domain, "api.cv.baby"}
+  #   basePath: ''
+  #   stage: ${opt:stage, "dev"}
+  #   createRoute53Record: true
+  #   # endpointType: 'regional'
+
+functions:
+  # Authentication
+  auth:
+    handler: auth/handler.authorizer
+
+  # GQL Public
+  public:
+    handler: handler.handlerPublic
+    events:
+      - http:
+          path: /gql/public
+          method: post
+          cors: true
+
+  # GQL Private
+  private:
+    handler: handler.handlerPrivate
+    events:
+      - http:
+          path: /gql/private
+          method: post
+          authorizer: auth
+          cors: true
+
+  # Cognito pre-signup hook
+  confirmUser:
+    handler: cognito/events.confirmUser
+    # events:
+    #   - cognitoUserPool:
+    #       pool: ${self:provider.environment.CVBABY_USER_POOL}
+    #       trigger: PreSignUp
+
+  # Cognito post-confirm hook
+  createUser:
+    handler: cognito/events.createUser
+    # events:
+    #   - http:
+    #       path: /test
+    #       method: post
+    #   - cognitoUserPool:
+    #       pool: ${self:provider.environment.CVBABY_USER_POOL}
+    #       trigger: PostConfirmation
+
+resources:
+  Outputs:
+    # Output the ID generated for the Cognito user pool.
+    UserPoolId:
+      Value:
+        Ref: CognitoUserPool
+    UserPoolClientId:
+      Value:
+        Ref: CognitoUserPoolClient
+
+  Resources:
+    # Cognito User Pool
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:provider.environment.CVBABY_USER_POOL}
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+
+    # Cognito User Pool Client
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:provider.environment.CVBABY_USER_POOL_CLIENT}
+        UserPoolId:
+          Ref: CognitoUserPool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false
+
+    # S3 Bucket (Preprocess)
+    # BucketPreprocess:
+    #   Type: AWS::S3::Bucket
+    #   Properties:
+    #     BucketName: ${self:provider.environment.CVBABY_BUCKET_PRE}
+    #     CorsConfiguration:
+    #       CorsRules:
+    #         - AllowedOrigins:
+    #             - '*'
+    #           AllowedHeaders:
+    #             - '*'
+    #           AllowedMethods:
+    #             - PUT
+    #           MaxAge: 3000
+
+    # S3 Bucket (Postprocess)
+    BucketPost:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.CVBABY_BUCKET_POST}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+              MaxAge: 3000
+
+    # DynamoDB Users Table
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: userID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.CVBABY_TABLE_USERS}
+
+    # DynamoDB Slugs Table
+    SlugsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: slug
+            AttributeType: S
+        KeySchema:
+          - AttributeName: slug
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.CVBABY_TABLE_SLUGS}
+
+    # This response is needed for custom authorizer failures CORS support.
+    # https://docs.aws.amazon.com/apigateway/latest/developerguide/customize-gateway-responses.html
+    GatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: EXPIRED_TOKEN
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
+    AuthFailureGatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: UNAUTHORIZED
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'

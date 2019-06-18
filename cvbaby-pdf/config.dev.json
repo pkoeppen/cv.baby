@@ -1,0 +1,5 @@
+{
+  "CVBABY_ENV": "dev",
+  "CVBABY_CLIENT_HOST": "http://localhost:3000",
+  "CVBABY_BUCKET_POST": "cvbaby-bucket-post-dev"
+}

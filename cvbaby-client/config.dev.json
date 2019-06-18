@@ -1,0 +1,6 @@
+{
+  "CVBABY_ENV": "dev",
+  "CVBABY_UPLOAD_HOST": "https://cvbaby-bucket-post-dev.s3.amazonaws.com",
+  "CVBABY_USER_POOL_ID": "us-east-1_Ml3vEfFCs",
+  "CVBABY_USER_POOL_CLIENT_ID": "5ruq9dgi85d5u29es7386r24a1"
+}

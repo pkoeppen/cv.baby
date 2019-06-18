@@ -1,0 +1,16 @@
+# Serverless artifact
+package.zip
+
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+/tmp
+
+# Webpack
+.webpack
+
+# configuration
+# config\.*\.json
