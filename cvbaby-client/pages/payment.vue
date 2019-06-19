@@ -21,10 +21,12 @@
           <v-divider />
         </v-flex>
         <v-flex class="mt-4 mb-2" xs12 md8>
+          <!-- eslint-disable -->
           <div
             class="cv-trial-text text-xs-center font-weight-black"
             v-html="$t('free14DayTrialForCvBabyPro')"
-          ></div>
+          />
+          <!-- eslint-enable -->
         </v-flex>
         <v-flex xs12>
           <v-container grid-list-xl fill-height>
@@ -335,11 +337,21 @@ export default {
           this.signUpData.success = true;
           setTimeout(() => this.$router.push({ path: 'account' }), 2000);
         })
-        .catch(({ response }) => {
-          // Do something with these...
-          // response.data (error message, from me)
-          // response.status (status code, also from me)
-          console.error(`[${response.status}] ${response.data}`);
+        .catch(({ response: { status } }) => {
+          if (status === 409) {
+            this.$store.dispatch('showSnackbar', {
+              color: 'red',
+              // TODO: Translate this
+              message: 'Card type not accepted. Please try another.'
+            });
+          } else {
+            this.$store.dispatch('showSnackbar', {
+              color: 'red',
+              // TODO: Translate this
+              message:
+                'Error creating subscription. Please check your connection.'
+            });
+          }
         })
         .finally(() => {
           this.signUpData.loading = false;

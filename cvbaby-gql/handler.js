@@ -72,7 +72,7 @@ function generateHandler(authenticated = false) {
       })
       .catch(error => {
         console.error(
-          `[handler:${authenticated ? 'private' : 'public'}] Error: ${
+          `[handler:${authenticated ? 'private' : 'public'}] GQL Error: ${
             error.message
           }`
         );

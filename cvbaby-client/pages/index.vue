@@ -31,7 +31,9 @@
     </v-flex>
     <v-flex class="text-xs-center py-5" style="background: white" xs12>
       <div class="cv-footer-background py-4">
+        <!-- eslint-disable -->
         <div class="call-to-action" v-html="$t('subscribeToCvBabyPro')" />
+        <!-- eslint-enable -->
         <v-btn
           :to="
             localePath({

@@ -3,7 +3,6 @@
   "CVBABY_ENV": "dev",
   "CVBABY_CLIENT_HOST": "http://localhost:3000",
   "CVBABY_UPLOAD_HOST": "https://cvbaby-bucket-post-dev.s3.amazonaws.com",
-  "CVBABY_USER_POOL_ID": "us-east-1_Ml3vEfFCs",
   "CVBABY_BUCKET_PRE": "cvbaby-bucket-pre-dev",
   "CVBABY_BUCKET_POST": "cvbaby-bucket-post-dev",
   "CVBABY_TABLE_USERS": "cvbaby-table-users-dev",
@@ -11,5 +10,7 @@
   "CVBABY_TABLE_INVITES": "cvbaby-table-invites-dev",
   "PAYMENT_MERCHANT_ID": "zdrjbzj2jxwpp3wj",
   "PAYMENT_PUBLIC_KEY": "bs3r39m78xjmzyfx",
-  "PAYMENT_PRIVATE_KEY": "80ef8d9684a427364ba5fb3b6fdeb47c"
+  "PAYMENT_PRIVATE_KEY": "80ef8d9684a427364ba5fb3b6fdeb47c",
+  "CVBABY_USER_POOL_ID": "us-east-1_Y0i6nvzuV",
+  "CVBABY_USER_POOL_CLIENT_ID": "9tor2as71771u3ruh8hu4d82"
 }

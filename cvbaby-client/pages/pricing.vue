@@ -17,10 +17,12 @@
         <v-divider />
       </v-flex>
       <v-flex class="mt-4 mb-1" xs12 md8>
+        <!-- eslint-disable -->
         <div
           class="cv-trial-text text-xs-center font-weight-bold"
           v-html="$t('free14DayTrialForCvBabyPro')"
         />
+        <!-- eslint-enable -->
       </v-flex>
       <v-flex xs12>
         <v-container grid-list-xl fill-height>
@@ -310,7 +312,9 @@
               </div>
               <div class="mb-5">
                 <h3>{{ $t('faqFeatureRequests') }}</h3>
+                <!-- eslint-disable -->
                 <p class="ma-0" v-html="$t('faqAnswerFeatureRequests')" />
+                <!-- eslint-enable -->
               </div>
             </v-flex>
           </v-layout>
@@ -321,7 +325,9 @@
       </v-flex>
       <v-flex class="text-xs-center py-5" style="background: white" xs12>
         <div class="cv-footer-background py-4">
+          <!-- eslint-disable -->
           <div class="call-to-action" v-html="$t('subscribeToCvBabyPro')" />
+          <!-- eslint-enable -->
           <v-btn
             :to="
               localePath({

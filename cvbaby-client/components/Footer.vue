@@ -5,12 +5,14 @@
         <div :class="`${resumeTextColor}--text`" class="py-3 text-xs-center">
           &copy;2019 — <strong>{{ copyrightHolder }}</strong>
         </div>
+        <!-- eslint-disable -->
         <div
           v-if="isResume"
           :class="`${resumeTextColor}--text`"
           class="py-3 text-xs-center"
           v-html="$t('createYourOwnResume')"
         />
+        <!-- eslint-enable -->
         <div v-else class="py-3 text-xs-center white--text">
           <v-menu top offset-y>
             <template v-slot:activator="{ on }">

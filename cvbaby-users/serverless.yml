@@ -1,0 +1,65 @@
+service: cvbaby-users
+
+plugins:
+  - serverless-webpack
+  - '@anttiviljami/serverless-stack-output'
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: us-east-1
+  stage: ${opt:stage, "dev"}
+  environment: ${file(./config.${opt:stage, "dev"}.json)}
+  timeout: 30
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CVBABY_TABLE_USERS}
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules:
+      forceExclude:
+        - aws-sdk
+  output:
+    handler: output.handler
+
+functions:
+
+  # Cognito pre-signup hook
+  confirmUser:
+    handler: events.confirmUser
+    events:
+      - cognitoUserPool:
+          pool: ${self:provider.environment.CVBABY_USER_POOL_NAME}
+          trigger: PreSignUp
+
+  # Cognito post-confirmation hook
+  createUser:
+    handler: events.createUser
+    events:
+      - cognitoUserPool:
+          pool: ${self:provider.environment.CVBABY_USER_POOL_NAME}
+          trigger: PostConfirmation
+
+resources:
+  Resources:
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:provider.environment.CVBABY_USER_POOL_CLIENT_NAME}
+        UserPoolId:
+          Ref: CognitoUserPoolCvbabyuserpool${opt:stage, "dev"}
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false
+
+  Outputs:
+    UserPoolId:
+      Value:
+        Ref: CognitoUserPoolCvbabyuserpool${opt:stage, "dev"}
+    UserPoolClientId:
+      Value:
+        Ref: CognitoUserPoolClient

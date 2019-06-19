@@ -148,10 +148,12 @@
               <v-card-title
                 class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
               >
+                <!-- eslint-disable -->
                 <div
                   class="cv-dialog-header headline"
                   v-html="$t('tryCvBabyForFree')"
                 />
+                <!-- eslint-enable -->
               </v-card-title>
               <v-card-text>
                 <v-container class="py-0" grid-list-md>
@@ -203,6 +205,8 @@ export default {
   name: 'Navbar',
   data() {
     return {
+      poolID: process.env.CVBABY_USER_POOL_ID,
+      clientID: process.env.CVBABY_USER_POOL_CLIENT_ID,
       signInData: {
         dialog: false,
         email: 'p.hartzog.koeppen@gmail.com',
@@ -278,15 +282,15 @@ export default {
           this.signUpData.loading = false;
           this.signUpData.success = true;
           setTimeout(() => {
+            this.$store.dispatch('cognito/authenticateUser', {
+              email: this.signUpData.email,
+              password: this.signUpData.password
+            });
             this.signUpData.dialog = false;
             this.signUpData.success = false;
           }, 1500);
           setTimeout(() => {
             this.$router.push({ path: this.localePath('pricing') });
-            this.$store.dispatch('cognito/authenticateUser', {
-              email: this.signUpData.email,
-              password: this.signUpData.password
-            });
           }, 2250);
         })
         .catch(error => {

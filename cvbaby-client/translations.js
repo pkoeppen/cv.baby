@@ -113,8 +113,9 @@ module.exports = {
     de: 'Sie haben noch keine Lebensläufe erstellt.'
   },
   clickHereToLaunchTheEditor: {
-    en: 'Click here to launch the editor.',
-    de: 'Klicken Sie hier, um den Editor zu öffnen.'
+    en: '<a href="/account/editor">Click here</a> to launch the editor.',
+    de:
+      '<a href="/de/account/editor">Klicken Sie hier</a>, um den Editor zu öffnen.'
   },
   launchEditor: {
     en: 'Launch Editor',

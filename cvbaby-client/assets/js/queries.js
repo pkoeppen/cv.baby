@@ -127,8 +127,8 @@ export const CheckSlugAvailableQuery = `
  * Mutations
  */
 export const StartSubscriptionMutation = `
-  mutation ($paymentMethodToken: String!, $planId: String!) {
-    startSubscription (paymentMethodToken: $paymentMethodToken, planId: $planId)
+  mutation ($paymentMethodToken: String!, $planID: String!) {
+    startSubscription (paymentMethodToken: $paymentMethodToken, planID: $planID)
   }
 `;
 export const SaveResumeMutation = `

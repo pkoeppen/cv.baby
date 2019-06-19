@@ -119,9 +119,12 @@
                           <div class="title">
                             {{ $t('youHaventSavedAnyResumesYet') }}
                           </div>
-                          <div class="mt-2 open-sans">
-                            {{ $t('clickHereToLaunchTheEditor') }}
-                          </div>
+                          <!-- eslint-disable -->
+                          <div
+                            class="mt-2 open-sans"
+                            v-html="$t('clickHereToLaunchTheEditor')"
+                          />
+                          <!-- eslint-enable -->
                           <v-btn
                             to="/account/editor"
                             color="primary"
@@ -253,7 +256,7 @@
                         <div class="open-sans">{{ $t('billingCycle') }}</div>
                         <div v-if="payment.subscription">
                           {{
-                            payment.subscription.planId === 'cvbaby-yearly'
+                            payment.subscription.planID === 'cvbaby-yearly'
                               ? $t('yearly')
                               : $t('monthly')
                           }}
@@ -459,6 +462,7 @@ export default {
     };
   },
   mounted() {
+    // Fetch resumes.
     this.resumes.loading = true;
     this.$store
       .dispatch('api/getResumes')
@@ -482,17 +486,21 @@ export default {
       .finally(() => {
         this.resumes.loading = false;
       });
+    // Fetch subscription.
     this.payment.loading = true;
     this.$store
       .dispatch('api/getSubscription')
       .then(subscription => {
         this.payment.subscription = subscription;
       })
-      .catch(() => {
-        this.$store.dispatch('showSnackbar', {
-          color: 'red',
-          message: this.$t('errorFetchingSubscription')
-        });
+      .catch(({ response: { status } }) => {
+        // 406 signifies a nonexisting subscription.
+        if (status !== 406) {
+          this.$store.dispatch('showSnackbar', {
+            color: 'red',
+            message: this.$t('errorFetchingSubscription')
+          });
+        }
       })
       .finally(() => {
         this.payment.loading = false;

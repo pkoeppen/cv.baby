@@ -16,9 +16,13 @@ module.exports = { renderPDF };
 /*
  *  Renders an HTML resume page to PDF and saves it to S3.
  */
-async function renderPDF({ slug, alias, path, ...event }, context, callback) {
-  console.log('event:', JSON.stringify(event));
-  return callback(null, { statusCode: 200 });
+async function renderPDF({ slug, alias, path, body }, context, callback) {
+  if (body) {
+    ({
+      slug, alias, path
+    } = JSON.parse(body));
+  }
+  console.log({ slug, alias, path });
   try {
     // TODO: Render in multiple languages
     const pdf = await renderHTMLtoPDF(`${CVBABY_CLIENT_HOST}/${slug}`);
@@ -37,12 +41,14 @@ async function renderPDF({ slug, alias, path, ...event }, context, callback) {
 }
 
 async function renderHTMLtoPDF(url) {
-  const browser = await puppeteer.launch({
+  const opts = {
     args: chromium.args,
     defaultViewport: chromium.defaultViewport,
     executablePath: await chromium.executablePath,
     headless: chromium.headless
-  });
+  };
+  console.log('opts:', opts);
+  const browser = await puppeteer.launch(opts);
   const page = await browser.newPage();
   await page.goto(url, { waitUntil: 'networkidle2' });
   await page.emulateMedia('screen');

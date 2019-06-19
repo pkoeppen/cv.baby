@@ -4,12 +4,16 @@
   "scripts": {
     "deploy:dev": "npm run package && serverless deploy --stage dev",
     "deploy:prod": "npm run package && serverless deploy --stage prod",
-    "dev": "npm run package && serverless offline start",
+    "dev": "make dev && serverless offline start",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "package": "rm -f package.zip && make package.zip",
-    "remove:dev": "serverless remove --stage dev"
+    "remove:dev": "serverless remove --stage dev",
+    "remove:prod": "serverless remove --stage prod"
   },
   "devDependencies": {
     "serverless-offline": "^4.10.6"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.478.0"
   }
 }

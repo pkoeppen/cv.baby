@@ -3,6 +3,7 @@ service: cvbaby-gql
 plugins:
   - serverless-offline
   - serverless-webpack
+  - serverless-s3-remover
   #- serverless-domain-manager
 
 provider:
@@ -33,16 +34,14 @@ provider:
 custom:
   serverless-offline:
     port: 3001
-  s3:
-    host: 0.0.0.0
-    port: 8000
-    directory: ./tmp
-    cors: ./cors.xml
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules:
       forceExclude:
         - aws-sdk
+  remover:
+     buckets:
+       - ${self:provider.environment.CVBABY_BUCKET_POST}
   # customDomain:
   #   domainName: ${opt:domain, "api.cv.baby"}
   #   basePath: ''
@@ -74,57 +73,8 @@ functions:
           authorizer: auth
           cors: true
 
-  # Cognito pre-signup hook
-  confirmUser:
-    handler: cognito/events.confirmUser
-    # events:
-    #   - cognitoUserPool:
-    #       pool: ${self:provider.environment.CVBABY_USER_POOL}
-    #       trigger: PreSignUp
-
-  # Cognito post-confirm hook
-  createUser:
-    handler: cognito/events.createUser
-    # events:
-    #   - http:
-    #       path: /test
-    #       method: post
-    #   - cognitoUserPool:
-    #       pool: ${self:provider.environment.CVBABY_USER_POOL}
-    #       trigger: PostConfirmation
-
 resources:
-  Outputs:
-    # Output the ID generated for the Cognito user pool.
-    UserPoolId:
-      Value:
-        Ref: CognitoUserPool
-    UserPoolClientId:
-      Value:
-        Ref: CognitoUserPoolClient
-
   Resources:
-    # Cognito User Pool
-    CognitoUserPool:
-      Type: AWS::Cognito::UserPool
-      Properties:
-        UserPoolName: ${self:provider.environment.CVBABY_USER_POOL}
-        UsernameAttributes:
-          - email
-        AutoVerifiedAttributes:
-          - email
-
-    # Cognito User Pool Client
-    CognitoUserPoolClient:
-      Type: AWS::Cognito::UserPoolClient
-      Properties:
-        ClientName: ${self:provider.environment.CVBABY_USER_POOL_CLIENT}
-        UserPoolId:
-          Ref: CognitoUserPool
-        ExplicitAuthFlows:
-          - ADMIN_NO_SRP_AUTH
-        GenerateSecret: false
-
     # S3 Bucket (Preprocess)
     # BucketPreprocess:
     #   Type: AWS::S3::Bucket
