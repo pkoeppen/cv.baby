@@ -1,6 +1,9 @@
 # Serverless artifact
 package.zip
 
+# Big ass repo
+/chrome-aws-lambda
+
 # package directories
 node_modules
 jspm_packages

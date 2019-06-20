@@ -53,7 +53,7 @@ export async function saveResume(userID, resume, base64Image) {
     path: `users/${userID}/${savedResume.resumeID}`
   });
   if (IS_OFFLINE) {
-    axios.post('http://localhost:3003/renderPDF', payload);
+    axios.post('http://127.0.0.1:3003/renderPDF', payload);
   } else {
     invokeLambda(`cvbaby-pdf-${CVBABY_ENV}-renderPDF`, JSON.stringify(payload));
   }

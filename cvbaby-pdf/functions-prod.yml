@@ -1,0 +1,2 @@
+renderPDF:
+  handler: handler.renderPDF

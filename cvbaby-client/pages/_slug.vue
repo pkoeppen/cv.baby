@@ -30,7 +30,7 @@ export default {
       .dispatch('api/getResume', params.slug)
       .then(resume => {
         resume.references.map(reference => ({ dialog: false, ...reference }));
-        return { resume, headless: query.headless };
+        return { resume, headless: !!query.headless };
       })
       .catch(({ response }) =>
         error({

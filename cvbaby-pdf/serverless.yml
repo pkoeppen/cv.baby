@@ -12,7 +12,7 @@ package:
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs10.x
   memorySize: 1600
   region: us-east-1
   stage: ${opt:stage, "dev"}
@@ -28,10 +28,20 @@ provider:
         - s3:*
       Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}/*
 
-functions:
-  renderPDF:
-    handler: handler.renderPDF
-    events:
-      - http:
-          path: /renderPDF
-          method: post
+environment-functions:
+  dev:
+    renderPDF:
+      handler: docker.handler
+      events:
+        - http:
+            path: /renderPDF
+            method: post
+  prod:
+    renderPDF:
+      handler: handler.renderPDF
+      events:
+        - http:
+            path: /renderPDF
+            method: post
+
+functions: ${file(functions-${opt:stage, "dev"}.yml)}
