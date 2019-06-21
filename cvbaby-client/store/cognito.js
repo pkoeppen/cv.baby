@@ -26,7 +26,9 @@ const pool = new CognitoUserPool({
 export const state = () => ({
   authenticating: false,
   authenticated: null,
-  accessToken: null
+  accessToken: null,
+  userID: null,
+  email: null
 });
 
 export const actions = {
@@ -56,15 +58,24 @@ export const actions = {
       if (!user) {
         context.commit('setAuthenticating', false);
         context.commit('setAuthenticated', null);
+        context.commit('setUserID', null);
+        context.commit('setEmail', null);
         resolve(false);
       } else {
         user.getSession((error, session) => {
           context.commit('setAuthenticating', false);
           if (error) {
             context.commit('setAuthenticated', null);
+            context.commit('setUserID', null);
+            context.commit('setEmail', null);
             reject(error);
           } else {
             context.commit('setAuthenticated', user);
+            context.commit(
+              'setUserID',
+              user.signInUserSession.accessToken.payload.sub
+            );
+            context.commit('setEmail', user.username);
             context.commit('setAccessToken', session.accessToken);
             resolve(session);
           }
@@ -95,6 +106,11 @@ export const actions = {
           onSuccess(session) {
             context.commit('setAuthenticating', false);
             context.commit('setAuthenticated', user);
+            context.commit(
+              'setUserID',
+              user.signInUserSession.accessToken.payload.sub
+            );
+            context.commit('setEmail', user.username);
             context.commit('setAccessToken', session.accessToken);
             resolve(session);
           },
@@ -298,6 +314,8 @@ export const actions = {
     if (user !== null) {
       user.signOut();
       context.commit('setAuthenticated', null);
+      context.commit('setUserID', null);
+      context.commit('setEmail', null);
     }
   }
 };
@@ -310,6 +328,12 @@ export const mutations = {
   setAuthenticated(_state, payload) {
     // eslint-disable-next-line no-param-reassign
     _state.authenticated = payload;
+  },
+  setUserID(_state, userID) {
+    _state.userID = userID;
+  },
+  setEmail(_state, email) {
+    _state.email = email;
   },
   setAttributes(_state, attributes) {
     // eslint-disable-next-line no-param-reassign

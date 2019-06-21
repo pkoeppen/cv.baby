@@ -178,9 +178,7 @@ export default {
       draftResume: getDefaultResume(),
       activeIndex: -1,
       loading: false,
-      USERNAME: process.client
-        ? (this.$store.state.cognito.authenticated || {}).username
-        : null,
+      userID: this.$store.state.cognito.userID,
       CVBABY_UPLOAD_HOST: process.env.CVBABY_UPLOAD_HOST
     };
   },
@@ -220,7 +218,7 @@ export default {
             return {
               draft: false,
               resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${
-                this.USERNAME
+                this.userID
               }/${resume.resumeID}/profile.jpeg`,
               ...resume
             };
@@ -320,29 +318,30 @@ export default {
       hasImage = false
     ) {
       // Save resume to the database.
-      const savedResume = await this.$store
-        .dispatch('api/saveResume', {
-          resume: omit(unsavedResume, ['draft']),
-          // Attach base64 image string if present.
-          ...(hasImage && { base64Image: resumeImageSource.split(',')[1] })
-        })
-        .catch(({ response }) => {
-          const message =
-            response.status === 409
-              ? this.$t('errorSavingResumeSlugUnavailable')
-              : this.$t('errorSavingResume');
-          this.$store.dispatch('showSnackbar', {
-            color: 'red',
-            message
-          });
-        });
+      const savedResume =
+        (await this.$store
+          .dispatch('api/saveResume', {
+            resume: omit(unsavedResume, ['draft']),
+            // Attach base64 image string if present.
+            ...(hasImage && { base64Image: resumeImageSource.split(',')[1] })
+          })
+          .catch(({ response }) => {
+            const message =
+              response.status === 409
+                ? this.$t('errorSavingResumeSlugUnavailable')
+                : this.$t('errorSavingResume');
+            this.$store.dispatch('showSnackbar', {
+              color: 'red',
+              message
+            });
+          })) || this.resumesLastSaved[index];
       // Load the saved resume returned from database.
       const resume = {
         index,
         draft: false,
-        resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${this.USERNAME}/${
+        resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${this.userID}/${
           savedResume.resumeID
-        }/profile.jpeg`,
+        }/profile.jpeg?v=${Date.now()}`,
         ...omit(savedResume, ['userID'])
       };
       if (index === -1) {

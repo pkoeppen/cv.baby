@@ -7,6 +7,8 @@ const S3 = new AWS.S3({
   s3ForcePathStyle: true,
   endpoint: 'https://s3.amazonaws.com'
 });
+
+const IS_OFFLINE = process.env.IS_OFFLINE;
 const CVBABY_BUCKET_POST = process.env.CVBABY_BUCKET_POST;
 
 module.exports = { processImage };
@@ -14,16 +16,19 @@ module.exports = { processImage };
 /*
  *  Processes base64 image strings with sharp.
  */
-async function processImage(event, context, callback) {
-  try {
-    await processBase64Image(event);
-    return callback(null, { statusCode: 200 });
-  } catch (error) {
-    callback(error.message);
+async function processImage({ userID, resumeID, base64Image }, context) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  if (IS_OFFLINE) {
+    const fs = require('fs');
+    const file = fs.readFileSync('./image');
+    base64Image = new Buffer(file).toString('base64');
   }
+  await processBase64Image(userID, resumeID, base64Image);
+  return { statusCode: 200 };
 }
 
-async function processBase64Image({ userID, resumeID, base64Image }) {
+async function processBase64Image(userID, resumeID, base64Image) {
   const IMAGE_SIZE = [600, 600];
   const imageBuffer = Buffer.from(base64Image, 'base64');
 

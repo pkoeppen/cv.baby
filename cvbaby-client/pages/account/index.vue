@@ -247,6 +247,7 @@
                         <div class="open-sans">{{ $t('amount') }}</div>
                         <div v-if="payment.subscription">
                           USD
+                          <!-- TODO: Fix in Braintree (change from 32 to 36 yearly) -->
                           {{ parseInt(payment.subscription.nextBillAmount) }}
                         </div>
                       </div>
@@ -471,7 +472,7 @@ export default {
         this.resumes.resumes = resumes.map((resume, index) => {
           return {
             resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${
-              this.$store.state.cognito.authenticated.username
+              this.$store.state.cognito.userID
             }/${resume.resumeID}/profile.jpeg`,
             ...resume
           };

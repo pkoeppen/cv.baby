@@ -3,31 +3,22 @@ import { Kind } from 'graphql';
 /**
  * Validates GraphQL ASTs by query depth.
  */
-export function checkQueryDepth(ast, maxDepth, callback, options = {}) {
-  try {
-    const { definitions } = ast;
-    const fragments = getFragments(definitions);
-    const queries = getQueriesAndMutations(definitions);
-    const queryDepths = {};
-    for (let name in queries) {
-      queryDepths[name] = determineDepth(
-        queries[name],
-        fragments,
-        0,
-        maxDepth,
-        name,
-        options
-      );
-    }
-    return ast;
-  } catch (error) {
-    console.log(`[depthLimit] IP: ${ctx.ip_address}`);
-    callback(null, {
-      headers,
-      statusCode: 400,
-      body: 'Query depth limit exceeded.'
-    });
+export function checkQueryDepth(ast, maxDepth, options = {}) {
+  const { definitions } = ast;
+  const fragments = getFragments(definitions);
+  const queries = getQueriesAndMutations(definitions);
+  const queryDepths = {};
+  for (let name in queries) {
+    queryDepths[name] = determineDepth(
+      queries[name],
+      fragments,
+      0,
+      maxDepth,
+      name,
+      options
+    );
   }
+  return ast;
 }
 
 function getFragments(definitions) {

@@ -52,6 +52,7 @@ export async function saveResume(userID, resume, base64Image) {
     alias: resume.alias,
     path: `users/${userID}/${savedResume.resumeID}`
   });
+  console.log('before renderPDF. IS_OFFLINE:', IS_OFFLINE);
   if (IS_OFFLINE) {
     axios.post('http://127.0.0.1:3003/renderPDF', payload);
   } else {
@@ -167,6 +168,7 @@ function uploadImage(userID, resumeID, base64Image) {
     resumeID,
     base64Image
   };
+  console.log('before processImage. IS_OFFLINE:', IS_OFFLINE);
   if (IS_OFFLINE) {
     return axios.post('http://localhost:3002/processImage', payload);
   } else {

@@ -233,7 +233,7 @@ export default {
     avatarSource() {
       if (process.client && this.$store.state.cognito.authenticated) {
         return `${process.env.CVBABY_UPLOAD_HOST}/users/${
-          this.$store.state.cognito.authenticated.username
+          this.$store.state.cognito.userID
         }/profile.jpeg`;
       } else {
         return require(`~/assets/images/avatarPlaceholder.png`);

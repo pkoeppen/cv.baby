@@ -10,6 +10,7 @@ async function handler({ body }) {
     const args = Object.keys(config).map(key => {
         return ['-e', `${key}=${config[key]}`]
     }).reduce((acc, cur) => acc.concat(cur));
+
     // Get AWS credentials.
     const {
         AWS_ACCESS_KEY_ID,
@@ -17,16 +18,18 @@ async function handler({ body }) {
     } = await getAWSCredentials();
     args.push('-e', `AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}`);
     args.push('-e', `AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}`);
-    // Add port mapping argument.
-    args.push('-p', '3000:3000');
-    const event = JSON.parse(body);
+
+    const { base64Image, ...event } = JSON.parse(body);
+    writeImageFile(base64Image);
+
     const options = {
         event,
         dockerImage: 'lambci/lambda:nodejs8.10',
-        handler: 'handler.renderPDF',
+        handler: 'handler.processImage',
         dockerArgs: args,
         taskDir: `${__dirname}/tmp`
     }
+
     const response = dockerLambda(options);
     console.log('docker-lambda response:', JSON.stringify(response, null, 2));
     return response;
@@ -53,4 +56,10 @@ async function getAWSCredentials() {
         AWS_ACCESS_KEY_ID,
         AWS_SECRET_ACCESS_KEY
     };
+}
+
+function writeImageFile(base64Image) {
+    // Save the image into the shared Docker folder.
+    const file = new Buffer(base64Image, 'base64');
+    fs.writeFileSync(`${__dirname}/tmp/image`, file);
 }

@@ -16,24 +16,22 @@ module.exports = { renderPDF };
 /*
  *  Renders an HTML resume page to PDF and saves it to S3.
  */
-async function renderPDF({ slug, alias, path }, context, callback) {
+async function renderPDF({ slug, alias, path }, context) {
   context.callbackWaitsForEmptyEventLoop = false;
-  try {
-    // TODO: Render in multiple languages
-    const pdf = await renderHTMLtoPDF(`${CVBABY_CLIENT_HOST}/${slug}?headless=true`);
-    const key = `${path}/${alias}.pdf`;
 
-    await removeAllPDFs(path);
-    await S3.putObject({
-      Bucket: CVBABY_BUCKET_POST,
-      Body: pdf,
-      Key: key,
-      ACL: 'public-read'
-    }).promise();
-    return callback(null, { statusCode: 200 });
-  } catch (error) {
-    return callback(error.message);
-  }
+  // TODO: Render in multiple languages
+  const pdf = await renderHTMLtoPDF(`${CVBABY_CLIENT_HOST}/${slug}?headless=true`);
+  const key = `${path}/${alias}.pdf`;
+
+  await removeAllPDFs(path);
+  await S3.putObject({
+    Bucket: CVBABY_BUCKET_POST,
+    Body: pdf,
+    Key: key,
+    ACL: 'public-read'
+  }).promise();
+
+  return { statusCode: 200 };
 }
 
 async function renderHTMLtoPDF(url) {
@@ -67,7 +65,7 @@ async function removeAllPDFs(path) {
     files.map(({ Key }) =>
       // Only delete PDF files.
       /\.pdf$/gi.test(Key)
-        ? S3.deleteObject({ Bucket, Key }).promise()
+        ? S3.deleteObject({ Bucket: CVBABY_BUCKET_POST, Key }).promise()
         : Promise.resolve()
     )
   );

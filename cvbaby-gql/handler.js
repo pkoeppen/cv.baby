@@ -31,7 +31,16 @@ function generateHandler(authenticated = false) {
     }
 
     // Disallow query depth over ten levels.
-    checkQueryDepth(parse(query), 10, callback);
+    try {
+      checkQueryDepth(parse(query), 10);
+    } catch (error) {
+      console.log(`[depthLimit] IP: ${ctx.ip_address}`);
+      return callback(null, {
+        headers,
+        statusCode: 400,
+        body: 'Query depth limit exceeded.'
+      });
+    }
 
     // Execute the query.
     graphql(schema, query, null, ctx, vars)

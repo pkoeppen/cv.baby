@@ -27,10 +27,4 @@ provider:
         - s3:*
       Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}/*
 
-functions:
-  processImage:
-    handler: handler.processImage
-    events:
-      - http:
-          path: /processImage
-          method: post
+functions: ${file(functions-${opt:stage, "dev"}.yml)}
