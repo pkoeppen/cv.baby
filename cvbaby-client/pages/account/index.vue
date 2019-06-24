@@ -1,7 +1,7 @@
 <template>
   <no-ssr>
     <div>
-      <v-layout style="min-height: 100vh;" column wrap>
+      <v-layout column wrap>
         <v-flex xs12>
           <v-container class="pa-0">
             <navbar />
@@ -13,7 +13,10 @@
         <v-flex xs12>
           <v-container class="py-0">
             <v-layout row justify-center>
-              <v-flex style="border-right: 1px solid #E0E0E0;" shrink>
+              <v-flex
+                style="min-height: 100vh; border-right: 1px solid #E0E0E0;"
+                shrink
+              >
                 <h2 class="mt-5 mb-4">Account</h2>
                 <div class="vertical-tabs vertical-tabs--horizontal-text">
                   <v-tabs v-model="tabs" @change="$emit('input', $event)">

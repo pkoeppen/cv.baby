@@ -16,27 +16,31 @@ module.exports = { renderPDF };
 /*
  *  Renders an HTML resume page to PDF and saves it to S3.
  */
-async function renderPDF({ slug, alias, path }, context) {
+async function renderPDF({ slug, path }, context) {
   context.callbackWaitsForEmptyEventLoop = false;
-
-  // TODO: Render in multiple languages
-  const pdf = await renderHTMLtoPDF(`${CVBABY_CLIENT_HOST}/${slug}?headless=true`);
-  const key = `${path}/${alias}.pdf`;
-
   await removeAllPDFs(path);
-  await S3.putObject({
-    Bucket: CVBABY_BUCKET_POST,
-    Body: pdf,
-    Key: key,
-    ACL: 'public-read'
-  }).promise();
+  const locales = [
+    'en',
+    'de'
+  ];
+  for (const locale of locales) {
+    const url = `${CVBABY_CLIENT_HOST}/${locale === 'en' ? '' : locale + '/'}${slug}?headless=true`;
+    const pdf = await renderHTMLtoPDF(url);
+    const key = `${path}/resume_${locale}.pdf`;
+    await S3.putObject({
+      Bucket: CVBABY_BUCKET_POST,
+      Body: pdf,
+      Key: key,
+      ACL: 'public-read'
+    }).promise();
+  }
 
   return { statusCode: 200 };
 }
 
-async function renderHTMLtoPDF(url) {
+async function renderHTMLtoPDF(url, locale) {
   const opts = {
-    args: chromium.args,
+    args: chromium.args.concat([`--lang=${locale}`]),
     defaultViewport: chromium.defaultViewport,
     executablePath: await chromium.executablePath,
     headless: chromium.headless

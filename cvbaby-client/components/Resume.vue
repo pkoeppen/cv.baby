@@ -2,10 +2,16 @@
   <v-container :class="{ 'pa-5': headless }">
     <v-layout justify-center align-center wrap>
       <v-flex v-if="!isDemo && !headless" class="text-xs-right" xs12 lg10>
-        <v-btn depressed small @click="foo">
+        <v-btn depressed small @click="downloadPDF">
           <v-icon small>save_alt</v-icon>
           <span class="ml-1">PDF</span>
         </v-btn>
+        <a
+          ref="hiddenPDFTag"
+          href=""
+          :download="pdfDownloadFilename"
+          style="display: none;"
+        />
       </v-flex>
       <v-flex class="py-3" xs12>
         <div class="d-flex justify-center" style="position: relative;">
@@ -625,7 +631,6 @@
 </template>
 
 <script>
-// import * as color from 'color';
 import { getDefaultResume } from '~/assets/js/util';
 export default {
   props: {
@@ -648,7 +653,10 @@ export default {
         ? require('~/assets/images/avatar.svg')
         : `${process.env.CVBABY_UPLOAD_HOST}/users/${
             this.resume.userID
-          }/profile.jpeg`
+          }/profile.jpeg`,
+      pdfDownloadSource: `${process.env.CVBABY_UPLOAD_HOST}/users/${
+        this.resume.userID
+      }/${this.resume.resumeID}/resume_${this.$i18n.locale}.pdf`
     };
   },
   computed: {
@@ -673,13 +681,25 @@ export default {
     resumeTextColor() {
       const lightColors = ['yellow'];
       return lightColors.indexOf(this.resume.color) > -1 ? 'black' : 'white';
+    },
+    pdfDownloadFilename() {
+      return `${this.$t('resume')}_${this.resume.name.replace(/\s+/g, '')}.pdf`;
     }
   },
   methods: {
-    async foo() {},
     setImagePlaceholder(event) {
       // TODO
       console.log('event:', JSON.stringify(event));
+    },
+    async downloadPDF(event) {
+      const data = await this.$axios({
+        url: this.pdfDownloadSource,
+        method: 'GET',
+        responseType: 'blob'
+      }).then(({ data }) => data);
+      const url = window.URL.createObjectURL(new Blob([data]));
+      this.$refs.hiddenPDFTag.href = url;
+      this.$refs.hiddenPDFTag.click();
     },
     formatDates([dateFrom, dateTo]) {
       const dateFromPretty = new Date(dateFrom).toLocaleString(

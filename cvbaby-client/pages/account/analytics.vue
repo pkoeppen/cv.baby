@@ -172,13 +172,14 @@
                 </template>
               </v-flex>
               <v-flex class="pt-4" xs9>
-                <resume-editor
-                  ref="resumeEditor"
-                  @save="saveResume"
-                  @draft="setDraft"
-                  @remove="removeResume"
-                  @discard="discardChanges"
-                />
+                <v-sparkline
+                  :smooth="16"
+                  :gradient="['#f72047', '#ffd200', '#1feaea']"
+                  :line-width="3"
+                  :value="testData"
+                  auto-draw
+                  stroke-linecap="round"
+                ></v-sparkline>
               </v-flex>
             </v-layout>
           </v-container>
@@ -193,16 +194,15 @@
 import { cloneDeep, isEqual, omit } from 'lodash';
 import Navbar from '~/components/Navbar';
 import cvFooter from '~/components/Footer';
-import ResumeEditor from '~/components/ResumeEditor';
 import { getDefaultResume } from '~/assets/js/util';
 export default {
   components: {
     Navbar,
-    cvFooter,
-    ResumeEditor
+    cvFooter
   },
   data() {
     return {
+      testData: this.getTestData(),
       resumes: [],
       resumesLastSaved: [],
       draftResume: getDefaultResume(),
@@ -286,6 +286,11 @@ export default {
     window.removeEventListener('beforeunload', this.beforeUnloadHandler);
   },
   methods: {
+    getTestData() {
+      return Array.from({ length: 20 }, () =>
+        Math.ceil(Math.random() * (120 - 80) + 80)
+      );
+    },
     /*
      * Loads a resume into the editor.
      */

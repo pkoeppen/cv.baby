@@ -15,7 +15,10 @@ export async function checkSlugAvailable(slug) {
   return !(await getSlug(slug));
 }
 
-export function createSlug(slug, userID) {
+export async function createSlug(slug, userID) {
+  if (!(await checkSlugAvailable(slug))) {
+    throw new Error('![409] Slug is taken');
+  }
   return DynamoDB.put({
     TableName: CVBABY_TABLE_SLUGS,
     Item: {

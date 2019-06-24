@@ -25,6 +25,10 @@ module.exports = {
   /*
    *  Resume
    */
+  resume: {
+    en: 'Resume',
+    de: 'Lebenslauf'
+  },
   employment: {
     en: 'Employment',
     de: 'Karriere'

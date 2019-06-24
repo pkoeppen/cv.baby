@@ -98,7 +98,7 @@ module.exports = {
         import: ['~assets/style/variables.styl']
       }
     },
-    vendor: ['html2canvas'],
+    vendor: ['file-saver'],
     /*
      ** You can extend webpack config here
      */

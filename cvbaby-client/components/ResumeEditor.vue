@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="pr-0 pt-0 pl-5">
     <v-layout justify-center align-center wrap>
       <v-container class="pa-0" grid-list-xl>
         <v-layout wrap>
@@ -39,7 +39,7 @@
           </v-flex>
         </v-layout>
       </v-container>
-      <v-flex class="mt-5" xs12 md8>
+      <v-flex class="mt-5" xs12>
         <v-layout justify-space-between align-center>
           <div>
             <v-switch v-model="resume.live" label="Live" color="primary" />
@@ -75,7 +75,7 @@
           </div>
         </v-layout>
       </v-flex>
-      <v-flex class="text-xs-center" xs12 md8>
+      <v-flex class="text-xs-center" xs12>
         <div style="position: relative;">
           <v-avatar size="200" @click="$refs.imageInput.click()">
             <v-img
@@ -101,7 +101,7 @@
           />
         </div>
       </v-flex>
-      <v-flex xs12 md8>
+      <v-flex xs12>
         <v-form
           ref="formAlias"
           v-model="hasAlias"
@@ -179,7 +179,7 @@
           @change="v => (resume.website = v)"
         />
       </v-flex>
-      <v-flex xs12 md8 class="text-xs-center my-3">
+      <v-flex xs12 class="text-xs-center my-3">
         <v-combobox
           v-model="resume.skills"
           hide-selected
@@ -198,7 +198,7 @@
           </template>
         </v-combobox>
       </v-flex>
-      <v-flex xs12 md8>
+      <v-flex xs12>
         <v-textarea
           :value="resume.profile"
           :label="$t('profile')"
