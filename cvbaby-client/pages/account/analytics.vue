@@ -171,15 +171,20 @@
                   </v-flex>
                 </template>
               </v-flex>
-              <v-flex class="pt-4" xs9>
-                <v-sparkline
-                  :smooth="16"
-                  :gradient="['#f72047', '#ffd200', '#1feaea']"
-                  :line-width="3"
-                  :value="testData"
-                  auto-draw
-                  stroke-linecap="round"
-                ></v-sparkline>
+              <v-flex class="pt-4 pl-4" xs9>
+                <v-sheet>
+                  <v-sparkline
+                    :smooth="16"
+                    :gradient="['#f72047', '#ffd200', '#1feaea']"
+                    :line-width="3"
+                    :value="testData"
+                    :labels="testLabels"
+                    color="grey"
+                    auto-draw
+                    stroke-linecap="round"
+                    class="cv-sparkline"
+                  ></v-sparkline>
+                </v-sheet>
               </v-flex>
             </v-layout>
           </v-container>
@@ -203,6 +208,7 @@ export default {
   data() {
     return {
       testData: this.getTestData(),
+      testLabels: this.getTestLabels(),
       resumes: [],
       resumesLastSaved: [],
       draftResume: getDefaultResume(),
@@ -287,9 +293,20 @@ export default {
   },
   methods: {
     getTestData() {
-      return Array.from({ length: 20 }, () =>
+      this.getTestLabels();
+      return Array.from({ length: 14 }, () =>
         Math.ceil(Math.random() * (120 - 80) + 80)
       );
+    },
+    getTestLabels() {
+      return new Array(14)
+        .fill(new Date())
+        .map((date, index) => {
+          date.setDate(date.getDate() - index);
+          console.log(`${date.getMonth() + 1}-${date.getDate()}`);
+          return `${date.getMonth() + 1}.${date.getDate()}`;
+        })
+        .reverse();
     },
     /*
      * Loads a resume into the editor.
@@ -476,3 +493,9 @@ export default {
   }
 };
 </script>
+<style lang="stylus" scoped>
+.cv-sparkline
+  font-size: 8px
+  svg
+    height: initial
+</style>
