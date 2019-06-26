@@ -171,7 +171,7 @@
                   </v-flex>
                 </template>
               </v-flex>
-              <v-flex class="pt-4 pl-4" xs9>
+              <v-flex class="pt-4" xs9>
                 <v-sheet>
                   <v-sparkline
                     :smooth="16"
@@ -179,12 +179,19 @@
                     :line-width="3"
                     :value="testData"
                     :labels="testLabels"
+                    padding="16"
                     color="grey"
                     auto-draw
                     stroke-linecap="round"
                     class="cv-sparkline"
                   ></v-sparkline>
                 </v-sheet>
+                <v-list>
+                  <v-list-tile v-for="(item, index) in testItems" :key="index">
+                    Date: {{ (item[0] || {}).timestamp }} Visits:
+                    {{ item.length }}
+                  </v-list-tile>
+                </v-list>
               </v-flex>
             </v-layout>
           </v-container>
@@ -209,6 +216,7 @@ export default {
     return {
       testData: this.getTestData(),
       testLabels: this.getTestLabels(),
+      testItems: this.getTestItems(),
       resumes: [],
       resumesLastSaved: [],
       draftResume: getDefaultResume(),
@@ -293,20 +301,31 @@ export default {
   },
   methods: {
     getTestData() {
-      this.getTestLabels();
-      return Array.from({ length: 14 }, () =>
-        Math.ceil(Math.random() * (120 - 80) + 80)
-      );
+      return this.getTestItems()
+        .reverse()
+        .map(({ length }) => length);
     },
     getTestLabels() {
       return new Array(14)
-        .fill(new Date())
-        .map((date, index) => {
+        .fill(0)
+        .map((_, index) => {
+          const date = new Date();
           date.setDate(date.getDate() - index);
-          console.log(`${date.getMonth() + 1}-${date.getDate()}`);
           return `${date.getMonth() + 1}.${date.getDate()}`;
         })
         .reverse();
+    },
+    getTestItems() {
+      return new Array(14).fill(0).map((_, index) => {
+        const date = new Date();
+        date.setDate(date.getDate() - index);
+        const length = Math.round(Math.random() * 10);
+        return Array.from({ length }, () => ({
+          timestamp: date.toLocaleString(),
+          latitude: '',
+          longitude: ''
+        }));
+      });
     },
     /*
      * Loads a resume into the editor.
@@ -493,9 +512,8 @@ export default {
   }
 };
 </script>
-<style lang="stylus" scoped>
+<style lang="stylus">
 .cv-sparkline
-  font-size: 8px
-  svg
-    height: initial
+  g
+    font-size: 6px !important
 </style>
