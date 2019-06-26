@@ -36,7 +36,7 @@ function generateHandler(authenticated = false) {
     } catch (error) {
       console.log(`[depthLimit] IP: ${ctx.ip_address}`);
       return callback(null, {
-        headers,
+        headers: HEADERS,
         statusCode: 400,
         body: 'Query depth limit exceeded.'
       });

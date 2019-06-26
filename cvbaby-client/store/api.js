@@ -1,6 +1,7 @@
 import {
   ResumeQuery,
   ResumesQuery,
+  AnalyticsQuery,
   SubscriptionQuery,
   CheckSlugAvailableQuery,
   SaveResumeMutation,
@@ -27,6 +28,13 @@ export const actions = {
         query: ResumesQuery
       })
       .then(({ data }) => data.getResumes);
+  },
+  getAnalytics() {
+    return this.$axios
+      .post('/gql/private', {
+        query: AnalyticsQuery
+      })
+      .then(({ data }) => data.getAnalytics);
   },
   getSubscription() {
     return this.$axios

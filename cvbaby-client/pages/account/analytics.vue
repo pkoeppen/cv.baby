@@ -18,32 +18,13 @@
                 {{ $mq === 'sm' ? $t('account') : $t('backToAccount') }}
               </v-btn>
               <v-spacer />
-              <div v-if="draftResume && draftResume.draft">
-                <v-badge color="error" overlap style="width: 100%;">
-                  <template v-slot:badge>
-                    <v-icon dark>save</v-icon>
-                  </template>
-                  <v-btn
-                    :disabled="activeIndex === -1 && draftResume.draft"
-                    class="mx-0"
-                    color="primary"
-                    depressed
-                    @click="editResume(-1)"
-                  >
-                    {{ newResumeButtonText }}
-                    <v-icon class="ml-1">note_add</v-icon>
-                  </v-btn>
-                </v-badge>
-              </div>
               <v-btn
-                v-else
-                :disabled="activeIndex === -1 && draftResume.draft"
                 class="mx-0"
                 color="primary"
                 depressed
                 @click="editResume(-1)"
               >
-                {{ newResumeButtonText }}
+                Something
                 <v-icon class="ml-1">note_add</v-icon>
               </v-btn>
             </v-toolbar>
@@ -100,19 +81,12 @@
                     :key="index"
                     class="mr-4 mb-4"
                   >
-                    <v-badge
-                      :color="resume.draft ? 'error' : 'success'"
-                      overlap
-                      style="width: 100%;"
-                    >
+                    <v-badge color="success" overlap style="width: 100%;">
                       <template v-slot:badge>
                         <v-icon dark>save</v-icon>
                       </template>
                       <v-card class="text-xs-center">
-                        <v-card-title
-                          :class="{ 'red--text': resume.draft }"
-                          class="title justify-center"
-                        >
+                        <v-card-title class="title justify-center">
                           {{ resume.alias }}
                         </v-card-title>
                         <v-card-text style="min-height: 132px;">
@@ -140,31 +114,11 @@
                           </v-avatar>
                         </v-card-text>
                         <v-card-actions class="justify-center">
-                          <v-tooltip v-if="resume.slug" top>
-                            <template v-slot:activator="{ on }">
-                              <v-btn :to="`/${resume.slug}`" icon v-on="on"
-                                ><v-icon small>link</v-icon></v-btn
-                              >
-                            </template>
-                            <span>{{ $t('view') }}</span>
-                          </v-tooltip>
                           <v-btn
                             depressed
-                            :disabled="activeIndex === index"
-                            :class="{ 'ml-2': !!resume.slug }"
-                            @click="editResume(index)"
-                            >{{
-                              activeIndex === index ? $t('editing') : $t('edit')
-                            }}</v-btn
+                            @click="loadAnalytics(resume, index)"
+                            >{{ $t('viewAnalytics') }}</v-btn
                           >
-                          <v-tooltip top>
-                            <template v-slot:activator="{ on }">
-                              <v-btn icon v-on="on" @click="cloneResume(index)"
-                                ><v-icon small>file_copy</v-icon></v-btn
-                              >
-                            </template>
-                            <span>{{ $t('clone') }}</span>
-                          </v-tooltip>
                         </v-card-actions>
                       </v-card>
                     </v-badge>
@@ -172,26 +126,7 @@
                 </template>
               </v-flex>
               <v-flex class="pt-4" xs9>
-                <v-sheet>
-                  <v-sparkline
-                    :smooth="16"
-                    :gradient="['#f72047', '#ffd200', '#1feaea']"
-                    :line-width="3"
-                    :value="testData"
-                    :labels="testLabels"
-                    padding="16"
-                    color="grey"
-                    auto-draw
-                    stroke-linecap="round"
-                    class="cv-sparkline"
-                  ></v-sparkline>
-                </v-sheet>
-                <v-list>
-                  <v-list-tile v-for="(item, index) in testItems" :key="index">
-                    Date: {{ (item[0] || {}).timestamp }} Visits:
-                    {{ item.length }}
-                  </v-list-tile>
-                </v-list>
+                <analytics-viewer ref="analyticsViewer" />
               </v-flex>
             </v-layout>
           </v-container>
@@ -203,89 +138,55 @@
 </template>
 
 <script>
-import { cloneDeep, isEqual, omit } from 'lodash';
 import Navbar from '~/components/Navbar';
 import cvFooter from '~/components/Footer';
-import { getDefaultResume } from '~/assets/js/util';
+import AnalyticsViewer from '~/components/AnalyticsViewer';
 export default {
   components: {
     Navbar,
-    cvFooter
+    cvFooter,
+    AnalyticsViewer
   },
   data() {
     return {
-      testData: this.getTestData(),
-      testLabels: this.getTestLabels(),
-      testItems: this.getTestItems(),
       resumes: [],
-      resumesLastSaved: [],
-      draftResume: getDefaultResume(),
-      activeIndex: -1,
       loading: false,
       userID: this.$store.state.cognito.userID,
-      CVBABY_UPLOAD_HOST: process.env.CVBABY_UPLOAD_HOST
+      uploadHost: process.env.CVBABY_UPLOAD_HOST,
+      googleMapsAPIKey: process.env.GOOGLE_MAPS_API_KEY
     };
-  },
-  computed: {
-    draftsRemaining() {
-      return (
-        this.resumes.map(({ draft }) => draft).filter(x => x).length ||
-        !!(this.draftResume || {}).draft
-      );
-    },
-    newResumeButtonText() {
-      if ((this.draftResume || {}).draft) {
-        return this.activeIndex === -1
-          ? this.$t('editingDraft')
-          : this.$t('editDraft');
-      } else {
-        return this.$t('newResume');
-      }
-    }
   },
   created() {
     if (process.client) {
-      // Add beforeunload handler to prevent
-      // accidentally discarding unsaved changes.
-      // eslint-disable-next-line nuxt/no-globals-in-created
-      window.addEventListener('beforeunload', this.beforeUnloadHandler);
-
-      // Fetch resumes from the database.
+      // Fetch analytics from the database.
       this.loading = true;
       this.$store
-        .dispatch('api/getResumes')
+        .dispatch('api/getAnalytics')
         .then(resumes => {
           // Add 'draft' and 'resumeImageSource' fields to each resume for the UI.
-          this.resumes = resumes.map(resume => {
-            // Not necessary here.
-            delete resume.userID;
-            return {
-              draft: false,
-              resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${
-                this.userID
-              }/${resume.resumeID}/profile.jpeg`,
-              ...resume
-            };
-          });
-          this.resumesLastSaved = cloneDeep(this.resumes);
-
+          this.resumes = resumes.map(item => ({
+            resumeImageSource: `${this.uploadHost}/users/${this.userID}/${
+              item.resumeID
+            }/profile.jpeg`,
+            ...item
+          }));
           const index = parseInt(this.$route.query.i);
           if (index >= -1 && index < this.resumes.length) {
-            this.editResume(index);
+            this.loadAnalytics(resumes[index]);
           }
         })
         .catch(({ response: { status } }) => {
           // TODO: Move this to beforeRouteEnter or something
 
-          if (status >= 400 && status < 500) {
-            this.$router.push({ path: this.localePath('index') });
-            this.$store.dispatch('cognito/signOut');
-            return;
-            // TODO: Show 'you have been signed out' snackbar
-          }
+          // if (status >= 400 && status < 500) {
+          //   this.$router.push({ path: this.localePath('index') });
+          //   this.$store.dispatch('cognito/signOut');
+          //   return;
+          //   // TODO: Show 'you have been signed out' snackbar
+          // }
           this.$store.dispatch('showSnackbar', {
             color: 'red',
-            message: this.$t('errorFetchingResumes')
+            message: this.$t('errorFetchingAnalytics')
           });
         })
         .finally(() => {
@@ -293,198 +194,13 @@ export default {
         });
     }
   },
-  destroyed() {
-    //
-    // TODO: Add 'confirm discard changes?' before leave route
-    //
-    window.removeEventListener('beforeunload', this.beforeUnloadHandler);
-  },
   methods: {
-    getTestData() {
-      return this.getTestItems()
-        .reverse()
-        .map(({ length }) => length);
-    },
-    getTestLabels() {
-      return new Array(14)
-        .fill(0)
-        .map((_, index) => {
-          const date = new Date();
-          date.setDate(date.getDate() - index);
-          return `${date.getMonth() + 1}.${date.getDate()}`;
-        })
-        .reverse();
-    },
-    getTestItems() {
-      return new Array(14).fill(0).map((_, index) => {
-        const date = new Date();
-        date.setDate(date.getDate() - index);
-        const length = Math.round(Math.random() * 10);
-        return Array.from({ length }, () => ({
-          timestamp: date.toLocaleString(),
-          latitude: '',
-          longitude: ''
-        }));
-      });
-    },
     /*
-     * Loads a resume into the editor.
+     * Loads analytics data into the viewer.
      */
-    loadResume(resume) {
-      this.$refs.resumeEditor.loadResume(resume);
-      this.activeIndex = resume.index;
-    },
-
-    /*
-     * Selects a resume by index and loads it.
-     */
-    editResume(index) {
-      // Pass a resume and index to the loader method.
-      if (index === -1) {
-        this.loadResume({ ...this.draftResume, index });
-        if (!this.draftResume.draft) {
-          // If this a brand new resume, focus the 'alias'
-          // field to make things obvious for the user.
-          this.$refs.resumeEditor.focusAliasField();
-        }
-      } else {
-        this.loadResume({ ...this.resumes[index], index });
-      }
-    },
-
-    /*
-     * Removes a resume from database and local arrays.
-     */
-    removeResume({ index, resumeID }) {
-      // Remove resume from the database.
-      this.$store
-        .dispatch('api/removeResume', resumeID)
-        .then(() => {
-          // Remove resume from local arrays.
-          this.resumes.splice(index, 1);
-          this.resumesLastSaved.splice(index, 1);
-          this.loadResume({ index: -1, ...this.draftResume });
-        })
-        .catch(() => {
-          this.$store.dispatch('showSnackbar', {
-            color: 'red',
-            message: this.$t('errorRemovingResume')
-          });
-        });
-    },
-
-    /*
-     * Clones an existing resume into the draft slot.
-     */
-    cloneResume(index) {
-      this.draftResume = {
-        ...cloneDeep(this.resumes[index]),
-        resumeID: null,
-        draft: true,
-        slug: null
-      };
-      this.editResume(-1);
-    },
-
-    /*
-     * Updates an existing resume or creates a new resume in the database.
-     */
-    async saveResume(
-      { index, resumeImageSource, ...unsavedResume },
-      hasImage = false
-    ) {
-      // Save resume to the database.
-      const savedResume = await this.$store
-        .dispatch('api/saveResume', {
-          resume: omit(unsavedResume, ['draft']),
-          // Attach base64 image string if present.
-          ...(hasImage && { base64Image: resumeImageSource.split(',')[1] })
-        })
-        .catch(({ response }) => {
-          const message =
-            response.status === 409
-              ? this.$t('errorSavingResumeSlugUnavailable')
-              : this.$t('errorSavingResume');
-          this.$store.dispatch('showSnackbar', {
-            color: 'red',
-            message
-          });
-        });
-      if (!savedResume) {
-        // Something went wrong.
-        return;
-      }
-      // Load the saved resume returned from database.
-      const resume = {
-        index,
-        draft: false,
-        resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${this.userID}/${
-          savedResume.resumeID
-        }/profile.jpeg?v=${Date.now()}`,
-        ...omit(savedResume, ['userID'])
-      };
-      if (index === -1) {
-        this.setResume(index, resume, true);
-        this.editResume(this.resumes.length - 1);
-        // Reset draft resume slot.
-        this.draftResume = getDefaultResume();
-      } else {
-        this.setResume(index, resume, true);
-        this.editResume(index);
-      }
-    },
-
-    /*
-     * Reverts resume at index back to resumesLastSaved[index].
-     */
-    discardChanges(index) {
-      if (index === -1) {
-        // Revert draft resume to default.
-        this.draftResume = getDefaultResume();
-        this.loadResume({ index, ...this.draftResume });
-      } else {
-        // Deep clone resume from resumesLastSaved to avoid reference conflicts.
-        const resume = this.resumesLastSaved[index];
-        this.setResume(index, resume);
-        this.loadResume({ index, ...resume });
-      }
-    },
-
-    /*
-     * Updates the local resume array with the given resume draft.
-     */
-    setDraft({ index, ...resume }) {
-      // Set resume at the given index to '...resume' from the editor.
-      // '...resume' should contain { draft: true }.
-      if (index === -1) {
-        if (!isEqual(omit(resume, 'draft'), omit(this.draftResume, 'draft'))) {
-          this.draftResume = resume;
-        }
-      } else if (
-        !isEqual(omit(resume, 'draft'), omit(this.resumes[index], 'draft'))
-      ) {
-        this.setResume(index, resume);
-      }
-    },
-
-    /*
-     * Updates a resume in the local arrays at the given index.
-     */
-    setResume(index, resume, setLastSaved = false) {
-      if (index === -1) {
-        // Push new resume to local arrays.
-        this.resumes.push(resume);
-        this.resumesLastSaved.push(cloneDeep(resume));
-      } else {
-        // Update the entire array so Vue renders the draft change.
-        const _resumes = cloneDeep(this.resumes);
-        _resumes[index] = cloneDeep(resume);
-        this.resumes = _resumes;
-        // Set resume in resumesLastSaved if specified.
-        if (setLastSaved) {
-          this.resumesLastSaved[index] = cloneDeep(resume);
-        }
-      }
+    loadAnalytics(resume, index) {
+      this.$refs.analyticsViewer.loadAnalytics(resume);
+      this.activeIndex = index;
     },
 
     /*
@@ -494,26 +210,7 @@ export default {
       const resume = this.resumes[index];
       resume.resumeImageSource = require('~/assets/images/avatarPlaceholder.png');
       this.setResume(index, resume, true);
-    },
-
-    /*
-     * Check if any resumes have not been saved before navigating away.
-     */
-    beforeUnloadHandler(event) {
-      if (this.draftResume.draft) {
-        event.preventDefault();
-      }
-      for (const { draft } of this.resumes) {
-        if (draft) {
-          event.preventDefault();
-        }
-      }
     }
   }
 };
 </script>
-<style lang="stylus">
-.cv-sparkline
-  g
-    font-size: 6px !important
-</style>

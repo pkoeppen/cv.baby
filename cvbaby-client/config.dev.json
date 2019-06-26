@@ -2,5 +2,6 @@
   "CVBABY_ENV": "dev",
   "CVBABY_UPLOAD_HOST": "https://cvbaby-bucket-post-dev.s3.amazonaws.com",
   "CVBABY_USER_POOL_ID": "us-east-1_Y0i6nvzuV",
-  "CVBABY_USER_POOL_CLIENT_ID": "9tor2as71771u3ruh8hu4d82"
+  "CVBABY_USER_POOL_CLIENT_ID": "9tor2as71771u3ruh8hu4d82",
+  "GOOGLE_MAPS_API_KEY": "AIzaSyCFsMh-a5JITma1TnkVmWxbh6faOQnR8gk"
 }

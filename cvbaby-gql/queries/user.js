@@ -1,13 +1,7 @@
-import { GraphQLNonNull, GraphQLID, GraphQLList, GraphQLString } from 'graphql';
+import { GraphQLNonNull } from 'graphql';
 import { authorize } from '../util';
-import { UserType, ResumeType, ResumeInputType } from '../types';
-import {
-  getUser,
-  getResume,
-  getResumes,
-  saveResume,
-  removeResume
-} from '../resolvers';
+import { UserType } from '../types';
+import { getUser } from '../resolvers';
 
 export default {
   getUser: {
@@ -15,58 +9,6 @@ export default {
     resolve: authorize((root, args, ctx) => {
       const { userID } = ctx;
       return getUser(userID);
-    })
-  },
-  getResume: {
-    type: new GraphQLNonNull(ResumeType),
-    args: {
-      slug: {
-        name: 'slug',
-        type: new GraphQLNonNull(GraphQLString)
-      }
-    },
-    resolve: (root, args) => {
-      const { slug } = args;
-      return getResume(slug);
-    }
-  },
-  getResumes: {
-    type: new GraphQLList(ResumeType),
-    resolve: authorize((root, args, ctx) => {
-      const { userID } = ctx;
-      return getResumes(userID);
-    })
-  },
-  saveResume: {
-    type: new GraphQLNonNull(ResumeType),
-    args: {
-      resume: {
-        name: 'resume',
-        type: new GraphQLNonNull(ResumeInputType)
-      },
-      base64Image: {
-        name: 'base64Image',
-        type: GraphQLString
-      }
-    },
-    resolve: authorize((root, args, ctx) => {
-      const { resume, base64Image } = args;
-      const { userID } = ctx;
-      return saveResume(userID, resume, base64Image);
-    })
-  },
-  removeResume: {
-    type: new GraphQLNonNull(ResumeType),
-    args: {
-      resumeID: {
-        name: 'resumeID',
-        type: new GraphQLNonNull(GraphQLID)
-      }
-    },
-    resolve: authorize((root, args, ctx) => {
-      const { resumeID } = args;
-      const { userID } = ctx;
-      return removeResume(userID, resumeID);
     })
   }
 };

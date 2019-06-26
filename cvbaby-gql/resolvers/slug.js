@@ -15,7 +15,7 @@ export async function checkSlugAvailable(slug) {
   return !(await getSlug(slug));
 }
 
-export async function createSlug(slug, userID) {
+export async function createSlug(slug, userID, resumeID) {
   if (!(await checkSlugAvailable(slug))) {
     throw new Error('![409] Slug is taken');
   }
@@ -23,7 +23,8 @@ export async function createSlug(slug, userID) {
     TableName: CVBABY_TABLE_SLUGS,
     Item: {
       slug,
-      userID
+      userID,
+      resumeID
     },
     ReturnValues: 'ALL_OLD'
   })

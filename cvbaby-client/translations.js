@@ -383,6 +383,13 @@ module.exports = {
     de: 'Sind Sie sicher, Sie möchten diesen Artikel entfernen?'
   },
   /*
+   * Analytics
+   */
+  viewAnalytics: {
+    en: 'View',
+    de: 'Anzeigen'
+  },
+  /*
    *  Pricing
    */
   freeTrial: {
@@ -689,6 +696,11 @@ module.exports = {
     en: 'Error fetching resumes. Please check your connection.',
     de:
       'Fehler beim Holen von Lebensläufen. Bitte überprüfen Sie Ihre Verbindung.'
+  },
+  errorFetchingAnalytics: {
+    en: 'Error fetching analytics. Please check your connection.',
+    de:
+      'Fehler beim Holen von Analysedaten. Bitte überprüfen Sie Ihre Verbindung.'
   },
   errorFetchingSubscription: {
     en: 'Error fetching subscription. Please check your connection.',

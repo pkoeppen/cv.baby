@@ -76,6 +76,28 @@ export const ResumeFragment = `
     social {
       title,
       link
+    },
+    analytics {
+      events {
+        timestamp,
+        latitude,
+        longitude
+      }
+    }
+  }
+`;
+export const AnalyticsFragment = `
+  fragment AnalyticsFields on ResumeType {
+    resumeID,
+    userID,
+    alias,
+    slug,
+    analytics {
+      events {
+        timestamp,
+        latitude,
+        longitude
+      }
     }
   }
 `;
@@ -90,6 +112,14 @@ export const ResumeQuery = `
     }
   }
   ${ResumeFragment}
+`;
+export const AnalyticsQuery = `
+  query {
+    getAnalytics {
+      ...AnalyticsFields
+    }
+  }
+  ${AnalyticsFragment}
 `;
 export const UserQuery = `
   query {
