@@ -17,15 +17,14 @@
           ></v-sparkline>
         </v-sheet>
         <div v-else>No data to show.</div>
-        <v-img :src="googleMapsImageSource()" />
+        <v-img v-if="googleMapsImageSource()" :src="googleMapsImageSource()" />
         Analytics Length: {{ analytics.length }}
-        <v-list>
-          <v-list-tile v-for="(item, index) in analytics" :key="index">
-            Date:
-            {{ (item[0] || {}).timestamp }} Visits:
-            {{ item.length }}
-          </v-list-tile>
-        </v-list>
+
+        <div v-for="(item, index) in analytics" :key="index">
+          Date:
+          {{ item.date }} Events:
+          {{ item.events.length }}
+        </div>
       </v-flex>
     </v-layout>
   </v-container>
@@ -42,9 +41,9 @@ export default {
   },
   computed: {
     sparklineData() {
-      const analytics = [...this.getTestAnalytics()];
+      const analytics = [...this.analytics];
       return analytics.length === 14
-        ? analytics.reverse().map(({ length }) => length)
+        ? analytics.reverse().map(({ events }) => events.length)
         : null;
     },
     sparklineLabels() {
@@ -73,16 +72,26 @@ export default {
       });
     },
     googleMapsImageSource() {
-      const latitude = '40.702147';
-      const longitude = '-74.015794';
+      const markers = this.analytics
+        .reduce((acc, cur) => {
+          return acc.concat(
+            cur.events.map(({ latitude, longitude }) => {
+              if (latitude && longitude) {
+                return `markers=color:red%7C${latitude},${longitude}`;
+              }
+            })
+          );
+        }, [])
+        .filter(x => !!x);
+      if (!markers.length) {
+        return null;
+      }
       const params = [
-        `center=${latitude},${longitude}`,
-        `zoom=13`,
         `size=600x300`,
         `scale=2`,
         `maptype=roadmap`,
-        `markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318
-&markers=color:red%7Clabel:C%7C40.718217,-73.998284`,
+        `language=${this.$i18n.locale}`,
+        markers.join('&'),
         `key=${this.googleMapsAPIKey}`
       ];
       return `https://maps.googleapis.com/maps/api/staticmap?${params.join(

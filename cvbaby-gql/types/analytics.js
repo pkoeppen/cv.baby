@@ -2,21 +2,30 @@ import {
   GraphQLObjectType,
   GraphQLNonNull,
   GraphQLString,
-  GraphQLInt,
-  GraphQLList
+  GraphQLList,
+  GraphQLID
 } from 'graphql';
 
 export const AnalyticsEventType = new GraphQLObjectType({
   name: 'AnalyticsEventType',
   fields: () => ({
+    resumeID: {
+      type: new GraphQLNonNull(GraphQLID)
+    },
+    stamp: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
     latitude: {
       type: GraphQLString
     },
     longitude: {
       type: GraphQLString
     },
-    timestamp: {
-      type: new GraphQLNonNull(GraphQLInt)
+    city: {
+      type: GraphQLString
+    },
+    country: {
+      type: GraphQLString
     }
   })
 });
@@ -24,6 +33,9 @@ export const AnalyticsEventType = new GraphQLObjectType({
 export const AnalyticsType = new GraphQLObjectType({
   name: 'AnalyticsType',
   fields: () => ({
+    date: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
     events: {
       type: new GraphQLList(AnalyticsEventType)
     }

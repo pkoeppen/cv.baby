@@ -18,6 +18,5 @@ export const queries = {
 export const mutations = {
   startSubscription: PaymentQuery.startSubscription,
   saveResume: ResumeQuery.saveResume,
-  removeResume: ResumeQuery.removeResume,
-  submitAnalyticsEvent: AnalyticsQuery.submitAnalyticsEvent
+  removeResume: ResumeQuery.removeResume
 };

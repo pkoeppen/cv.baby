@@ -2,13 +2,13 @@ import * as axios from 'axios';
 import * as uuid from 'uuid/v1';
 import { _, invokeLambda, DynamoDB } from '../util';
 import { createSlug, deleteSlug, getSlug } from './slug';
-import { getAnalytics } from './analytics';
+import { getAnalytics, submitAnalyticsEvent } from './analytics';
 
 const IS_OFFLINE = process.env.IS_OFFLINE;
 const CVBABY_ENV = process.env.CVBABY_ENV;
 const CVBABY_TABLE_RESUMES = process.env.CVBABY_TABLE_RESUMES;
 
-export async function getResume(slug) {
+export async function getResume(slug, ipAddress) {
   const { userID, resumeID } = await getSlug(slug);
   const resume = await DynamoDB.get({
     TableName: CVBABY_TABLE_RESUMES,
@@ -22,6 +22,7 @@ export async function getResume(slug) {
   if (!resume || !resume.live) {
     throw new Error('![404] Not found');
   }
+  submitAnalyticsEvent(resumeID, ipAddress);
   return resume;
 }
 
@@ -51,7 +52,16 @@ export async function getResumes(userID, fetchAnalytics = false) {
     .then(({ Items }) => Items);
   if (fetchAnalytics) {
     for (const resume of resumes) {
-      resume.analytics = await getAnalytics(resume.resumeID);
+      const dates = await getAnalytics(resume.resumeID);
+      const analytics = new Array(14).fill(0).map((_, index) => {
+        const date = new Date();
+        date.setDate(date.getDate() - index);
+        return {
+          date: date.toLocaleDateString(),
+          events: dates[date.toLocaleDateString()] || []
+        };
+      });
+      resume.analytics = analytics;
     }
   }
   return resumes;
@@ -106,7 +116,7 @@ async function updateResume(userID, resume, base64Image) {
   // If slug has changed, create a new slug and delete the old.
   if (oldResume.slug !== resume.slug) {
     await createSlug(resume.slug, userID, resume.resumeID);
-    slug && (await deleteSlug(slug, userID));
+    oldResume.slug && (await deleteSlug(oldResume.slug, userID));
   }
   // Convert all empty strings to null for DynamoDB.
   const resumeSaveable = _.deep(_.mapValues)(resume, value => {

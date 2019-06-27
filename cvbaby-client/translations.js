@@ -718,7 +718,7 @@ module.exports = {
       'Fehler beim Speichern von Lebenslauf. Bitte überprüfen Sie Ihre Verbindung.'
   },
   errorSavingResumeSlugUnavailable: {
-    en: 'Error removing resume: Slug is unavailable.',
+    en: 'Error saving resume: Slug is unavailable.',
     de: 'Fehler beim Speichern von Lebenslauf: Slug ist nicht verfügbar.'
   },
   errorCheckingSlugAvailability: {

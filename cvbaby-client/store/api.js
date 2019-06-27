@@ -5,7 +5,8 @@ import {
   SubscriptionQuery,
   CheckSlugAvailableQuery,
   SaveResumeMutation,
-  RemoveResumeMutation
+  RemoveResumeMutation,
+  AnalyticsMutation
 } from '~/assets/js/queries';
 
 export const state = () => ({
@@ -35,6 +36,12 @@ export const actions = {
         query: AnalyticsQuery
       })
       .then(({ data }) => data.getAnalytics);
+  },
+  submitAnalyticsEvent(context, ipAddress) {
+    return this.$axios.post('/gql/public', {
+      query: AnalyticsMutation,
+      vars: { ipAddress }
+    });
   },
   getSubscription() {
     return this.$axios

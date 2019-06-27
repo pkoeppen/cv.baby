@@ -22,7 +22,7 @@ function generateHandler(authenticated = false) {
   return function(event, context, callback) {
     const { query, vars } = JSON.parse(event.body);
     const ctx = {
-      ip_address: event.requestContext.identity.sourceIp
+      ipAddress: event.requestContext.identity.sourceIp
     };
 
     if (authenticated) {
@@ -34,7 +34,7 @@ function generateHandler(authenticated = false) {
     try {
       checkQueryDepth(parse(query), 10);
     } catch (error) {
-      console.log(`[depthLimit] IP: ${ctx.ip_address}`);
+      console.log(`[depthLimit] IP: ${ctx.ipAddress}`);
       return callback(null, {
         headers: HEADERS,
         statusCode: 400,
@@ -63,7 +63,7 @@ function generateHandler(authenticated = false) {
             console.error(
               `[handler:${authenticated ? 'private' : 'public'}] Error: ${
                 error.message
-              }`
+              }\n${error.stack}`
             );
             return callback(null, {
               headers: HEADERS,
@@ -83,7 +83,7 @@ function generateHandler(authenticated = false) {
         console.error(
           `[handler:${authenticated ? 'private' : 'public'}] GQL Error: ${
             error.message
-          }`
+          }\n${error.stack}`
         );
         return callback(null, {
           headers: HEADERS,

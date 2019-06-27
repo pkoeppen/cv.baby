@@ -76,13 +76,6 @@ export const ResumeFragment = `
     social {
       title,
       link
-    },
-    analytics {
-      events {
-        timestamp,
-        latitude,
-        longitude
-      }
     }
   }
 `;
@@ -93,10 +86,13 @@ export const AnalyticsFragment = `
     alias,
     slug,
     analytics {
+      date,
       events {
-        timestamp,
+        stamp,
         latitude,
-        longitude
+        longitude,
+        city,
+        country
       }
     }
   }
@@ -176,4 +172,12 @@ export const RemoveResumeMutation = `
     }
   }
   ${ResumeFragment}
+`;
+export const AnalyticsMutation = `
+  mutation ($ipAddress: String!) {
+    submitAnalyticsEvent (ipAddress: $ipAddress) {
+      ...AnalyticsFields
+    }
+  }
+  ${AnalyticsFragment}
 `;

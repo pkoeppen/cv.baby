@@ -2,17 +2,26 @@ import { DynamoDB } from '../util';
 
 const CVBABY_TABLE_SLUGS = process.env.CVBABY_TABLE_SLUGS;
 
-export function getSlug(slug) {
-  return DynamoDB.get({
+export async function getSlug(slug) {
+  const _slug = await DynamoDB.get({
     TableName: CVBABY_TABLE_SLUGS,
     Key: { slug }
   })
     .promise()
     .then(({ Item }) => Item);
+  if (!_slug) {
+    throw new Error('![404] Not found');
+  }
+  return _slug;
 }
 
 export async function checkSlugAvailable(slug) {
-  return !(await getSlug(slug));
+  return DynamoDB.get({
+    TableName: CVBABY_TABLE_SLUGS,
+    Key: { slug }
+  })
+    .promise()
+    .then(({ Item }) => !Item);
 }
 
 export async function createSlug(slug, userID, resumeID) {
