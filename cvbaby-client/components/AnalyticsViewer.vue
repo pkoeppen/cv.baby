@@ -2,28 +2,88 @@
   <v-container class="pr-0 pt-0 pl-5">
     <v-layout justify-center align-center wrap>
       <v-flex xs12>
-        <v-sheet v-if="sparklineData">
-          <v-sparkline
-            :smooth="16"
-            :gradient="['#f72047', '#ffd200', '#1feaea']"
-            :line-width="3"
-            :value="sparklineData"
-            :labels="sparklineLabels"
-            padding="16"
-            color="grey"
-            auto-draw
-            stroke-linecap="round"
-            class="cv-sparkline"
-          ></v-sparkline>
-        </v-sheet>
-        <div v-else>No data to show.</div>
-        <v-img v-if="googleMapsImageSource()" :src="googleMapsImageSource()" />
-        Analytics Length: {{ analytics.length }}
-
-        <div v-for="(item, index) in analytics" :key="index">
-          Date:
-          {{ item.date }} Events:
-          {{ item.events.length }}
+        <v-card v-if="sparklineData">
+          <v-card-title>
+            <div class="pt-3 text-xs-center headline" style="width: 100%;">
+              {{ resume.alias }}
+            </div>
+            <div class="text-xs-center grey--text" style="width: 100%;">
+              {{ $t('accessGraph') }}
+            </div>
+          </v-card-title>
+          <v-sheet>
+            <v-sparkline
+              :smooth="16"
+              :gradient="['#f72047', '#ffd200', '#1feaea']"
+              :line-width="3"
+              :value="sparklineData"
+              :labels="sparklineLabels"
+              padding="12"
+              color="grey"
+              auto-draw
+              stroke-linecap="round"
+              class="cv-sparkline"
+            ></v-sparkline>
+          </v-sheet>
+          <v-img
+            v-if="googleMapsImageSource()"
+            :src="googleMapsImageSource()"
+            class="mt-3"
+          />
+          <v-expansion-panel>
+            <v-expansion-panel-content
+              v-for="(item, index) in filteredAnalytics"
+              :key="index"
+              :disabled="!item.events.length"
+            >
+              <template v-slot:header>
+                <div>
+                  <span class="font-weight-bold">{{ item.date }}</span>
+                  <v-chip
+                    :color="item.events.length ? 'primary' : 'grey'"
+                    text-color="white"
+                    >{{ item.events.length }}</v-chip
+                  >
+                </div>
+              </template>
+              <v-card class="grey lighten-3">
+                <div
+                  v-for="(event, _index) in item.events.slice(0, 10)"
+                  :key="_index"
+                >
+                  <div
+                    class="py-3 px-5 d-flex justify-space-between align-center"
+                  >
+                    <div>
+                      <div>
+                        <span class="font-weight-bold"
+                          >{{ $t('country') }}:</span
+                        >
+                        {{ event.country }}
+                      </div>
+                      <div>
+                        <span class="font-weight-bold">{{ $t('city') }}:</span>
+                        {{ event.city }}
+                      </div>
+                    </div>
+                    <div class="text-xs-right font-weight-bold">
+                      {{
+                        new Date(parseInt(event.stamp)).toLocaleString(
+                          $i18n.locale
+                        )
+                      }}
+                    </div>
+                  </div>
+                  <v-divider />
+                </div>
+                <!-- eslint-disable-next-line -->
+                <div v-html="additionalEventsHTML(item.events)" />
+              </v-card>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-card>
+        <div v-else class="text-xs-center open-sans title grey--text my-5">
+          {{ $t('noDataToShow') }}
         </div>
       </v-flex>
     </v-layout>
@@ -56,6 +116,9 @@ export default {
         })
         .reverse();
       return labels;
+    },
+    filteredAnalytics() {
+      return this.analytics.filter(({ events }) => !!events.length);
     }
   },
   methods: {
@@ -97,6 +160,17 @@ export default {
       return `https://maps.googleapis.com/maps/api/staticmap?${params.join(
         '&'
       )}`;
+    },
+    additionalEventsHTML(events) {
+      const length = events.slice(10).length;
+      if (!length) {
+        return '';
+      }
+      const html =
+        '<div class="text-xs-center py-2 caption font-weight-bold grey--text">$</div>';
+      return length === 1
+        ? html.replace('$', `+ 1 ${this.$t('additionalEvent')}`)
+        : html.replace('$', `+ ${length} ${this.$t('additionalEvents')}`);
     },
     setImagePlaceholder(event) {
       // Turn off emitPermitted to avoid emitting 'draft'.

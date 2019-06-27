@@ -60,16 +60,9 @@
                           </v-avatar>
                         </v-card-text>
                         <v-card-actions class="justify-center">
-                          <v-btn disabled icon
-                            ><v-icon small>link</v-icon></v-btn
-                          >
                           <v-btn depressed disabled class="ml-2">{{
-                            $t('edit')
+                            $t('viewAnalytics')
                           }}</v-btn>
-
-                          <v-btn icon disabled
-                            ><v-icon small>file_copy</v-icon></v-btn
-                          >
                         </v-card-actions>
                       </v-card>
                     </v-badge>
@@ -116,8 +109,13 @@
                         <v-card-actions class="justify-center">
                           <v-btn
                             depressed
+                            :disabled="activeIndex === index"
                             @click="loadAnalytics(resume, index)"
-                            >{{ $t('viewAnalytics') }}</v-btn
+                            >{{
+                              activeIndex === index
+                                ? $t('viewingAnalytics')
+                                : $t('viewAnalytics')
+                            }}</v-btn
                           >
                         </v-card-actions>
                       </v-card>
@@ -151,6 +149,7 @@ export default {
     return {
       resumes: [],
       loading: false,
+      activeIndex: null,
       userID: this.$store.state.cognito.userID,
       uploadHost: process.env.CVBABY_UPLOAD_HOST,
       googleMapsAPIKey: process.env.GOOGLE_MAPS_API_KEY
@@ -172,7 +171,7 @@ export default {
           }));
           const index = parseInt(this.$route.query.i);
           if (index >= -1 && index < this.resumes.length) {
-            this.loadAnalytics(resumes[index]);
+            this.loadAnalytics(resumes[index], index);
           }
         })
         .catch(({ response: { status } }) => {

@@ -173,11 +173,3 @@ export const RemoveResumeMutation = `
   }
   ${ResumeFragment}
 `;
-export const AnalyticsMutation = `
-  mutation ($ipAddress: String!) {
-    submitAnalyticsEvent (ipAddress: $ipAddress) {
-      ...AnalyticsFields
-    }
-  }
-  ${AnalyticsFragment}
-`;

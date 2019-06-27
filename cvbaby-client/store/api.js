@@ -5,8 +5,7 @@ import {
   SubscriptionQuery,
   CheckSlugAvailableQuery,
   SaveResumeMutation,
-  RemoveResumeMutation,
-  AnalyticsMutation
+  RemoveResumeMutation
 } from '~/assets/js/queries';
 
 export const state = () => ({
@@ -15,9 +14,9 @@ export const state = () => ({
 });
 
 export const actions = {
-  getResume(context, slug) {
+  getResume(context, { slug, isAuthorized }) {
     return this.$axios
-      .post('/gql/public', {
+      .post(`/gql/${isAuthorized ? 'private' : 'public'}`, {
         query: ResumeQuery,
         vars: { slug }
       })
@@ -36,12 +35,6 @@ export const actions = {
         query: AnalyticsQuery
       })
       .then(({ data }) => data.getAnalytics);
-  },
-  submitAnalyticsEvent(context, ipAddress) {
-    return this.$axios.post('/gql/public', {
-      query: AnalyticsMutation,
-      vars: { ipAddress }
-    });
   },
   getSubscription() {
     return this.$axios

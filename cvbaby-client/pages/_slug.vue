@@ -26,13 +26,12 @@ export default {
     };
   },
   asyncData({ error, store, params, query, req }) {
-    console.log(req.ip);
     return store
-      .dispatch('api/getResume', params.slug)
+      .dispatch('api/getResume', {
+        isAuthorized: !!store.state.cognito.authenticated,
+        slug: params.slug
+      })
       .then(resume => {
-        // store.dispatch('api/submitAnalyticsEvent', {
-        //   ipAddress: req.ip
-        // });
         resume.references.map(reference => ({ dialog: false, ...reference }));
         return { resume, headless: !!query.headless };
       })

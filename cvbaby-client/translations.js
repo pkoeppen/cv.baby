@@ -389,6 +389,34 @@ module.exports = {
     en: 'View',
     de: 'Anzeigen'
   },
+  viewingAnalytics: {
+    en: 'Viewing',
+    de: 'Angezeigt'
+  },
+  noDataToShow: {
+    en: 'No data to show.',
+    de: 'Keine Daten vorhanden.'
+  },
+  additionalEvent: {
+    en: 'additional event',
+    de: 'ausgeblendetes Ereignis'
+  },
+  additionalEvents: {
+    en: 'additional events',
+    de: 'ausgeblendete Ereignisse'
+  },
+  city: {
+    en: 'City',
+    de: 'Stadt'
+  },
+  country: {
+    en: 'Country',
+    de: 'Land'
+  },
+  accessGraph: {
+    en: 'Access Graph — Two Weeks',
+    de: 'Zugriffsdiagramm — Zwei Wochen'
+  },
   /*
    *  Pricing
    */

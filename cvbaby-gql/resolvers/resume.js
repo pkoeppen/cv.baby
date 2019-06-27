@@ -8,7 +8,7 @@ const IS_OFFLINE = process.env.IS_OFFLINE;
 const CVBABY_ENV = process.env.CVBABY_ENV;
 const CVBABY_TABLE_RESUMES = process.env.CVBABY_TABLE_RESUMES;
 
-export async function getResume(slug, ipAddress) {
+export async function getResume(slug, ipAddress, _userID) {
   const { userID, resumeID } = await getSlug(slug);
   const resume = await DynamoDB.get({
     TableName: CVBABY_TABLE_RESUMES,
@@ -22,7 +22,10 @@ export async function getResume(slug, ipAddress) {
   if (!resume || !resume.live) {
     throw new Error('![404] Not found');
   }
-  submitAnalyticsEvent(resumeID, ipAddress);
+  if (_userID !== userID) {
+    // Don't submit an event if user is viewing their own resume.
+    submitAnalyticsEvent(resumeID, ipAddress);
+  }
   return resume;
 }
 

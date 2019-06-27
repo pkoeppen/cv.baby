@@ -4,8 +4,9 @@ export default function({ $axios, store }) {
       // If non-GQL request (e.g., to S3) don't add auth header.
       return config;
     }
-    let accessToken = await store.dispatch('cognito/getAccessToken');
-    if (accessToken) {
+    const user = store.state.cognito.authenticated;
+    if (user) {
+      let accessToken = user.signInUserSession.accessToken;
       if (process.client && accessToken.payload.exp) {
         // If token is expired, refresh it.
         const expiration = accessToken.payload.exp;
@@ -15,10 +16,8 @@ export default function({ $axios, store }) {
             'cognito/checkAuthentication'
           ));
         }
-        config.headers.common.Authorization = accessToken.jwtToken;
-      } else if (accessToken.jwtToken) {
-        config.headers.common.Authorization = accessToken.jwtToken;
       }
+      config.headers.common.Authorization = accessToken.jwtToken;
     }
     return config;
   });

@@ -651,8 +651,8 @@ export default {
     return {
       resumeImageSource: this.isDemo
         ? require('~/assets/images/avatar.svg')
-        : `${process.env.CVBABY_UPLOAD_HOST}/users/${
-            this.resume.userID
+        : `${process.env.CVBABY_UPLOAD_HOST}/users/${this.resume.userID}/${
+            this.resume.resumeID
           }/profile.jpeg`,
       pdfDownloadSource: `${process.env.CVBABY_UPLOAD_HOST}/users/${
         this.resume.userID

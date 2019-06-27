@@ -12,9 +12,10 @@ export default {
         type: new GraphQLNonNull(GraphQLString)
       }
     },
-    resolve: (root, args, { ipAddress }) => {
+    resolve: (root, args, ctx) => {
       const { slug } = args;
-      return getResume(slug, ipAddress);
+      const { userID, ipAddress } = ctx;
+      return getResume(slug, ipAddress, userID);
     }
   },
   getResumes: {

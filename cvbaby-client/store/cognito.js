@@ -37,11 +37,25 @@ export const actions = {
     if (request && request.headers.cookie) {
       const parsed = cookie.parse(request.headers.cookie);
       const usernameField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.LastAuthUser`;
-      const username = parsed[usernameField];
+      if (!parsed[usernameField]) {
+        return;
+      }
+      const username = parsed[usernameField].replace('@', '%40');
       const accessTokenField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.${username}.accessToken`;
       const accessToken = parsed[accessTokenField];
-      context.commit('setAccessToken', { jwtToken: accessToken, payload: {} });
-      context.dispatch('checkAuthentication');
+      if (!accessToken) {
+        return;
+      }
+      const user = {
+        username: username,
+        signInUserSession: {
+          accessToken: {
+            jwtToken: accessToken,
+            payload: {}
+          }
+        }
+      };
+      context.commit('setAuthenticated', user);
     }
   },
 
