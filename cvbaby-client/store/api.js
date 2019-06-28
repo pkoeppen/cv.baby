@@ -14,11 +14,11 @@ export const state = () => ({
 });
 
 export const actions = {
-  getResume(context, { slug, isAuthorized }) {
+  getResume(context, { slug, isAuthorized, submitAnalyticsEvent }) {
     return this.$axios
       .post(`/gql/${isAuthorized ? 'private' : 'public'}`, {
         query: ResumeQuery,
-        vars: { slug }
+        vars: { slug, submitAnalyticsEvent }
       })
       .then(({ data }) => data.getResume);
   },

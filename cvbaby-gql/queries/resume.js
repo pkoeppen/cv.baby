@@ -1,4 +1,10 @@
-import { GraphQLNonNull, GraphQLID, GraphQLList, GraphQLString } from 'graphql';
+import {
+  GraphQLNonNull,
+  GraphQLID,
+  GraphQLList,
+  GraphQLString,
+  GraphQLBoolean
+} from 'graphql';
 import { authorize } from '../util';
 import { ResumeType, ResumeInputType } from '../types';
 import { getResume, getResumes, saveResume, removeResume } from '../resolvers';
@@ -10,12 +16,16 @@ export default {
       slug: {
         name: 'slug',
         type: new GraphQLNonNull(GraphQLString)
+      },
+      submitAnalyticsEvent: {
+        name: 'submitAnalyticsEvent',
+        type: new GraphQLNonNull(GraphQLBoolean)
       }
     },
     resolve: (root, args, ctx) => {
-      const { slug } = args;
+      const { slug, submitAnalyticsEvent } = args;
       const { userID, ipAddress } = ctx;
-      return getResume(slug, ipAddress, userID);
+      return getResume(slug, { submitAnalyticsEvent, ipAddress, userID });
     }
   },
   getResumes: {

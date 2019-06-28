@@ -22,10 +22,15 @@
                 class="mx-0"
                 color="primary"
                 depressed
-                @click="editResume(-1)"
+                :disabled="!resumes[activeIndex]"
+                :to="
+                  `/${$i18n.locale === 'en' ? '' : $i18n.locale + '/'}${
+                    (resumes[activeIndex] || {}).slug
+                  }`
+                "
               >
-                Something
-                <v-icon class="ml-1">note_add</v-icon>
+                {{ $t('view') }}
+                <v-icon class="ml-1" small>launch</v-icon>
               </v-btn>
             </v-toolbar>
           </v-container>
@@ -34,96 +39,112 @@
           <v-divider />
         </v-flex>
         <v-flex>
-          <v-container class="py-0">
-            <v-layout>
+          <v-container :class="{ 'pr-0': $mq === 'lg' }" class="py-0">
+            <v-layout wrap>
               <v-flex
                 class="pt-4"
-                style="min-height: 100vh; border-right: 1px solid #E0E0E0;"
-                xs3
+                :style="
+                  $mq === 'lg'
+                    ? 'min-height: 100vh; border-right: 1px solid #E0E0E0;'
+                    : ''
+                "
+                xs12
+                md3
               >
-                <template v-if="loading">
-                  <v-flex class="mr-4 mb-4">
-                    <v-badge color="grey" overlap style="width: 100%;">
-                      <template v-slot:badge>
-                        <v-icon dark>save</v-icon>
-                      </template>
-                      <v-card class="text-xs-center">
-                        <v-card-title class="title justify-center grey--text">
-                          Loading...
-                        </v-card-title>
-                        <v-card-text style="min-height: 132px;">
-                          <v-avatar size="100">
-                            <v-progress-circular
-                              color="primary"
-                              indeterminate
-                            ></v-progress-circular>
-                          </v-avatar>
-                        </v-card-text>
-                        <v-card-actions class="justify-center">
-                          <v-btn depressed disabled class="ml-2">{{
-                            $t('viewAnalytics')
-                          }}</v-btn>
-                        </v-card-actions>
-                      </v-card>
-                    </v-badge>
-                  </v-flex>
-                </template>
-                <template v-else>
-                  <v-flex
-                    v-for="(resume, index) in resumes"
-                    :key="index"
-                    class="mr-4 mb-4"
-                  >
-                    <v-badge color="success" overlap style="width: 100%;">
-                      <template v-slot:badge>
-                        <v-icon dark>save</v-icon>
-                      </template>
-                      <v-card class="text-xs-center">
-                        <v-card-title class="title justify-center">
-                          {{ resume.alias }}
-                        </v-card-title>
-                        <v-card-text style="min-height: 132px;">
-                          <v-avatar size="100">
-                            <v-img
-                              :src="resume.resumeImageSource"
-                              :lazy-src="''"
-                              aspect-ratio="1"
-                              @error="setImagePlaceholder(index)"
+                <v-container
+                  :class="{ 'pl-0 pt-0': $mq === 'lg' }"
+                  grid-list-xl
+                >
+                  <v-layout wrap>
+                    <template v-if="loading">
+                      <v-flex xs12 sm6 md12>
+                        <v-badge color="grey" overlap style="width: 100%;">
+                          <template v-slot:badge>
+                            <v-icon dark>save</v-icon>
+                          </template>
+                          <v-card class="text-xs-center">
+                            <v-card-title
+                              class="title justify-center grey--text"
                             >
-                              <template v-slot:placeholder>
-                                <v-layout
-                                  fill-height
-                                  align-center
-                                  justify-center
-                                  ma-0
+                              Loading...
+                            </v-card-title>
+                            <v-card-text style="min-height: 132px;">
+                              <v-avatar size="100">
+                                <v-progress-circular
+                                  color="primary"
+                                  indeterminate
+                                ></v-progress-circular>
+                              </v-avatar>
+                            </v-card-text>
+                            <v-card-actions class="justify-center">
+                              <v-btn depressed disabled class="ml-2">{{
+                                $t('viewAnalytics')
+                              }}</v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </v-badge>
+                      </v-flex>
+                    </template>
+                    <template v-else>
+                      <v-flex
+                        v-for="(resume, index) in resumes"
+                        :key="index"
+                        xs12
+                        sm6
+                        md12
+                      >
+                        <v-badge color="success" overlap style="width: 100%;">
+                          <template v-slot:badge>
+                            <v-icon dark>save</v-icon>
+                          </template>
+                          <v-card class="text-xs-center">
+                            <v-card-title class="title justify-center">
+                              {{ resume.alias }}
+                            </v-card-title>
+                            <v-card-text style="min-height: 132px;">
+                              <v-avatar size="100">
+                                <v-img
+                                  :src="resume.resumeImageSource"
+                                  :lazy-src="''"
+                                  aspect-ratio="1"
+                                  @error="setImagePlaceholder(index)"
                                 >
-                                  <v-progress-circular
-                                    indeterminate
-                                    color="grey lighten-5"
-                                  />
-                                </v-layout>
-                              </template>
-                            </v-img>
-                          </v-avatar>
-                        </v-card-text>
-                        <v-card-actions class="justify-center">
-                          <v-btn
-                            depressed
-                            :disabled="activeIndex === index"
-                            @click="loadAnalytics(resume, index)"
-                            >{{
-                              activeIndex === index
-                                ? $t('viewingAnalytics')
-                                : $t('viewAnalytics')
-                            }}</v-btn
-                          >
-                        </v-card-actions>
-                      </v-card>
-                    </v-badge>
-                  </v-flex>
-                </template>
+                                  <template v-slot:placeholder>
+                                    <v-layout
+                                      fill-height
+                                      align-center
+                                      justify-center
+                                      ma-0
+                                    >
+                                      <v-progress-circular
+                                        indeterminate
+                                        color="grey lighten-5"
+                                      />
+                                    </v-layout>
+                                  </template>
+                                </v-img>
+                              </v-avatar>
+                            </v-card-text>
+                            <v-card-actions class="justify-center">
+                              <v-btn
+                                depressed
+                                :disabled="activeIndex === index"
+                                @click="loadAnalytics(resume, index)"
+                                >{{
+                                  activeIndex === index
+                                    ? $t('viewingAnalytics')
+                                    : $t('viewAnalytics')
+                                }}</v-btn
+                              >
+                            </v-card-actions>
+                          </v-card>
+                        </v-badge>
+                      </v-flex>
+                    </template>
+                  </v-layout>
+                </v-container>
               </v-flex>
-              <v-flex class="pt-4" xs9>
+              <v-flex xs12 md9>
                 <analytics-viewer ref="analyticsViewer" />
               </v-flex>
             </v-layout>
@@ -136,6 +157,7 @@
 </template>
 
 <script>
+import { cloneDeep } from 'lodash';
 import Navbar from '~/components/Navbar';
 import cvFooter from '~/components/Footer';
 import AnalyticsViewer from '~/components/AnalyticsViewer';
@@ -169,6 +191,7 @@ export default {
             }/profile.jpeg`,
             ...item
           }));
+          console.log(JSON.stringify(resumes, null, 2));
           const index = parseInt(this.$route.query.i);
           if (index >= -1 && index < this.resumes.length) {
             this.loadAnalytics(resumes[index], index);
@@ -209,6 +232,16 @@ export default {
       const resume = this.resumes[index];
       resume.resumeImageSource = require('~/assets/images/avatarPlaceholder.png');
       this.setResume(index, resume, true);
+    },
+
+    /*
+     * Updates a resume in the local arrays at the given index.
+     */
+    setResume(index, resume) {
+      // Update the entire array so Vue renders the draft change.
+      const _resumes = cloneDeep(this.resumes);
+      _resumes[index] = cloneDeep(resume);
+      this.resumes = _resumes;
     }
   }
 };

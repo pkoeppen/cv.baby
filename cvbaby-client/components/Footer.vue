@@ -58,7 +58,7 @@ export default {
     },
     copyrightHolder: {
       type: String,
-      default: 'Peter Koeppen'
+      default: 'cvbaby LLC'
     },
     color: {
       type: String,

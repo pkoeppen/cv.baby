@@ -691,15 +691,23 @@ export default {
       // TODO
       console.log('event:', JSON.stringify(event));
     },
-    async downloadPDF(event) {
-      const data = await this.$axios({
+    downloadPDF(event) {
+      this.$axios({
         url: this.pdfDownloadSource,
         method: 'GET',
         responseType: 'blob'
-      }).then(({ data }) => data);
-      const url = window.URL.createObjectURL(new Blob([data]));
-      this.$refs.hiddenPDFTag.href = url;
-      this.$refs.hiddenPDFTag.click();
+      })
+        .then(({ data }) => {
+          const url = window.URL.createObjectURL(new Blob([data]));
+          this.$refs.hiddenPDFTag.href = url;
+          this.$refs.hiddenPDFTag.click();
+        })
+        .catch(() => {
+          this.$store.dispatch('showSnackbar', {
+            color: 'red',
+            message: this.$t('errorDownloadingPDF')
+          });
+        });
     },
     formatDates([dateFrom, dateTo]) {
       const dateFromPretty = new Date(dateFrom).toLocaleString(

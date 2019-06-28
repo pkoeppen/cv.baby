@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pr-0 pt-0 pl-5">
+  <v-container>
     <v-layout justify-center align-center wrap>
       <v-container class="pa-0" grid-list-xl>
         <v-layout wrap>
@@ -209,6 +209,7 @@
       </v-flex>
       <employment-editor
         :employment-items.sync="resume.employment"
+        class="mt-4"
         @draft="emitDraft"
       />
       <education-editor
@@ -244,8 +245,10 @@
           </v-container>
         </v-card-text>
         <v-card-actions class="justify-center pb-4">
-          <v-btn @click="confirmRemoveDialog = false">{{ $t('cancel') }}</v-btn>
-          <v-btn color="error" @click="emitRemoveResume">{{
+          <v-btn depressed @click="confirmRemoveDialog = false">{{
+            $t('cancel')
+          }}</v-btn>
+          <v-btn depressed color="error" @click="emitRemoveResume">{{
             $t('remove')
           }}</v-btn>
         </v-card-actions>

@@ -26,14 +26,16 @@ export default {
     };
   },
   asyncData({ error, store, params, query, req }) {
+    const headless = query.headless;
     return store
       .dispatch('api/getResume', {
+        slug: params.slug,
         isAuthorized: !!store.state.cognito.authenticated,
-        slug: params.slug
+        submitAnalyticsEvent: !headless
       })
       .then(resume => {
         resume.references.map(reference => ({ dialog: false, ...reference }));
-        return { resume, headless: !!query.headless };
+        return { resume, headless };
       })
       .catch(({ response }) =>
         error({

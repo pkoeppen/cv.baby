@@ -1,20 +1,28 @@
 <template>
   <v-flex xs12>
     <v-flex class="text-xs-center" xs12>
-      <v-dialog v-model="dialog" max-width="600" persistent>
+      <v-dialog
+        v-model="dialog"
+        style="display: none;"
+        max-width="600"
+        persistent
+      >
         <template v-slot:activator="{ on }">
-          <v-btn class="text-none" color="primary" flat depressed v-on="on"
-            >Add hobby</v-btn
-          >
+          <v-toolbar class="elevation-0 ma-0" dense>
+            <v-btn class="text-none" style="margin: 0 auto;" depressed v-on="on"
+              >{{ $t('addHobby')
+              }}<v-icon class="ml-2" small>library_add</v-icon></v-btn
+            >
+          </v-toolbar>
         </template>
         <v-form ref="form" lazy-validation @submit="saveHobbyItem">
           <v-card>
             <v-card-title
               class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
             >
-              <span class="cv-dialog-header headline"
-                >{{ dialogTitlePrefix }} hobby</span
-              >
+              <span class="cv-dialog-header headline">{{
+                dialogTitlePrefix
+              }}</span>
             </v-card-title>
             <v-card-text>
               <v-container class="py-0">
@@ -22,8 +30,8 @@
                   <v-flex xs12>
                     <v-text-field
                       v-model="hobbyItem.title"
-                      :rules="[v => !!v || 'Hobby title is required']"
-                      label="Title"
+                      :rules="[v => !!v || $t('hobbyTitleIsRequired')]"
+                      :label="$t('hobbyTitle')"
                       validate-on-blur
                       single-line
                       required
@@ -32,12 +40,13 @@
                   <v-flex xs12>
                     <v-textarea
                       v-model="hobbyItem.description"
-                      :rules="[v => !!v || 'Description is required']"
-                      label="Description"
+                      :rules="[v => !!v || $t('descriptionIsRequired')]"
+                      :label="$t('description')"
                       rows="2"
                       required
                     />
                   </v-flex>
+                  <div class="mt-3" style="width: 100%" />
                   <v-flex
                     v-for="(icon, index) in hobbyIcons"
                     :key="index"
@@ -62,63 +71,86 @@
               </v-container>
             </v-card-text>
             <v-card-actions class="justify-center pb-4">
-              <v-btn @click="dialog = false">Cancel</v-btn>
-              <v-btn color="primary" type="submit">Save</v-btn>
+              <v-btn depressed @click="dialog = false">{{
+                $t('cancel')
+              }}</v-btn>
+              <v-btn depressed color="primary" type="submit">{{
+                $t('save')
+              }}</v-btn>
             </v-card-actions>
           </v-card>
         </v-form>
       </v-dialog>
     </v-flex>
-    <v-layout justify-center align-center wrap>
-      <v-flex
-        v-for="(item, index) in hobbyItems"
-        :key="index"
-        class="pa-2"
-        xs12
-        md6
-      >
-        <v-card>
-          <v-card-title class="justify-center">
-            <h3 class="headline">{{ index }} - {{ item.title }}</h3>
-          </v-card-title>
-          <v-divider />
-          <v-card-text class="text-xs-center">
-            <v-avatar>
-              <img :src="require(`@/assets/images/hobbies/${item.icon}.svg`)" />
-            </v-avatar>
-          </v-card-text>
-          <v-divider />
-          <v-card-actions class="justify-center">
-            <v-btn flat @click="editHobbyItem(item, index)">Edit</v-btn>
-            <v-btn color="error" flat @click="showConfirmRemoveDialog(index)"
-              >Remove</v-btn
+    <v-container class="py-0" grid-list-xl>
+      <template v-for="(hobby, index) in hobbyItems">
+        <v-layout :key="index" class="py-2" wrap align-center justify-center>
+          <v-flex xs3 sm2 lg1>
+            <v-img
+              :src="require(`@/assets/images/hobbies/${hobby.icon}.svg`)"
+              :lazy-src="require(`@/assets/images/hobbies/${hobby.icon}.svg`)"
+              aspect-ratio="1"
+              class="cv-avatar"
             >
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-      <v-dialog v-model="confirmRemoveDialog" max-width="400">
-        <v-card>
-          <v-card-title
-            class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
-          >
-            <span class="cv-dialog-header headline">Remove hobby item</span>
-          </v-card-title>
-          <v-card-text>
-            <v-container class="py-0" grid-list-md>
-              <v-layout wrap>
-                <v-flex class="text-xs-center" xs12>
-                  Are you sure you want to remove this item?
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-card-text>
-          <v-card-actions class="justify-center pb-4">
-            <v-btn @click="confirmRemoveDialog = false">Cancel</v-btn>
-            <v-btn color="error" @click="removeHobbyItem">Remove</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-layout>
+              <template v-slot:placeholder>
+                <v-layout fill-height align-center justify-center ma-0>
+                  <v-progress-circular indeterminate color="grey lighten-5" />
+                </v-layout>
+              </template>
+            </v-img>
+          </v-flex>
+          <v-flex xs9 sm7 lg9>
+            <div>
+              <div class="caption text-uppercase font-weight-bold">
+                {{ hobby.title }}
+              </div>
+              <p class="ma-0">{{ hobby.description }}</p>
+            </div>
+          </v-flex>
+          <v-flex class="text-xs-center text-sm-right" xs12 sm3 lg2>
+            <v-btn block depressed @click="editHobbyItem(hobby, index)">{{
+              $t('edit')
+            }}</v-btn>
+            <v-btn
+              color="error"
+              block
+              depressed
+              @click="showConfirmRemoveDialog(index)"
+              >{{ $t('remove') }}</v-btn
+            >
+            <v-dialog v-model="confirmRemoveDialog" max-width="400">
+              <v-card>
+                <v-card-title
+                  class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
+                >
+                  <span class="cv-dialog-header headline">{{
+                    $t('removeHobbyItem')
+                  }}</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container class="py-0" grid-list-md>
+                    <v-layout wrap>
+                      <v-flex class="text-xs-center" xs12>
+                        {{ $t('areYouSureYouWantToRemoveThisItem') }}
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions class="justify-center pb-4">
+                  <v-btn depressed @click="confirmRemoveDialog = false">{{
+                    $t('cancel')
+                  }}</v-btn>
+                  <v-btn depressed color="error" @click="removeHobbyItem">{{
+                    $t('remove')
+                  }}</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-flex>
+        </v-layout>
+        <v-divider v-if="index + 1 < hobbyItems.length" :key="index" />
+      </template>
+    </v-container>
   </v-flex>
 </template>
 
@@ -152,7 +184,9 @@ export default {
   },
   computed: {
     dialogTitlePrefix() {
-      return this.hobbyItem.index < 0 ? 'Add' : 'Edit';
+      return this.hobbyItem.index < 0
+        ? this.$t('addHobby')
+        : this.$t('editHobby');
     }
   },
   watch: {

@@ -102,8 +102,8 @@ export const AnalyticsFragment = `
  * Queries
  */
 export const ResumeQuery = `
-  query ($slug: String!) {
-    getResume (slug: $slug) {
+  query ($slug: String!, $submitAnalyticsEvent: Boolean!) {
+    getResume (slug: $slug, submitAnalyticsEvent: $submitAnalyticsEvent) {
       ...ResumeFields
     }
   }

@@ -1,3 +1,19 @@
+export function formatDates(dateFrom, dateTo) {
+  const dateFromPretty = new Date(dateFrom).toLocaleString(this.$i18n.locale, {
+    year: 'numeric',
+    month: 'long'
+    // day: 'numeric'
+  });
+  const dateToPretty = dateTo
+    ? new Date(dateTo).toLocaleString(this.$i18n.locale, {
+        year: 'numeric',
+        month: 'long'
+        // day: 'numeric'
+      })
+    : this.$t('present');
+  return `${dateFromPretty} - ${dateToPretty}`;
+}
+
 export function getDefaultResume() {
   return {
     // UI fields.

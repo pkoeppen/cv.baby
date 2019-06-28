@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pr-0 pt-0 pl-5">
+  <v-container>
     <v-layout justify-center align-center wrap>
       <v-flex xs12>
         <v-card v-if="sparklineData">
@@ -30,7 +30,7 @@
             :src="googleMapsImageSource()"
             class="mt-3"
           />
-          <v-expansion-panel>
+          <v-expansion-panel class="elevation-0">
             <v-expansion-panel-content
               v-for="(item, index) in filteredAnalytics"
               :key="index"
@@ -52,7 +52,8 @@
                   :key="_index"
                 >
                   <div
-                    class="py-3 px-5 d-flex justify-space-between align-center"
+                    :class="$mq === 'sm' ? 'px-3' : 'px-5'"
+                    class="py-3 d-flex justify-space-between align-center"
                   >
                     <div>
                       <div>
@@ -101,10 +102,15 @@ export default {
   },
   computed: {
     sparklineData() {
-      const analytics = [...this.analytics];
-      return analytics.length === 14
-        ? analytics.reverse().map(({ events }) => events.length)
-        : null;
+      const clone = [...this.analytics];
+      let hasEvents = false;
+      const analytics = clone.reverse().map(({ events }) => {
+        if (events.length) {
+          hasEvents = true;
+        }
+        return events.length;
+      });
+      return hasEvents ? analytics : null;
     },
     sparklineLabels() {
       const labels = new Array(14)

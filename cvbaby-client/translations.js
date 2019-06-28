@@ -383,6 +383,110 @@ module.exports = {
     de: 'Sind Sie sicher, Sie möchten diesen Artikel entfernen?'
   },
   /*
+   * Employment Editor
+   */
+  addEmployment: {
+    en: 'Add employment',
+    de: 'Karriereartikel hinzufügen'
+  },
+  editEmployment: {
+    en: 'Edit employment',
+    de: 'Karriereartikel bearbeiten'
+  },
+  company: {
+    en: 'Company',
+    de: 'Firma'
+  },
+  companyIsRequired: {
+    en: 'Company is required',
+    de: 'Firma ist erforderlich'
+  },
+  titleIsRequired: {
+    en: 'Title is required',
+    de: 'Berufsbezeichnung ist erforderlich'
+  },
+  leaveBlankIfYouStillWorkHere: {
+    en: 'Leave blank if you still work here',
+    de: 'Leer lassen wenn Sie hier noch arbeiten'
+  },
+  removeEmploymentItem: {
+    en: 'Remove employment item',
+    de: 'Karriereartikel löschen'
+  },
+  /*
+   * Reference Editor
+   */
+  addReference: {
+    en: 'Add reference',
+    de: 'Referenz hinzufügen'
+  },
+  editReference: {
+    en: 'Edit reference',
+    de: 'Referenz bearbeiten'
+  },
+  yearsKnown: {
+    en: 'Years known',
+    de: 'Jahre gekannt'
+  },
+  removeReferenceItem: {
+    en: 'Remove reference item',
+    de: 'Referenzartikel löschen'
+  },
+  nameIsRequired: {
+    en: 'Name is required',
+    de: 'Name ist erforderlich'
+  },
+  mustBeANumber: {
+    en: 'Must be a number',
+    de: 'Geben Sie eine Nummer ein'
+  },
+  /*
+   * Hobby Editor
+   */
+  addHobby: {
+    en: 'Add hobby',
+    de: 'Hobby hinzufügen'
+  },
+  editHobby: {
+    en: 'Edit hobby',
+    de: 'Hobby bearbeiten'
+  },
+  hobbyTitle: {
+    en: 'Title',
+    de: 'Titel'
+  },
+  hobbyTitleIsRequired: {
+    en: 'Hobby title is required',
+    de: 'Hobby-Titel ist erforderlich'
+  },
+  /*
+   * Social Link Editor
+   */
+  addSocialLink: {
+    en: 'Add social link',
+    de: 'Social-Link hinzufügen'
+  },
+  editSocialLink: {
+    en: 'Edit social link',
+    de: 'Social-Link bearbeiten'
+  },
+  linkTitle: {
+    en: 'Link title',
+    de: 'Link-Titel'
+  },
+  linkTitleIsRequired: {
+    en: 'Link title is required',
+    de: 'Link-Titel ist erforderlich'
+  },
+  url: {
+    en: 'URL',
+    de: 'URL'
+  },
+  urlIsRequired: {
+    en: 'URL is required',
+    de: 'URL ist erforderlich'
+  },
+  /*
    * Analytics
    */
   viewAnalytics: {
@@ -729,6 +833,11 @@ module.exports = {
     en: 'Error fetching analytics. Please check your connection.',
     de:
       'Fehler beim Holen von Analysedaten. Bitte überprüfen Sie Ihre Verbindung.'
+  },
+  errorDownloadingPDF: {
+    en: 'Error downloading PDF. Please check your connection.',
+    de:
+      'Fehler beim Herunterladen von PDF-Datei. Bitte überprüfen Sie Ihre Verbindung.'
   },
   errorFetchingSubscription: {
     en: 'Error fetching subscription. Please check your connection.',

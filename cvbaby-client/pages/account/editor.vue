@@ -52,128 +52,159 @@
         <v-flex xs12>
           <v-divider />
         </v-flex>
-        <v-flex>
+        <v-flex xs12>
           <v-container class="py-0">
-            <v-layout>
+            <v-layout wrap>
               <v-flex
                 class="pt-4"
-                style="min-height: 100vh; border-right: 1px solid #E0E0E0;"
-                xs3
+                :style="
+                  $mq === 'lg'
+                    ? 'min-height: 100vh; border-right: 1px solid #E0E0E0;'
+                    : ''
+                "
+                xs12
+                md3
               >
-                <template v-if="loading">
-                  <v-flex class="mr-4 mb-4">
-                    <v-badge color="grey" overlap style="width: 100%;">
-                      <template v-slot:badge>
-                        <v-icon dark>save</v-icon>
-                      </template>
-                      <v-card class="text-xs-center">
-                        <v-card-title class="title justify-center grey--text">
-                          Loading...
-                        </v-card-title>
-                        <v-card-text style="min-height: 132px;">
-                          <v-avatar size="100">
-                            <v-progress-circular
-                              color="primary"
-                              indeterminate
-                            ></v-progress-circular>
-                          </v-avatar>
-                        </v-card-text>
-                        <v-card-actions class="justify-center">
-                          <v-btn disabled icon
-                            ><v-icon small>link</v-icon></v-btn
-                          >
-                          <v-btn depressed disabled class="ml-2">{{
-                            $t('edit')
-                          }}</v-btn>
-
-                          <v-btn icon disabled
-                            ><v-icon small>file_copy</v-icon></v-btn
-                          >
-                        </v-card-actions>
-                      </v-card>
-                    </v-badge>
-                  </v-flex>
-                </template>
-                <template v-else>
-                  <v-flex
-                    v-for="(resume, index) in resumes"
-                    :key="index"
-                    class="mr-4 mb-4"
-                  >
-                    <v-badge
-                      :color="resume.draft ? 'error' : 'success'"
-                      overlap
-                      style="width: 100%;"
-                    >
-                      <template v-slot:badge>
-                        <v-icon dark>save</v-icon>
-                      </template>
-                      <v-card class="text-xs-center">
-                        <v-card-title
-                          :class="{ 'red--text': resume.draft }"
-                          class="title justify-center"
-                        >
-                          {{ resume.alias }}
-                        </v-card-title>
-                        <v-card-text style="min-height: 132px;">
-                          <v-avatar size="100">
-                            <v-img
-                              :src="resume.resumeImageSource"
-                              :lazy-src="''"
-                              aspect-ratio="1"
-                              @error="setImagePlaceholder(index)"
+                <v-container
+                  :class="{ 'pl-0 pt-0': $mq === 'lg' }"
+                  grid-list-xl
+                >
+                  <v-layout wrap>
+                    <template v-if="loading">
+                      <v-flex xs12 sm6 md12>
+                        <v-badge color="grey" overlap style="width: 100%;">
+                          <template v-slot:badge>
+                            <v-icon dark>save</v-icon>
+                          </template>
+                          <v-card class="text-xs-center">
+                            <v-card-title
+                              class="title justify-center grey--text"
                             >
-                              <template v-slot:placeholder>
-                                <v-layout
-                                  fill-height
-                                  align-center
-                                  justify-center
-                                  ma-0
-                                >
-                                  <v-progress-circular
-                                    indeterminate
-                                    color="grey lighten-5"
-                                  />
-                                </v-layout>
-                              </template>
-                            </v-img>
-                          </v-avatar>
-                        </v-card-text>
-                        <v-card-actions class="justify-center">
-                          <v-tooltip v-if="resume.slug" top>
-                            <template v-slot:activator="{ on }">
-                              <v-btn :to="`/${resume.slug}`" icon v-on="on"
+                              Loading...
+                            </v-card-title>
+                            <v-card-text style="min-height: 132px;">
+                              <v-avatar size="100">
+                                <v-progress-circular
+                                  color="primary"
+                                  indeterminate
+                                ></v-progress-circular>
+                              </v-avatar>
+                            </v-card-text>
+                            <v-card-actions class="justify-center">
+                              <v-btn disabled icon
                                 ><v-icon small>link</v-icon></v-btn
                               >
-                            </template>
-                            <span>{{ $t('view') }}</span>
-                          </v-tooltip>
-                          <v-btn
-                            depressed
-                            :disabled="activeIndex === index"
-                            :class="{ 'ml-2': !!resume.slug }"
-                            @click="editResume(index)"
-                            >{{
-                              activeIndex === index ? $t('editing') : $t('edit')
-                            }}</v-btn
-                          >
-                          <v-tooltip top>
-                            <template v-slot:activator="{ on }">
-                              <v-btn icon v-on="on" @click="cloneResume(index)"
+                              <v-btn depressed disabled class="ml-2">{{
+                                $t('edit')
+                              }}</v-btn>
+
+                              <v-btn icon disabled
                                 ><v-icon small>file_copy</v-icon></v-btn
                               >
-                            </template>
-                            <span>{{ $t('clone') }}</span>
-                          </v-tooltip>
-                        </v-card-actions>
-                      </v-card>
-                    </v-badge>
-                  </v-flex>
-                </template>
+                            </v-card-actions>
+                          </v-card>
+                        </v-badge>
+                      </v-flex>
+                    </template>
+                    <template v-else>
+                      <v-flex
+                        v-for="(resume, index) in resumes"
+                        :key="index"
+                        xs12
+                        sm6
+                        md12
+                      >
+                        <v-badge
+                          :color="resume.draft ? 'error' : 'success'"
+                          overlap
+                          style="width: 100%;"
+                        >
+                          <template v-slot:badge>
+                            <v-icon dark>save</v-icon>
+                          </template>
+                          <v-card class="text-xs-center">
+                            <v-card-title
+                              :class="{ 'red--text': resume.draft }"
+                              class="title justify-center"
+                            >
+                              {{ resume.alias }}
+                            </v-card-title>
+                            <v-card-text style="min-height: 132px;">
+                              <v-avatar size="100">
+                                <v-img
+                                  :src="resume.resumeImageSource"
+                                  :lazy-src="''"
+                                  aspect-ratio="1"
+                                  @error="setImagePlaceholder(index)"
+                                >
+                                  <template v-slot:placeholder>
+                                    <v-layout
+                                      fill-height
+                                      align-center
+                                      justify-center
+                                      ma-0
+                                    >
+                                      <v-progress-circular
+                                        indeterminate
+                                        color="grey lighten-5"
+                                      />
+                                    </v-layout>
+                                  </template>
+                                </v-img>
+                              </v-avatar>
+                            </v-card-text>
+                            <v-card-actions class="justify-center">
+                              <v-tooltip v-if="resume.slug" top>
+                                <template v-slot:activator="{ on }">
+                                  <v-btn
+                                    :to="
+                                      `/${
+                                        $i18n.locale === 'en'
+                                          ? ''
+                                          : $i18n.locale + '/'
+                                      }${resume.slug}`
+                                    "
+                                    icon
+                                    v-on="on"
+                                    ><v-icon small>link</v-icon></v-btn
+                                  >
+                                </template>
+                                <span>{{ $t('view') }}</span>
+                              </v-tooltip>
+                              <v-btn
+                                depressed
+                                :disabled="activeIndex === index"
+                                :class="{ 'ml-2': !!resume.slug }"
+                                @click="editResume(index)"
+                                >{{
+                                  activeIndex === index
+                                    ? $t('editing')
+                                    : $t('edit')
+                                }}</v-btn
+                              >
+                              <v-tooltip top>
+                                <template v-slot:activator="{ on }">
+                                  <v-btn
+                                    icon
+                                    v-on="on"
+                                    @click="cloneResume(index)"
+                                    ><v-icon small>file_copy</v-icon></v-btn
+                                  >
+                                </template>
+                                <span>{{ $t('clone') }}</span>
+                              </v-tooltip>
+                            </v-card-actions>
+                          </v-card>
+                        </v-badge>
+                      </v-flex>
+                    </template>
+                  </v-layout>
+                </v-container>
               </v-flex>
-              <v-flex class="pt-4" xs9>
+              <v-flex class="pt-4" xs12 md9>
                 <resume-editor
                   ref="resumeEditor"
+                  :class="{ 'pr-0 pt-0 pl-5': $mq === 'lg' }"
                   @save="saveResume"
                   @draft="setDraft"
                   @remove="removeResume"
