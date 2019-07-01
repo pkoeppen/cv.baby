@@ -1,9 +1,8 @@
 {
   "IS_OFFLINE": true,
   "CVBABY_ENV": "dev",
-  "CVBABY_CLIENT_HOST": "http://localhost:3000",
-  "CVBABY_UPLOAD_HOST": "https://cvbaby-bucket-post-dev.s3.amazonaws.com",
-  "CVBABY_BUCKET_PRE": "cvbaby-bucket-pre-dev",
+  "CVBABY_API_HOST": "dev-api.cv.baby",
+  "CVBABY_CLIENT_HOST": "dev.cv.baby",
   "CVBABY_BUCKET_POST": "cvbaby-bucket-post-dev",
   "CVBABY_TABLE_USERS": "cvbaby-table-users-dev",
   "CVBABY_TABLE_RESUMES": "cvbaby-table-resumes-dev",

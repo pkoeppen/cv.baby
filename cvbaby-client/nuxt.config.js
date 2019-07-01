@@ -1,9 +1,17 @@
 const _ = require('lodash');
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
-const pkg = require('./package');
 const translations = require('./translations');
 
-const env = process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
+const env = (() => {
+  switch (process.env.NODE_ENV) {
+    case 'production':
+      return 'prod';
+    case 'staging':
+      return 'staging';
+    default:
+      return 'dev';
+  }
+})();
 const config = require(`./config.${env}.json`);
 
 module.exports = {
@@ -13,11 +21,15 @@ module.exports = {
    ** Headers of the page
    */
   head: {
-    title: pkg.name,
+    title: `cvbaby${env === 'prod' ? '' : ' - ' + env}`,
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: pkg.description }
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'Simple CV hosting for the new century.'
+      }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -74,7 +86,7 @@ module.exports = {
             de: _.mapValues(translations, ({ de }) => de)
           }
         },
-        // // Set 'seo' to false because otherwise it breaks Vuetify styles.
+        // Set 'seo' to false because otherwise it breaks Vuetify styles.
         // https://github.com/nuxt-community/nuxt-i18n/issues/100
         seo: false
       }
@@ -84,7 +96,7 @@ module.exports = {
    ** Axios module configuration
    */
   axios: {
-    baseURL: 'http://localhost:3001'
+    baseURL: config.AXIOS_BASE_URL
   },
 
   /*

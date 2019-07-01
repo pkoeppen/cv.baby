@@ -2,12 +2,14 @@ import { graphql, parse } from 'graphql';
 import { checkQueryDepth } from './util';
 import schema from './schema';
 
+const CVBABY_CLIENT_HOST = `https://${process.env.CVBABY_CLIENT_HOST}`;
+
 export const handlerPublic = generateHandler(false);
 export const handlerPrivate = generateHandler(true);
 
 function generateHandler(authenticated = false) {
   const HEADERS = {
-    'Access-Control-Allow-Origin': '*'
+    'Access-Control-Allow-Origin': CVBABY_CLIENT_HOST
   };
   const ERROR_REGEX = /(?:\[)([0-9]{3})(?:\]\s)(.*)/g;
   const ErrorMessages = {
@@ -20,7 +22,17 @@ function generateHandler(authenticated = false) {
   };
 
   return function(event, context, callback) {
-    const { query, vars } = JSON.parse(event.body);
+    let query, vars;
+    try {
+      ({ query, vars } = JSON.parse(event.body));
+    } catch (error) {
+      return callback({
+        headers: HEADERS,
+        statusCode: 400,
+        body: 'Malformed JSON'
+      });
+    }
+
     const ctx = {
       ipAddress: event.requestContext.identity.sourceIp
     };
@@ -38,7 +50,7 @@ function generateHandler(authenticated = false) {
       return callback(null, {
         headers: HEADERS,
         statusCode: 400,
-        body: 'Query depth limit exceeded.'
+        body: 'Query depth limit exceeded'
       });
     }
 

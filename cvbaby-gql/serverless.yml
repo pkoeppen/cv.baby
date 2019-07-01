@@ -4,7 +4,7 @@ plugins:
   - serverless-offline
   - serverless-webpack
   - serverless-s3-remover
-  #- serverless-domain-manager
+  - serverless-domain-manager
 
 provider:
   name: aws
@@ -42,12 +42,11 @@ custom:
   remover:
      buckets:
        - ${self:provider.environment.CVBABY_BUCKET_POST}
-  # customDomain:
-  #   domainName: ${opt:domain, "api.cv.baby"}
-  #   basePath: ''
-  #   stage: ${opt:stage, "dev"}
-  #   createRoute53Record: true
-  #   # endpointType: 'regional'
+  customDomain:
+    domainName: ${self:provider.environment.CVBABY_API_HOST}
+    certificateName: 'cv.baby'
+    stage: ${opt:stage, "dev"}
+    createRoute53Record: true
 
 functions:
   # Authentication
@@ -75,21 +74,6 @@ functions:
 
 resources:
   Resources:
-    # S3 Bucket (Preprocess)
-    # BucketPreprocess:
-    #   Type: AWS::S3::Bucket
-    #   Properties:
-    #     BucketName: ${self:provider.environment.CVBABY_BUCKET_PRE}
-    #     CorsConfiguration:
-    #       CorsRules:
-    #         - AllowedOrigins:
-    #             - '*'
-    #           AllowedHeaders:
-    #             - '*'
-    #           AllowedMethods:
-    #             - PUT
-    #           MaxAge: 3000
-
     # S3 Bucket (Postprocess)
     BucketPost:
       Type: AWS::S3::Bucket
