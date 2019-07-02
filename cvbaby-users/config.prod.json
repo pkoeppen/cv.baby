@@ -1,0 +1,7 @@
+{
+  "CVBABY_ENV": "prod",
+  "CVBABY_USER_POOL_NAME": "cvbaby-user-pool",
+  "CVBABY_USER_POOL_LOGICAL_ID": "CognitoUserPoolCvbabyuserpool",
+  "CVBABY_USER_POOL_CLIENT_NAME": "cvbaby-user-pool-client",
+  "CVBABY_TABLE_USERS": "cvbaby-table-users"
+}

@@ -279,8 +279,7 @@ export default {
       hasAlias: false,
       hasSlug: false,
       slugAvailable: true,
-      emitPermitted: true,
-      CVBABY_UPLOAD_HOST: process.env.CVBABY_UPLOAD_HOST
+      emitPermitted: true
     };
   },
   computed: {

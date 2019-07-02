@@ -462,7 +462,7 @@ export default {
       email: {
         switch: false
       },
-      CVBABY_UPLOAD_HOST: process.env.CVBABY_UPLOAD_HOST
+      CVBABY_HOST_DATA: process.env.CVBABY_HOST_DATA
     };
   },
   mounted() {
@@ -474,14 +474,16 @@ export default {
         // Add 'resumeImageSource' field to each resume for the UI.
         this.resumes.resumes = resumes.map((resume, index) => {
           return {
-            resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${
+            resumeImageSource: `https://${this.CVBABY_HOST_DATA}/users/${
               this.$store.state.cognito.userID
             }/${resume.resumeID}/profile.jpeg`,
             ...resume
           };
         });
       })
-      .catch(() => {
+      .catch(error => {
+        // TODO: Don't log errors in production
+        console.error(error);
         this.$store.dispatch('showSnackbar', {
           color: 'red',
           message: this.$t('errorFetchingResumes')
@@ -497,14 +499,18 @@ export default {
       .then(subscription => {
         this.payment.subscription = subscription;
       })
-      .catch(({ response: { status } }) => {
-        // 406 signifies a nonexisting subscription.
-        if (status !== 406) {
-          this.$store.dispatch('showSnackbar', {
-            color: 'red',
-            message: this.$t('errorFetchingSubscription')
-          });
+      .catch(error => {
+        const status = ((error || {}).response || {}).status || 500;
+        if (status === 406) {
+          // 406 signifies a nonexistent subscription.
+          return;
         }
+        // TODO: Don't log errors in production
+        console.error(error);
+        this.$store.dispatch('showSnackbar', {
+          color: 'red',
+          message: this.$t('errorFetchingSubscription')
+        });
       })
       .finally(() => {
         this.payment.loading = false;

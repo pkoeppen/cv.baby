@@ -1,0 +1,5 @@
+{
+  "CVBABY_ENV": "prod",
+  "CVBABY_HOST_CLIENT": "cv.baby",
+  "CVBABY_HOST_DATA": "s3.cv.baby"
+}

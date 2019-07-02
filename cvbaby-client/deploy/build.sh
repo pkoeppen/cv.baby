@@ -1,5 +1,4 @@
 #!/bin/bash
 cd /var/www/
-unzip package.zip
-npm install
-npm run build
+sudo mv -f nginx.conf /etc/nginx/nginx.conf
+sudo npm install

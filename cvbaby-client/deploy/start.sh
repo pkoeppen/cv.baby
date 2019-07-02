@@ -1,2 +1,3 @@
 #!/bin/bash
-pm2 restart all
+sudo nginx -s reload
+sudo pm2 restart all

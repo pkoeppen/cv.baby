@@ -1,6 +1,2 @@
 renderPDF:
-  handler: docker.handler
-  events:
-    - http:
-        path: /renderPDF
-        method: post
+  handler: handler.renderPDF

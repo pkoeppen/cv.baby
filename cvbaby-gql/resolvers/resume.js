@@ -5,7 +5,7 @@ import { createSlug, deleteSlug, getSlug } from './slug';
 import { getAnalytics, submitAnalyticsEvent } from './analytics';
 
 const IS_OFFLINE = process.env.IS_OFFLINE;
-const CVBABY_ENV = process.env.CVBABY_ENV;
+const CVBABY_ENV = process.env.CVBABY_ENV === 'prod' ? 'prod' : 'dev';
 const CVBABY_TABLE_RESUMES = process.env.CVBABY_TABLE_RESUMES;
 
 export async function getResume(slug, analyticsData) {
@@ -83,7 +83,10 @@ export async function saveResume(userID, resume, base64Image) {
   if (IS_OFFLINE) {
     axios.post('http://127.0.0.1:3003/renderPDF', payload);
   } else {
-    invokeLambda(`cvbaby-pdf-${CVBABY_ENV}-renderPDF`, JSON.stringify(payload));
+    invokeLambda(
+      `cvbaby-pdf-${CVBABY_ENV === 'prod' ? '' : CVBABY_ENV + '-'}renderPDF`,
+      JSON.stringify(payload)
+    );
   }
   // Return the updated resumes array.
   return savedResume;
@@ -153,7 +156,7 @@ export async function removeResume(userID, resumeID) {
 
   // TODO: Delete resume profile image and PDF files
   //   await S3.deleteObject({
-  //     Bucket: CVBABY_BUCKET_POST,
+  //     Bucket: CVBABY_HOST_DATA,
   //     Key: `users/${userID}/${resumeID}/profile.jpeg`
   //   }).promise();
 
@@ -170,7 +173,9 @@ function uploadImage(userID, resumeID, base64Image) {
     return axios.post('http://localhost:3002/processImage', payload);
   } else {
     return invokeLambda(
-      `cvbaby-images-${CVBABY_ENV}-processImage`,
+      `cvbaby-images-${
+        CVBABY_ENV === 'prod' ? '' : CVBABY_ENV + '-'
+      }processImage`,
       JSON.stringify(payload)
     );
   }

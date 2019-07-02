@@ -1,8 +1,9 @@
 version: 0.0
 os: linux
 files:
-  - source: /package.zip
+  - source: /
     destination: /var/www/
+
 # For deployments to Amazon Linux, Ubuntu Server, or RHEL instances,
 #   you can specify a "permissions"
 #   section here that describes special permissions to apply to the files
@@ -23,19 +24,17 @@ files:
 #       range:
 #     type:
 #       -
-# If you are not running any commands on the Amazon EC2 instance, then remove
-#   the "hooks" section altogether. A blank or incomplete "hooks" section
-#   may cause associated deployments to fail.
+
 hooks:
   ApplicationStop:
-    - location: scripts/stop
+    - location: /stop.sh
       timeout: 300
-    runas: root
+      runas: root
   AfterInstall:
-    - location: scripts/build
+    - location: /build.sh
       timeout: 300
       runas: root
   ApplicationStart:
-    - location: scripts/start
+    - location: /start.sh
       timeout: 300
       runas: root

@@ -173,7 +173,7 @@ export default {
       loading: false,
       activeIndex: null,
       userID: this.$store.state.cognito.userID,
-      uploadHost: process.env.CVBABY_UPLOAD_HOST,
+      uploadHost: process.env.CVBABY_HOST_DATA,
       googleMapsAPIKey: process.env.GOOGLE_MAPS_API_KEY
     };
   },
@@ -186,9 +186,9 @@ export default {
         .then(resumes => {
           // Add 'draft' and 'resumeImageSource' fields to each resume for the UI.
           this.resumes = resumes.map(item => ({
-            resumeImageSource: `${this.uploadHost}/users/${this.userID}/${
-              item.resumeID
-            }/profile.jpeg`,
+            resumeImageSource: `https://${this.uploadHost}/users/${
+              this.userID
+            }/${item.resumeID}/profile.jpeg`,
             ...item
           }));
           console.log(JSON.stringify(resumes, null, 2));

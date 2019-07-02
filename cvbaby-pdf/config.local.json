@@ -1,0 +1,5 @@
+{
+  "CVBABY_ENV": "local",
+  "CVBABY_HOST_CLIENT": "host.docker.internal:3000",
+  "CVBABY_HOST_DATA": "dev-s3.cv.baby"
+}

@@ -15,17 +15,17 @@ provider:
   runtime: nodejs10.x
   memorySize: 1600
   region: us-east-1
-  stage: ${opt:stage, "dev"}
-  environment: ${file(./config.${opt:stage, "dev"}.json)}
+  stage: ${opt:stage, "local"}
+  environment: ${file(./config.${opt:stage, "local"}.json)}
   timeout: 30
   iamRoleStatements:
     - Effect: Allow
       Action:
         - s3:*
-      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_HOST_DATA}
     - Effect: Allow
       Action:
         - s3:*
-      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}/*
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_HOST_DATA}/*
 
-functions: ${file(functions-${opt:stage, "dev"}.yml)}
+functions: ${file(functions-${opt:stage, "local"}.yml)}

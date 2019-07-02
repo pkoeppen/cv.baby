@@ -9,7 +9,7 @@ const S3 = new AWS.S3({
 });
 
 const IS_OFFLINE = process.env.IS_OFFLINE;
-const CVBABY_BUCKET_POST = process.env.CVBABY_BUCKET_POST;
+const CVBABY_HOST_DATA = process.env.CVBABY_HOST_DATA;
 
 module.exports = { processImage };
 
@@ -50,7 +50,7 @@ async function processBase64Image(userID, resumeID, base64Image) {
 
   console.log(`Putting buffer at key '${keyResumeImage}'`);
   await S3.putObject({
-    Bucket: CVBABY_BUCKET_POST,
+    Bucket: CVBABY_HOST_DATA,
     Body: processedImage,
     Key: keyResumeImage,
     ACL: 'public-read'
@@ -58,7 +58,7 @@ async function processBase64Image(userID, resumeID, base64Image) {
 
   console.log(`Putting buffer at key '${keyUserImage}'`);
   await S3.putObject({
-    Bucket: CVBABY_BUCKET_POST,
+    Bucket: CVBABY_HOST_DATA,
     Body: processedImage,
     Key: keyUserImage,
     ACL: 'public-read'

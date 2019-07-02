@@ -27,7 +27,6 @@ custom:
     handler: output.handler
 
 functions:
-
   # Cognito pre-signup hook
   confirmUser:
     handler: events.confirmUser
@@ -51,7 +50,7 @@ resources:
       Properties:
         ClientName: ${self:provider.environment.CVBABY_USER_POOL_CLIENT_NAME}
         UserPoolId:
-          Ref: CognitoUserPoolCvbabyuserpool${opt:stage, "dev"}
+          Ref: ${self:provider.environment.CVBABY_USER_POOL_LOGICAL_ID}
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
         GenerateSecret: false
@@ -59,7 +58,7 @@ resources:
   Outputs:
     UserPoolId:
       Value:
-        Ref: CognitoUserPoolCvbabyuserpool${opt:stage, "dev"}
+        Ref: ${self:provider.environment.CVBABY_USER_POOL_LOGICAL_ID}
     UserPoolClientId:
       Value:
         Ref: CognitoUserPoolClient

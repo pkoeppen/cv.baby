@@ -1,18 +1,19 @@
 const _ = require('lodash');
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
-const translations = require('./translations');
+const translations = require('./i18n/translations');
 
 const env = (() => {
   switch (process.env.NODE_ENV) {
     case 'production':
       return 'prod';
-    case 'staging':
-      return 'staging';
-    default:
+    case 'development':
       return 'dev';
+    default:
+      return 'local';
   }
 })();
 const config = require(`./config.${env}.json`);
+console.log('env:', env);
 
 module.exports = {
   mode: 'universal',
@@ -110,7 +111,7 @@ module.exports = {
         import: ['~assets/style/variables.styl']
       }
     },
-    vendor: ['file-saver'],
+
     /*
      ** You can extend webpack config here
      */

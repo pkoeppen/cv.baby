@@ -1,8 +1,8 @@
 {
-  "IS_OFFLINE": false,
-  "CVBABY_ENV": "dev",
+  "IS_OFFLINE": true,
+  "CVBABY_ENV": "local",
   "CVBABY_HOST_GQL": "dev-api.cv.baby",
-  "CVBABY_HOST_CLIENT": "https://dev.cv.baby",
+  "CVBABY_HOST_CLIENT": "http://localhost:3000",
   "CVBABY_HOST_DATA": "dev-s3.cv.baby",
   "CVBABY_TABLE_USERS": "cvbaby-table-users-dev",
   "CVBABY_TABLE_RESUMES": "cvbaby-table-resumes-dev",

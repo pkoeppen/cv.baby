@@ -240,7 +240,7 @@ export default {
       activeIndex: -1,
       loading: false,
       userID: this.$store.state.cognito.userID,
-      CVBABY_UPLOAD_HOST: process.env.CVBABY_UPLOAD_HOST
+      CVBABY_HOST_DATA: process.env.CVBABY_HOST_DATA
     };
   },
   computed: {
@@ -278,7 +278,7 @@ export default {
             delete resume.userID;
             return {
               draft: false,
-              resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${
+              resumeImageSource: `https://${this.CVBABY_HOST_DATA}/users/${
                 this.userID
               }/${resume.resumeID}/profile.jpeg`,
               ...resume
@@ -408,9 +408,9 @@ export default {
       const resume = {
         index,
         draft: false,
-        resumeImageSource: `${this.CVBABY_UPLOAD_HOST}/users/${this.userID}/${
-          savedResume.resumeID
-        }/profile.jpeg?v=${Date.now()}`,
+        resumeImageSource: `https://${this.CVBABY_HOST_DATA}/users/${
+          this.userID
+        }/${savedResume.resumeID}/profile.jpeg?v=${Date.now()}`,
         ...omit(savedResume, ['userID'])
       };
       if (index === -1) {

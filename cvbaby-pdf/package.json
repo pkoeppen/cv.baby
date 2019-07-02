@@ -2,16 +2,15 @@
   "name": "cvbaby-pdf",
   "private": true,
   "scripts": {
-    "deploy:dev": "npm run build:prod && serverless deploy --stage dev",
-    "deploy:prod": "npm run build:prod && serverless deploy --stage prod",
-    "build:dev": "make dev",
-    "build:prod": "make prod",
-    "dev": "serverless offline start",
+    "deploy:dev": "npm run build:package && serverless deploy --stage dev",
+    "deploy:prod": "npm run build:package && serverless deploy --stage prod",
+    "build:local": "make local",
+    "build:package": "make package",
+    "dev": "serverless offline start --stage local",
     "docker": "node docker.js",
     "install-chrome": "git clone https://github.com/alixaxel/chrome-aws-lambda",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "remove:dev": "serverless remove --stage dev",
-    "remove:prod": "serverless remove --stage prod"
+    "remove:dev": "serverless remove --stage dev"
   },
   "devDependencies": {
     "docker-lambda": "^0.15.3",

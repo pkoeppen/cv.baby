@@ -21,11 +21,11 @@ provider:
     - Effect: Allow
       Action:
         - s3:*
-      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_HOST_DATA}
     - Effect: Allow
       Action:
         - s3:*
-      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_BUCKET_POST}/*
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_HOST_DATA}/*
     - Effect: Allow
       Action:
         - 'ses:SendEmail'
@@ -41,9 +41,9 @@ custom:
         - aws-sdk
   remover:
      buckets:
-       - ${self:provider.environment.CVBABY_BUCKET_POST}
+       - ${self:provider.environment.CVBABY_HOST_DATA}
   customDomain:
-    domainName: ${self:provider.environment.CVBABY_API_HOST}
+    domainName: ${self:provider.environment.CVBABY_HOST_GQL}
     certificateName: 'cv.baby'
     stage: ${opt:stage, "dev"}
     createRoute53Record: true
@@ -78,7 +78,7 @@ resources:
     BucketPost:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.environment.CVBABY_BUCKET_POST}
+        BucketName: ${self:provider.environment.CVBABY_HOST_DATA}
         CorsConfiguration:
           CorsRules:
             - AllowedOrigins:

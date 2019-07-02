@@ -1,6 +1,5 @@
 {
-  "IS_OFFLINE": true,
   "CVBABY_ENV": "dev",
-  "CVBABY_CLIENT_HOST": "http://host.docker.internal:3000",
-  "CVBABY_BUCKET_POST": "cvbaby-bucket-post-dev"
+  "CVBABY_HOST_CLIENT": "dev.cv.baby",
+  "CVBABY_HOST_DATA": "dev-s3.cv.baby"
 }

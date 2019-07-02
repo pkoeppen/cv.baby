@@ -2,13 +2,12 @@
   "name": "cvbaby-images",
   "private": true,
   "scripts": {
-    "build:dev": "make dev",
-    "build:prod": "make prod",
-    "deploy:dev": "npm run build:prod && serverless deploy --stage dev",
-    "deploy:prod": "npm run build:prod && serverless deploy --stage prod",
-    "dev": "serverless offline start",
-    "remove:dev": "serverless remove --stage dev",
-    "remove:prod": "serverless remove --stage prod"
+    "build:local": "make local",
+    "build:package": "make package",
+    "deploy:dev": "npm run build:package && serverless deploy --stage dev",
+    "deploy:prod": "npm run build:package && serverless deploy --stage prod",
+    "dev": "serverless offline start --stage local",
+    "remove:dev": "serverless remove --stage dev"
   },
   "devDependencies": {
     "docker-lambda": "^0.15.3",

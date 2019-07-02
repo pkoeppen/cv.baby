@@ -651,10 +651,10 @@ export default {
     return {
       resumeImageSource: this.isDemo
         ? require('~/assets/images/avatar.svg')
-        : `${process.env.CVBABY_UPLOAD_HOST}/users/${this.resume.userID}/${
-            this.resume.resumeID
-          }/profile.jpeg`,
-      pdfDownloadSource: `${process.env.CVBABY_UPLOAD_HOST}/users/${
+        : `https://${process.env.CVBABY_HOST_DATA}/users/${
+            this.resume.userID
+          }/${this.resume.resumeID}/profile.jpeg`,
+      pdfDownloadSource: `https://${process.env.CVBABY_HOST_DATA}/users/${
         this.resume.userID
       }/${this.resume.resumeID}/resume_${this.$i18n.locale}.pdf`
     };

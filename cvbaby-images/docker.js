@@ -20,6 +20,9 @@ async function handler({ body }) {
     args.push('-e', `AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}`);
 
     const { base64Image, ...event } = JSON.parse(body);
+
+    // Write the image file to disk. The base64 image string is
+    // too large to pass as an argument to docker-lambda.
     writeImageFile(base64Image);
 
     const options = {

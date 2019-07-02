@@ -90,10 +90,14 @@ export async function getSubscription(userID) {
     });
     return subscription;
   } catch (error) {
-    if (error.message === 'Unexpected HTTP response: 406') {
+    console.error(
+      'Error in getSubscription():',
+      JSON.stringify(error, null, 2)
+    );
+    if (error.name === 'notFoundError') {
       return new Error(`![406] Subscription not found`);
     } else {
-      return new Error(error);
+      return new Error(error.message);
     }
   }
 }

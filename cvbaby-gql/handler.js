@@ -2,14 +2,14 @@ import { graphql, parse } from 'graphql';
 import { checkQueryDepth } from './util';
 import schema from './schema';
 
-const CVBABY_CLIENT_HOST = `https://${process.env.CVBABY_CLIENT_HOST}`;
+// const CVBABY_HOST_CLIENT = `https://${process.env.CVBABY_HOST_CLIENT}`;
 
 export const handlerPublic = generateHandler(false);
 export const handlerPrivate = generateHandler(true);
 
 function generateHandler(authenticated = false) {
   const HEADERS = {
-    'Access-Control-Allow-Origin': CVBABY_CLIENT_HOST
+    'Access-Control-Allow-Origin': '*'
   };
   const ERROR_REGEX = /(?:\[)([0-9]{3})(?:\]\s)(.*)/g;
   const ErrorMessages = {
@@ -22,16 +22,19 @@ function generateHandler(authenticated = false) {
   };
 
   return function(event, context, callback) {
+    console.log('in');
     let query, vars;
     try {
       ({ query, vars } = JSON.parse(event.body));
     } catch (error) {
-      return callback({
+      console.error(error);
+      return callback(null, {
         headers: HEADERS,
         statusCode: 400,
         body: 'Malformed JSON'
       });
     }
+    console.log('after JSON');
 
     const ctx = {
       ipAddress: event.requestContext.identity.sourceIp
@@ -46,6 +49,7 @@ function generateHandler(authenticated = false) {
     try {
       checkQueryDepth(parse(query), 10);
     } catch (error) {
+      console.error(error);
       console.log(`[depthLimit] IP: ${ctx.ipAddress}`);
       return callback(null, {
         headers: HEADERS,
@@ -57,6 +61,7 @@ function generateHandler(authenticated = false) {
     // Execute the query.
     graphql(schema, query, null, ctx, vars)
       .then(({ data, errors }) => {
+        console.log('in graphql');
         if (errors) {
           const error = errors[0];
 

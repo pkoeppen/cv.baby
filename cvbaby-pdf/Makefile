@@ -1,4 +1,5 @@
-dev:
+local:
+	# Run Docker locally with shared folder /tmp
 	rm -rf ./tmp
 	mkdir -p tmp/node_modules/chrome-aws-lambda/
 	cd tmp/ && npm install puppeteer-core@~1.17.0 --no-bin-links --no-optional --no-package-lock --no-save --no-shrinkwrap
@@ -7,7 +8,8 @@ dev:
 	cp ./handler.js ./tmp/handler.js
 	rm -f ./chrome-aws-lambda/chrome-aws-lambda-*.tgz
 
-prod:
+package:
+	# Zip everything for deployment to AWS Lambda
 	rm -f package.zip
 	mkdir -p dist/node_modules/chrome-aws-lambda/
 	cd dist/ && npm install puppeteer-core@~1.17.0 --no-bin-links --no-optional --no-package-lock --no-save --no-shrinkwrap

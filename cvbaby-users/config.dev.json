@@ -1,6 +1,7 @@
 {
   "CVBABY_ENV": "dev",
   "CVBABY_USER_POOL_NAME": "cvbaby-user-pool-dev",
+  "CVBABY_USER_POOL_LOGICAL_ID": "CognitoUserPoolCvbabyuserpooldev",
   "CVBABY_USER_POOL_CLIENT_NAME": "cvbaby-user-pool-client-dev",
   "CVBABY_TABLE_USERS": "cvbaby-table-users-dev"
 }

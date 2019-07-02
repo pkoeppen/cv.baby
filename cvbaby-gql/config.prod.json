@@ -1,8 +1,8 @@
 {
   "IS_OFFLINE": false,
-  "CVBABY_ENV": "dev",
+  "CVBABY_ENV": "prod",
   "CVBABY_HOST_GQL": "dev-api.cv.baby",
-  "CVBABY_HOST_CLIENT": "https://dev.cv.baby",
+  "CVBABY_HOST_CLIENT": "dev.cv.baby",
   "CVBABY_HOST_DATA": "dev-s3.cv.baby",
   "CVBABY_TABLE_USERS": "cvbaby-table-users-dev",
   "CVBABY_TABLE_RESUMES": "cvbaby-table-resumes-dev",
@@ -11,6 +11,6 @@
   "PAYMENT_MERCHANT_ID": "zdrjbzj2jxwpp3wj",
   "PAYMENT_PUBLIC_KEY": "bs3r39m78xjmzyfx",
   "PAYMENT_PRIVATE_KEY": "80ef8d9684a427364ba5fb3b6fdeb47c",
-  "CVBABY_USER_POOL_ID": "us-east-1_cAOndsR2J",
-  "CVBABY_USER_POOL_CLIENT_ID": "320osv5ltqmmqnvdjl9qvc4btt"
+  "CVBABY_USER_POOL_ID": "us-east-1_Y0i6nvzuV",
+  "CVBABY_USER_POOL_CLIENT_ID": "9tor2as71771u3ruh8hu4d82"
 }

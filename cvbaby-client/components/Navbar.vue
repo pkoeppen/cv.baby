@@ -232,7 +232,7 @@ export default {
     },
     avatarSource() {
       if (process.client && this.$store.state.cognito.authenticated) {
-        return `${process.env.CVBABY_UPLOAD_HOST}/users/${
+        return `https://${process.env.CVBABY_HOST_DATA}/users/${
           this.$store.state.cognito.userID
         }/profile.jpeg`;
       } else {
