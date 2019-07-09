@@ -2,7 +2,7 @@
   "AXIOS_BASE_URL": "https://dev-api.cv.baby",
   "CVBABY_ENV": "dev",
   "CVBABY_HOST_DATA": "dev-s3.cv.baby",
-  "CVBABY_USER_POOL_ID": "us-east-1_cAOndsR2J",
-  "CVBABY_USER_POOL_CLIENT_ID": "320osv5ltqmmqnvdjl9qvc4btt",
+  "CVBABY_USER_POOL_ID": "us-east-1_LJ5xYcEGo",
+  "CVBABY_USER_POOL_CLIENT_ID": "12dfq71ock7brui0l2rdjpl7vh",
   "GOOGLE_MAPS_API_KEY": "AIzaSyCFsMh-a5JITma1TnkVmWxbh6faOQnR8gk"
 }

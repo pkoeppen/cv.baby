@@ -13,7 +13,6 @@ const env = (() => {
   }
 })();
 const config = require(`./config.${env}.json`);
-console.log('env:', env);
 
 module.exports = {
   mode: 'universal',

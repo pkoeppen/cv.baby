@@ -2,6 +2,7 @@ service: cvbaby-users
 
 plugins:
   - serverless-webpack
+  - serverless-cognito-add-custom-attributes
   - '@anttiviljami/serverless-stack-output'
 
 provider:
@@ -16,6 +17,10 @@ provider:
       Action:
         - dynamodb:*
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CVBABY_TABLE_USERS}
+    - Effect: Allow
+      Action:
+        - cognito-idp:AdminUpdateUserAttributes
+      Resource: arn:aws:cognito-idp:${self:provider.region}:*:userpool/* # TODO - change this to specific user pool
 
 custom:
   webpack:
@@ -23,6 +28,18 @@ custom:
     includeModules:
       forceExclude:
         - aws-sdk
+
+  CognitoAddCustomAttributes:
+    CognitoUserPoolIdOutputKey: UserPoolId
+    CognitoUserPoolClientIdOutputKey: UserPoolClientId
+    CustomAttributes:
+      -
+        AttributeDataType: Number
+        DeveloperOnlyAttribute: False
+        Mutable: True
+        Name: subscriptionState
+        Required: False
+
   output:
     handler: output.handler
 

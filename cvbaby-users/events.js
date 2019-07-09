@@ -1,4 +1,4 @@
-import { DynamoDB } from './util';
+import { Cognito, DynamoDB } from './util';
 
 const CVBABY_TABLE_USERS = process.env.CVBABY_TABLE_USERS;
 
@@ -14,19 +14,39 @@ export function confirmUser(event, context, callback) {
  *  Post-confirmation hook to create a user in DynamoDB.
  */
 export function createUser(event, context, callback) {
-  const userID = event.request.userAttributes.sub;
-  const user = {
-    userID,
-    createdAt: new Date().toISOString(),
-    updatedAt: null,
-    resumes: []
-  };
+  // Set custom attribute 'custom:subscriptionState' to '0'.
+  // This will be set to '1' when the user starts their subscription.
+  Cognito.adminUpdateUserAttributes(
+    {
+      UserAttributes: [
+        {
+          Name: 'custom:subscriptionState',
+          Value: '0'
+        }
+      ],
+      UserPoolId: event.userPoolId,
+      Username: event.userName
+    },
+    error => {
+      if (error) {
+        return callback(error);
+      }
 
-  DynamoDB.put({
-    TableName: CVBABY_TABLE_USERS,
-    Item: user
-  })
-    .promise()
-    .then(() => callback(null, event))
-    .catch(error => callback(error));
+      const userID = event.request.userAttributes.sub;
+      const user = {
+        userID,
+        createdAt: new Date().toISOString(),
+        updatedAt: null,
+        resumes: []
+      };
+
+      DynamoDB.put({
+        TableName: CVBABY_TABLE_USERS,
+        Item: user
+      })
+        .promise()
+        .then(() => callback(null, event))
+        .catch(error => callback(error));
+    }
+  );
 }

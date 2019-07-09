@@ -439,6 +439,7 @@ export default {
     Navbar,
     cvFooter
   },
+  middleware: 'authenticated',
   data() {
     return {
       tabs: null,
@@ -483,7 +484,7 @@ export default {
       })
       .catch(error => {
         // TODO: Don't log errors in production
-        console.error(error);
+        console.error('getResumes error:', error);
         this.$store.dispatch('showSnackbar', {
           color: 'red',
           message: this.$t('errorFetchingResumes')
@@ -506,7 +507,7 @@ export default {
           return;
         }
         // TODO: Don't log errors in production
-        console.error(error);
+        console.error('getSubscription error:', error);
         this.$store.dispatch('showSnackbar', {
           color: 'red',
           message: this.$t('errorFetchingSubscription')

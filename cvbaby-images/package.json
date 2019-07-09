@@ -6,7 +6,7 @@
     "build:package": "make package",
     "deploy:dev": "npm run build:package && serverless deploy --stage dev",
     "deploy:prod": "npm run build:package && serverless deploy --stage prod",
-    "dev": "serverless offline start --stage local",
+    "local": "serverless offline start --stage local",
     "remove:dev": "serverless remove --stage dev"
   },
   "devDependencies": {

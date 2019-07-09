@@ -42,15 +42,27 @@ export const actions = {
       }
       const username = parsed[usernameField].replace('@', '%40');
       const accessTokenField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.${username}.accessToken`;
-      const accessToken = parsed[accessTokenField];
-      if (!accessToken) {
+      const jwtToken = parsed[accessTokenField];
+      if (!jwtToken) {
         return;
       }
+      const userDataField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.${username}.userData`;
+      const userData = JSON.parse(parsed[userDataField]);
+      const idTokenPayload = userData.UserAttributes.reduce(
+        (payload, attribute) => {
+          payload[attribute.Name] = attribute.Value;
+          return payload;
+        },
+        {}
+      );
       const user = {
         username: username,
         signInUserSession: {
+          idToken: {
+            payload: idTokenPayload
+          },
           accessToken: {
-            jwtToken: accessToken,
+            jwtToken: jwtToken,
             payload: {}
           }
         }
@@ -126,6 +138,7 @@ export const actions = {
             );
             context.commit('setEmail', user.username);
             context.commit('setAccessToken', session.accessToken);
+            console.log('user authenticated');
             resolve(session);
           },
           newPasswordRequired(userAttributes) {
@@ -140,6 +153,30 @@ export const actions = {
           }
         }
       );
+    });
+  },
+
+  /* Fetch latest user data. */
+  getUserData() {
+    return new Promise((resolve, reject) => {
+      const user = pool.getCurrentUser();
+      if (user !== null) {
+        user.getSession(error0 => {
+          if (error0) {
+            reject(error0);
+          } else {
+            user.getUserData((error1, data) => {
+              if (error1) {
+                reject(error1);
+              } else {
+                resolve(data);
+              }
+            });
+          }
+        });
+      } else {
+        resolve();
+      }
     });
   },
 
@@ -278,6 +315,8 @@ export const actions = {
       );
       pool.signUp(email, password, attributes, null, (error, result) => {
         if (error) {
+          // TODO
+          console.log(error.message);
           reject(error);
         } else {
           const { user } = result;
@@ -324,6 +363,8 @@ export const actions = {
 
   /* Sign out user. */
   signOut(context) {
+    // TODO: remove this
+    console.log('signing out');
     const user = pool.getCurrentUser();
     if (user !== null) {
       user.signOut();

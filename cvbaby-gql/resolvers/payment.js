@@ -1,5 +1,7 @@
 import braintree from 'braintree';
+import { Cognito } from '../util';
 
+const CVBABY_USER_POOL_ID = process.env.CVBABY_USER_POOL_ID;
 const gateway = braintree.connect({
   environment: braintree.Environment.Sandbox,
   merchantId: process.env.PAYMENT_MERCHANT_ID,
@@ -23,8 +25,16 @@ export function getClientPaymentToken() {
   }
 }
 
-export async function startSubscription(userID, paymentMethodNonce, planID) {
+export async function startSubscription(
+  userID,
+  username,
+  paymentMethodNonce,
+  planID
+) {
   try {
+    // Create a new customer.
+    // TODO - handle case in which customer signs up but card is
+    // rejected, leaving an orphaned customer object with no cards.
     const customer = await new Promise((resolve, reject) => {
       gateway.customer.create(
         {
@@ -47,7 +57,8 @@ export async function startSubscription(userID, paymentMethodNonce, planID) {
       return new Error('![404] Payment method not found');
     }
     const paymentMethodToken = paymentMethods[0].token;
-    const success = await new Promise((resolve, reject) => {
+    // Create a new subscription.
+    await new Promise((resolve, reject) => {
       gateway.subscription.create(
         {
           id: userID,
@@ -61,11 +72,26 @@ export async function startSubscription(userID, paymentMethodNonce, planID) {
           if (!result.success) {
             return reject(new Error(result.message));
           }
-          resolve(true);
+          resolve();
         }
       );
     });
-    return success;
+    // Set 'custom:trialStarted' attribute to '1'.
+    await new Promise((resolve, reject) => {
+      Cognito.adminUpdateUserAttributes(
+        {
+          UserAttributes: [
+            {
+              Name: 'custom:trialStarted',
+              Value: '1'
+            }
+          ],
+          UserPoolId: CVBABY_USER_POOL_ID,
+          Username: username
+        },
+        (error, data) => (error ? reject(error) : resolve(data))
+      );
+    });
   } catch (error) {
     // Rollback.
     gateway.customer.delete(userID);

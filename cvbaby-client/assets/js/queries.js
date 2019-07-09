@@ -117,16 +117,6 @@ export const AnalyticsQuery = `
   }
   ${AnalyticsFragment}
 `;
-export const UserQuery = `
-  query {
-    getUser {
-      resumes {
-        ...ResumeFields
-      }
-    }
-  }
-  ${ResumeFragment}
-`;
 export const SubscriptionQuery = `
   query {
     getSubscription {

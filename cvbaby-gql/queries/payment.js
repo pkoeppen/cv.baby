@@ -35,8 +35,8 @@ export default {
     },
     resolve: authorize((root, args, ctx) => {
       const { paymentMethodToken, planID } = args;
-      const { userID } = ctx;
-      return startSubscription(userID, paymentMethodToken, planID);
+      const { userID, username } = ctx;
+      return startSubscription(userID, username, paymentMethodToken, planID);
     })
   }
 };

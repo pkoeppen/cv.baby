@@ -30,9 +30,12 @@ export default {
     }
   },
   created() {
-    this.$store
-      .dispatch('cognito/checkAuthentication')
-      .catch(() => this.$store.dispatch('cognito/signOut'));
+    this.$store.dispatch('cognito/checkAuthentication').catch(error => {
+      // TODO: Don't log errors in production
+      console.error('Error (default layout):', error);
+      // this.$store.dispatch('cognito/signOut');
+      // this.$router.push({ path: this.localePath('index') });
+    });
   }
 };
 </script>

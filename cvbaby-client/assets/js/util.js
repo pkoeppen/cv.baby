@@ -1,3 +1,9 @@
+export const SubscriptionState = {
+  NOT_STARTED: '0',
+  STARTED: '1',
+  STOPPED: '2'
+};
+
 export function formatDates(dateFrom, dateTo) {
   const dateFromPretty = new Date(dateFrom).toLocaleString(this.$i18n.locale, {
     year: 'numeric',

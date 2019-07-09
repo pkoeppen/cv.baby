@@ -17,6 +17,9 @@ export const S3 = new AWS.S3({
   endpoint: 'https://s3.amazonaws.com'
 });
 export const SES = new AWS.SES({ apiVersion: '2010-12-01' });
+export const Cognito = new AWS.CognitoIdentityServiceProvider({
+  apiVersion: '2016-04-18'
+});
 
 export function invokeLambda(functionName, payload) {
   return new Promise((resolve, reject) => {

@@ -22,7 +22,6 @@ function generateHandler(authenticated = false) {
   };
 
   return function(event, context, callback) {
-    console.log('in');
     let query, vars;
     try {
       ({ query, vars } = JSON.parse(event.body));
@@ -34,15 +33,14 @@ function generateHandler(authenticated = false) {
         body: 'Malformed JSON'
       });
     }
-    console.log('after JSON');
 
     const ctx = {
       ipAddress: event.requestContext.identity.sourceIp
     };
 
     if (authenticated) {
-      const { principalId } = event.requestContext.authorizer;
-      ctx.userID = principalId;
+      ctx.userID = event.requestContext.authorizer.principalId;
+      ctx.username = event.requestContext.authorizer.claims.username;
     }
 
     // Disallow query depth over ten levels.
@@ -71,12 +69,14 @@ function generateHandler(authenticated = false) {
               error.message
             );
 
+            console.log('returning callback 1');
             return callback(null, {
               headers: HEADERS,
               statusCode,
               body: message
             });
           } else {
+            console.log('returning callback 2');
             console.error(
               `[handler:${authenticated ? 'private' : 'public'}] Error: ${
                 error.message
@@ -89,6 +89,7 @@ function generateHandler(authenticated = false) {
             });
           }
         } else {
+          console.log('returning callback 3');
           return callback(null, {
             headers: HEADERS,
             statusCode: StatusCodes.OK,
@@ -97,6 +98,7 @@ function generateHandler(authenticated = false) {
         }
       })
       .catch(error => {
+        console.log('returning callback 4');
         console.error(
           `[handler:${authenticated ? 'private' : 'public'}] GQL Error: ${
             error.message

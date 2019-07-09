@@ -11,9 +11,16 @@
       </v-toolbar-title>
       <v-spacer />
       <template v-if="authenticated">
-        <v-btn class="mr-3" color="primary" flat depressed outline small>{{
-          $t('renewSubscription')
-        }}</v-btn>
+        <v-btn
+          v-if="subscriptionAction"
+          class="mr-3"
+          color="primary"
+          flat
+          depressed
+          outline
+          small
+          >{{ subscriptionAction }}</v-btn
+        >
         <v-menu
           bottom
           left
@@ -201,6 +208,7 @@
 </template>
 
 <script>
+import { SubscriptionState } from '~/assets/js/util';
 export default {
   name: 'Navbar',
   data() {
@@ -230,6 +238,24 @@ export default {
       return (this.$store.state.cognito.authenticated || {}).signInUserSession
         .idToken.payload.email;
     },
+    subscriptionAction() {
+      const authenticated = this.$store.state.cognito.authenticated;
+      if (authenticated) {
+        const state = // eslint-disable-next-line
+          authenticated.signInUserSession.idToken.payload[
+            'custom:subscriptionState'
+          ];
+        switch (state) {
+          case SubscriptionState.NOT_STARTED:
+            return this.$t('startSubscription');
+          case SubscriptionState.STARTED:
+            return null;
+          case SubscriptionState.STOPPED:
+            return this.$t('renewSubscription');
+        }
+      }
+      return null;
+    },
     avatarSource() {
       if (process.client && this.$store.state.cognito.authenticated) {
         return `https://${process.env.CVBABY_HOST_DATA}/users/${
@@ -252,6 +278,7 @@ export default {
           email: this.signInData.email,
           password: this.signInData.password
         })
+        .then(() => this.$store.dispatch('cognito/getUserData'))
         .then(() => {
           this.$router.push({
             path: this.localePath('account')
