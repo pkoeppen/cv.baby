@@ -2,21 +2,6 @@
   <no-ssr>
     <div>
       <v-layout justify-center align-center wrap>
-        <v-flex xs12 md8>
-          <v-toolbar class="cv-toolbar elevation-0">
-            <v-toolbar-title
-              class="cv-logo font-weight-black"
-              style="font-size: 28px"
-            >
-              <nuxt-link
-                :to="localePath('index')"
-                style="text-decoration: none; color: inherit;"
-              >
-                <span>cv</span><span>baby&nbsp;</span>
-              </nuxt-link>
-            </v-toolbar-title>
-          </v-toolbar>
-        </v-flex>
         <v-flex xs12>
           <v-divider />
         </v-flex>
@@ -167,7 +152,9 @@
                     depressed
                     @click="signUp"
                   >
-                    <v-icon v-if="signUpData.success">check_circle</v-icon>
+                    <v-icon v-if="signUpData.success" class="mr-1"
+                      >check_circle</v-icon
+                    >
                     {{
                       signUpData.success
                         ? $t('freeTrialStarted')
@@ -316,7 +303,8 @@ export default {
                   email: this.signUpData.email,
                   password: this.signUpData.password
                 })
-              );
+              )
+              .then(() => this.$store.dispatch('cognito/getUserData'));
           }
         })
         .then(() => this.$refs.paymentFields.generateNonce())
@@ -333,23 +321,28 @@ export default {
           });
         })
         .then(result => {
+          this.$store.dispatch('cognito/getUserData', true);
+          this.$store.dispatch('cognito/setSubscriptionState', '1');
           this.signUpData.loading = false;
           this.signUpData.success = true;
-          setTimeout(() => this.$router.push({ path: 'account' }), 2000);
+          setTimeout(() => {
+            this.$router.push({ path: this.localePath('account') });
+          }, 2000);
         })
-        .catch(({ response: { status } }) => {
+        .catch(error => {
+          // TODO
+          console.error('signUp() error:', error);
+
+          const status = ((error || {}).response || {}).status;
           if (status === 409) {
             this.$store.dispatch('showSnackbar', {
               color: 'red',
-              // TODO: Translate this
-              message: 'Card type not accepted. Please try another.'
+              message: this.$t('cardTypeNotAccepted')
             });
           } else {
             this.$store.dispatch('showSnackbar', {
               color: 'red',
-              // TODO: Translate this
-              message:
-                'Error creating subscription. Please check your connection.'
+              message: this.$t('errorCreatingSubscription')
             });
           }
         })

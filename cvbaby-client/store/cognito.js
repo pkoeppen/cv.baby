@@ -35,39 +35,40 @@ export const actions = {
   /* Called by nuxtServerInit() in index.js. */
   serverInit(context, request) {
     if (request && request.headers.cookie) {
-      const parsed = cookie.parse(request.headers.cookie);
-      const usernameField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.LastAuthUser`;
-      if (!parsed[usernameField]) {
-        return;
-      }
-      const username = parsed[usernameField].replace('@', '%40');
-      const accessTokenField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.${username}.accessToken`;
-      const jwtToken = parsed[accessTokenField];
-      if (!jwtToken) {
-        return;
-      }
-      const userDataField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.${username}.userData`;
-      const userData = JSON.parse(parsed[userDataField]);
-      const idTokenPayload = userData.UserAttributes.reduce(
-        (payload, attribute) => {
-          payload[attribute.Name] = attribute.Value;
-          return payload;
-        },
-        {}
-      );
-      const user = {
-        username: username,
-        signInUserSession: {
-          idToken: {
-            payload: idTokenPayload
-          },
-          accessToken: {
-            jwtToken: jwtToken,
-            payload: {}
-          }
+      try {
+        const parsed = cookie.parse(request.headers.cookie);
+        const usernameField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.LastAuthUser`;
+        const username = parsed[usernameField].replace('@', '%40');
+        const accessTokenField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.${username}.accessToken`;
+        const jwtToken = parsed[accessTokenField];
+        if (!jwtToken) {
+          return;
         }
-      };
-      context.commit('setAuthenticated', user);
+        const userDataField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.${username}.userData`;
+        const userData = JSON.parse(parsed[userDataField]);
+        const idTokenPayload = userData.UserAttributes.reduce(
+          (payload, attribute) => {
+            payload[attribute.Name] = attribute.Value;
+            return payload;
+          },
+          {}
+        );
+        const user = {
+          username: username,
+          signInUserSession: {
+            idToken: {
+              payload: idTokenPayload
+            },
+            accessToken: {
+              jwtToken: jwtToken,
+              payload: {}
+            }
+          }
+        };
+        context.commit('setAuthenticated', user);
+      } catch (error) {
+        // Ignore.
+      }
     }
   },
 
@@ -138,7 +139,6 @@ export const actions = {
             );
             context.commit('setEmail', user.username);
             context.commit('setAccessToken', session.accessToken);
-            console.log('user authenticated');
             resolve(session);
           },
           newPasswordRequired(userAttributes) {
@@ -157,7 +157,7 @@ export const actions = {
   },
 
   /* Fetch latest user data. */
-  getUserData() {
+  getUserData(bypassCache = false) {
     return new Promise((resolve, reject) => {
       const user = pool.getCurrentUser();
       if (user !== null) {
@@ -165,19 +165,27 @@ export const actions = {
           if (error0) {
             reject(error0);
           } else {
-            user.getUserData((error1, data) => {
-              if (error1) {
-                reject(error1);
-              } else {
-                resolve(data);
-              }
-            });
+            user.getUserData(
+              (error1, data) => {
+                if (error1) {
+                  reject(error1);
+                } else {
+                  resolve(data);
+                }
+              },
+              { bypassCache }
+            );
           }
         });
       } else {
         resolve();
       }
     });
+  },
+
+  /* Hot-update session subscription state. */
+  setSubscriptionState(context, level) {
+    context.commit('setSubscriptionState', level);
   },
 
   /* Get user session from storage. */
@@ -363,8 +371,6 @@ export const actions = {
 
   /* Sign out user. */
   signOut(context) {
-    // TODO: remove this
-    console.log('signing out');
     const user = pool.getCurrentUser();
     if (user !== null) {
       user.signOut();
@@ -400,5 +406,11 @@ export const mutations = {
   setAccessToken(_state, accessToken) {
     // eslint-disable-next-line no-param-reassign
     _state.accessToken = accessToken;
+  },
+  setSubscriptionState(_state, level) {
+    // eslint-disable-next-line
+    _state.authenticated.signInUserSession.idToken.payload[
+      'custom:subscriptionState'
+    ] = level;
   }
 };

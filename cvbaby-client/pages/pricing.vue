@@ -1,18 +1,6 @@
 <template>
   <div>
     <v-layout class="cv-background-grey" justify-center align-center wrap>
-      <v-flex xs12 md8>
-        <v-toolbar class="elevation-0">
-          <v-toolbar-title class="cv-logo">
-            <nuxt-link
-              :to="localePath('index')"
-              style="text-decoration: none; color: inherit;"
-            >
-              <span>cv</span><span>baby&nbsp;</span>
-            </nuxt-link>
-          </v-toolbar-title>
-        </v-toolbar>
-      </v-flex>
       <v-flex xs12>
         <v-divider />
       </v-flex>

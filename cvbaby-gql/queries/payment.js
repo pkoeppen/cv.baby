@@ -17,8 +17,8 @@ export default {
   getSubscription: {
     type: SubscriptionType,
     resolve: authorize((root, args, ctx) => {
-      const { userID } = ctx;
-      return getSubscription(userID);
+      const { username } = ctx;
+      return getSubscription(username);
     })
   },
   startSubscription: {

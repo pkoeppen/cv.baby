@@ -1,11 +1,6 @@
 <template>
   <div>
     <v-layout column>
-      <v-flex xs12>
-        <v-container class="pa-0">
-          <navbar />
-        </v-container>
-      </v-flex>
       <v-flex style="position: relative;" xs12 md8>
         <div class="cv-header font-weight-black text-xs-center px-4 mt-4">
           {{ $t('onlineResumesSimplified') }}
@@ -57,13 +52,11 @@
 </template>
 
 <script>
-import Navbar from '~/components/Navbar';
 import cvFooter from '~/components/Footer';
 import Resume from '~/components/Resume';
 import { getDemoResume } from '~/assets/js/util';
 export default {
   components: {
-    Navbar,
     cvFooter,
     Resume
   },

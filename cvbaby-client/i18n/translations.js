@@ -173,6 +173,10 @@ module.exports = {
     en: 'Renew Subscription',
     de: 'Abo erneuern'
   },
+  startSubscription: {
+    en: 'Start Subscription',
+    de: 'Abo starten'
+  },
   cancelSubscription: {
     en: 'Cancel subscription',
     de: 'Abo abbrechen'
@@ -427,6 +431,10 @@ module.exports = {
   yearsKnown: {
     en: 'Years known',
     de: 'Jahre gekannt'
+  },
+  yearsKnownIsRequired: {
+    en: 'Years known is required',
+    de: 'Jahre gekannt ist erforderlich'
   },
   removeReferenceItem: {
     en: 'Remove reference item',
@@ -793,8 +801,8 @@ module.exports = {
     de: 'Jederzeit kündbar bis'
   },
   freeTrialStarted: {
-    en: ' Free trial started',
-    de: ' Gratisttest gestartet'
+    en: 'Free trial started',
+    de: 'Gratisttest gestartet'
   },
   allTransactionsAreSecuredWithSSL: {
     en: 'All transactions are secured with SSL encryption',
@@ -824,6 +832,14 @@ module.exports = {
   /*
    *  Errors
    */
+  errorSigningIn: {
+    en: 'Error signing in. Please check your connection.',
+    de: 'Fehler beim Anmelden. Bitte überprüfen Sie Ihre Verbindung.'
+  },
+  errorSigningUp: {
+    en: 'Error signing up. Please check your connection.',
+    de: 'Fehler beim Registrieren. Bitte überprüfen Sie Ihre Verbindung.'
+  },
   errorFetchingResumes: {
     en: 'Error fetching resumes. Please check your connection.',
     de:
@@ -838,6 +854,15 @@ module.exports = {
     en: 'Error downloading PDF. Please check your connection.',
     de:
       'Fehler beim Herunterladen von PDF-Datei. Bitte überprüfen Sie Ihre Verbindung.'
+  },
+  errorCreatingSubscription: {
+    en: 'Error creating subscription. Please check your connection.',
+    de:
+      'Fehler beim Starten von Abonnement. Bitte überprüfen Sie Ihre Verbindung.'
+  },
+  cardTypeNotAccepted: {
+    en: 'Card type not accepted. Please try another.',
+    de: 'Kartentyp ungültig. Bitte versuchen Sie es mit einer anderen Karte.'
   },
   errorFetchingSubscription: {
     en: 'Error fetching subscription. Please check your connection.',

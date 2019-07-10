@@ -9,9 +9,9 @@ const gateway = braintree.connect({
   privateKey: process.env.PAYMENT_PRIVATE_KEY
 });
 
-export function getClientPaymentToken() {
+export async function getClientPaymentToken() {
   try {
-    const token = new Promise((resolve, reject) => {
+    const token = await new Promise((resolve, reject) => {
       gateway.clientToken.generate({}, (error, response) => {
         if (error) {
           return reject(error);
@@ -21,7 +21,7 @@ export function getClientPaymentToken() {
     });
     return token;
   } catch (error) {
-    return new Error(error);
+    return error;
   }
 }
 
@@ -35,7 +35,7 @@ export async function startSubscription(
     // Create a new customer.
     // TODO - handle case in which customer signs up but card is
     // rejected, leaving an orphaned customer object with no cards.
-    const customer = await new Promise((resolve, reject) => {
+    const { customer } = await new Promise((resolve, reject) => {
       gateway.customer.create(
         {
           id: userID,
@@ -48,7 +48,7 @@ export async function startSubscription(
           if (!result.success) {
             return reject(new Error(result.message));
           }
-          resolve(result.customer);
+          resolve(result);
         }
       );
     });
@@ -58,10 +58,9 @@ export async function startSubscription(
     }
     const paymentMethodToken = paymentMethods[0].token;
     // Create a new subscription.
-    await new Promise((resolve, reject) => {
+    const { subscription } = await new Promise((resolve, reject) => {
       gateway.subscription.create(
         {
-          id: userID,
           paymentMethodToken,
           planId: planID
         },
@@ -72,18 +71,22 @@ export async function startSubscription(
           if (!result.success) {
             return reject(new Error(result.message));
           }
-          resolve();
+          resolve(result);
         }
       );
     });
-    // Set 'custom:trialStarted' attribute to '1'.
+    // Set 'custom:subscriptionState' attribute to '1'.
     await new Promise((resolve, reject) => {
       Cognito.adminUpdateUserAttributes(
         {
           UserAttributes: [
             {
-              Name: 'custom:trialStarted',
+              Name: 'custom:subscriptionState',
               Value: '1'
+            },
+            {
+              Name: 'custom:subscriptionID',
+              Value: subscription.id
             }
           ],
           UserPoolId: CVBABY_USER_POOL_ID,
@@ -93,8 +96,18 @@ export async function startSubscription(
       );
     });
   } catch (error) {
+    console.error('Error in startSubscription():', error);
     // Rollback.
-    gateway.customer.delete(userID);
+    gateway.customer.delete(userID, (error, data) => {
+      if (error || !data.success) {
+        console.error('Error deleting customer:', error || data.message);
+      }
+    });
+    gateway.subscription.cancel(userID, (error, data) => {
+      if (error || !data.success) {
+        console.error('Error deleting customer:', error || data.message);
+      }
+    });
     return error.message ===
       'Payment method token payment instrument type is not accepted by this merchant account.'
       ? new Error(
@@ -104,10 +117,22 @@ export async function startSubscription(
   }
 }
 
-export async function getSubscription(userID) {
+export async function getSubscription(username) {
   try {
+    const { UserAttributes } = await new Promise((resolve, reject) => {
+      Cognito.adminGetUser(
+        {
+          UserPoolId: CVBABY_USER_POOL_ID,
+          Username: username
+        },
+        (error, data) => (error ? reject(error) : resolve(data))
+      );
+    });
+    const subscriptionID = UserAttributes.find(
+      ({ Name }) => Name === 'custom:subscriptionID'
+    ).Value;
     const subscription = await new Promise((resolve, reject) => {
-      gateway.subscription.find(userID, (error, subscription) => {
+      gateway.subscription.find(subscriptionID, (error, subscription) => {
         if (error) {
           return reject(error);
         }

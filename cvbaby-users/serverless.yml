@@ -39,6 +39,12 @@ custom:
         Mutable: True
         Name: subscriptionState
         Required: False
+      -
+        AttributeDataType: String
+        DeveloperOnlyAttribute: False
+        Mutable: True
+        Name: subscriptionID
+        Required: False
 
   output:
     handler: output.handler

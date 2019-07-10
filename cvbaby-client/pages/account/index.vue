@@ -3,11 +3,6 @@
     <div>
       <v-layout column wrap>
         <v-flex xs12>
-          <v-container class="pa-0">
-            <navbar />
-          </v-container>
-        </v-flex>
-        <v-flex xs12>
           <v-divider />
         </v-flex>
         <v-flex xs12>
@@ -129,7 +124,7 @@
                           />
                           <!-- eslint-enable -->
                           <v-btn
-                            to="/account/editor"
+                            :to="localePath('account-editor')"
                             color="primary"
                             class="mx-0 mt-4"
                             depressed
@@ -432,11 +427,9 @@
 </template>
 
 <script>
-import Navbar from '~/components/Navbar';
 import cvFooter from '~/components/Footer';
 export default {
   components: {
-    Navbar,
     cvFooter
   },
   middleware: 'authenticated',

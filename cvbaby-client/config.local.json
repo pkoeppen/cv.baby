@@ -2,7 +2,7 @@
   "AXIOS_BASE_URL": "http://localhost:3001",
   "CVBABY_ENV": "local",
   "CVBABY_HOST_DATA": "dev-s3.cv.baby",
-  "CVBABY_USER_POOL_ID": "us-east-1_LJ5xYcEGo",
-  "CVBABY_USER_POOL_CLIENT_ID": "12dfq71ock7brui0l2rdjpl7vh",
+  "CVBABY_USER_POOL_ID": "us-east-1_8MXhn3tJd",
+  "CVBABY_USER_POOL_CLIENT_ID": "5cfh8j6shk8f2fpcuakfpro7f9",
   "GOOGLE_MAPS_API_KEY": "AIzaSyCFsMh-a5JITma1TnkVmWxbh6faOQnR8gk"
 }
