@@ -1,10 +1,13 @@
 import { GraphQLNonNull, GraphQLString, GraphQLBoolean } from 'graphql';
 import { authorize } from '../util';
-import { SubscriptionType } from '../types';
+import { SubscriptionType, PaymentMethodType } from '../types';
 import {
   getClientPaymentToken,
   startSubscription,
-  getSubscription
+  cancelSubscription,
+  getSubscription,
+  getDefaultPaymentMethod,
+  updatePaymentMethod
 } from '../resolvers';
 
 export default {
@@ -21,11 +24,18 @@ export default {
       return getSubscription(username);
     })
   },
+  getDefaultPaymentMethod: {
+    type: PaymentMethodType,
+    resolve: authorize((root, args, ctx) => {
+      const { userID } = ctx;
+      return getDefaultPaymentMethod(userID);
+    })
+  },
   startSubscription: {
     type: GraphQLBoolean,
     args: {
-      paymentMethodToken: {
-        name: 'paymentMethodToken',
+      paymentMethodNonce: {
+        name: 'paymentMethodNonce',
         type: new GraphQLNonNull(GraphQLString)
       },
       planID: {
@@ -34,9 +44,30 @@ export default {
       }
     },
     resolve: authorize((root, args, ctx) => {
-      const { paymentMethodToken, planID } = args;
+      const { paymentMethodNonce, planID } = args;
       const { userID, username } = ctx;
-      return startSubscription(userID, username, paymentMethodToken, planID);
+      return startSubscription(userID, username, paymentMethodNonce, planID);
+    })
+  },
+  cancelSubscription: {
+    type: GraphQLBoolean,
+    resolve: authorize((root, args, ctx) => {
+      const { username } = ctx;
+      return cancelSubscription(username);
+    })
+  },
+  updatePaymentMethod: {
+    type: PaymentMethodType,
+    args: {
+      paymentMethodNonce: {
+        name: 'paymentMethodNonce',
+        type: new GraphQLNonNull(GraphQLString)
+      }
+    },
+    resolve: authorize((root, args, ctx) => {
+      const { paymentMethodNonce } = args;
+      const { userID } = ctx;
+      return updatePaymentMethod(userID, paymentMethodNonce);
     })
   }
 };

@@ -31,6 +31,12 @@ export const SubscriptionFragment = `
     }
   }
 `;
+export const PaymentMethodFragment = `
+  fragment PaymentMethodFields on PaymentMethodType {
+    cardType,
+    last4
+  }
+`;
 export const ResumeFragment = `
   fragment ResumeFields on ResumeType {
     resumeID,
@@ -125,6 +131,14 @@ export const SubscriptionQuery = `
   }
   ${SubscriptionFragment}
 `;
+export const DefaultPaymentMethodQuery = `
+  query {
+    getDefaultPaymentMethod {
+      ...PaymentMethodFields
+    }
+  }
+  ${PaymentMethodFragment}
+`;
 export const ResumesQuery = `
   query {
     getResumes {
@@ -143,9 +157,22 @@ export const CheckSlugAvailableQuery = `
  * Mutations
  */
 export const StartSubscriptionMutation = `
-  mutation ($paymentMethodToken: String!, $planID: String!) {
-    startSubscription (paymentMethodToken: $paymentMethodToken, planID: $planID)
+  mutation ($paymentMethodNonce: String!, $planID: String!) {
+    startSubscription (paymentMethodNonce: $paymentMethodNonce, planID: $planID)
   }
+`;
+export const CancelSubscriptionMutation = `
+  mutation {
+    cancelSubscription
+  }
+`;
+export const UpdatePaymentMethodMutation = `
+  mutation ($paymentMethodNonce: String!) {
+    updatePaymentMethod (paymentMethodNonce: $paymentMethodNonce) {
+      ...PaymentMethodFields
+    }
+  }
+  ${PaymentMethodFragment}
 `;
 export const SaveResumeMutation = `
   mutation ($resume: ResumeInputType!, $base64Image: String) {

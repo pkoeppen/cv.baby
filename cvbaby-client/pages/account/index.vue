@@ -186,18 +186,22 @@
                     >
                       <div style="display: flex; align-items: center;">
                         <h2>{{ $t('subscription') }}</h2>
-                        <v-icon
-                          v-if="payment.subscription"
-                          :class="
-                            payment.subscription.status === 'Active'
-                              ? 'bluegrass'
-                              : 'red--text'
-                          "
-                          class="ml-2"
-                          style="font-size: 16px;"
-                        >
-                          play_circle_filled
-                        </v-icon>
+                        <template v-if="payment.subscription">
+                          <v-icon
+                            v-if="payment.subscription.status === 'Active'"
+                            class="ml-2 bluegrass"
+                            style="font-size: 18px;"
+                          >
+                            play_arrow
+                          </v-icon>
+                          <v-icon
+                            v-else
+                            class="ml-2 red--text"
+                            style="font-size: 18px;"
+                          >
+                            stop
+                          </v-icon>
+                        </template>
                       </div>
                       <v-divider class="mt-2 mb-3" />
                       <div
@@ -267,7 +271,10 @@
                       >
                         <h2>{{ $t('paymentMethod') }}</h2>
                         <div>
-                          <v-dialog v-model="payment.dialog" max-width="400px">
+                          <v-dialog
+                            v-model="payment.updatePaymentDialog"
+                            max-width="400px"
+                          >
                             <template v-slot:activator="{ on }">
                               <v-btn
                                 class="ma-0"
@@ -288,22 +295,24 @@
                                 </span>
                               </v-card-title>
                               <v-card-text>
-                                <v-card class="cv-payment elevation-0 ma-3">
+                                <v-card
+                                  class="cv-payment elevation-0 mx-3 mt-3"
+                                >
                                   <v-tabs v-model="payment.tabs" grow>
-                                    <!-- TODO -->
-                                    <v-tab ripple>Debit/Credit Card</v-tab>
+                                    <v-tab ripple>{{
+                                      $t('debitCreditCard')
+                                    }}</v-tab>
                                     <v-tab-item>
-                                      <v-container>
-                                        credit card fields go here
-                                      </v-container>
+                                      <payment-fields ref="paymentFields" />
                                     </v-tab-item>
                                     <v-tab ripple>PayPal</v-tab>
                                     <v-tab-item>
                                       <v-container>
                                         <div class="cv-billing-detail">
                                           <div class="font-weight-black">
-                                            You will be redirected to PayPal to
-                                            finish your payment.
+                                            {{
+                                              $t('youWillBeRedirectedToPayPal')
+                                            }}
                                           </div>
                                         </div>
                                       </v-container>
@@ -313,10 +322,21 @@
                               </v-card-text>
                               <v-card-actions class="justify-center pb-4">
                                 <v-btn
-                                  color="primary"
-                                  @click="loginDialog = false"
+                                  :loading="payment.loading"
+                                  :color="
+                                    payment.success ? 'success' : 'primary'
+                                  "
+                                  depressed
+                                  @click="updatePaymentMethod"
                                 >
-                                  Update now
+                                  <v-icon v-if="payment.success" class="mr-1"
+                                    >check_circle</v-icon
+                                  >
+                                  {{
+                                    payment.success
+                                      ? $t('updated')
+                                      : $t('updateNow')
+                                  }}
                                 </v-btn>
                               </v-card-actions>
                             </v-card>
@@ -328,7 +348,27 @@
                         style="display: flex; align-items: center; justify-content: space-between;"
                         class="mb-2"
                       >
-                        <div class="open-sans">PayPal</div>
+                        <v-chip
+                          class="text-uppercase font-weight-bold"
+                          color="grey"
+                          text-color="white"
+                          label
+                          disabled
+                        >
+                          <template v-if="payment.loading">
+                            <v-progress-circular
+                              :size="20"
+                              :width="2"
+                              indeterminate
+                              color="white"
+                              class="mx-4"
+                            ></v-progress-circular>
+                          </template>
+                          <template v-else>
+                            <span>{{ payment.method.cardType }}</span>
+                            <span class="ml-1">{{ payment.method.last4 }}</span>
+                          </template>
+                        </v-chip>
                         <v-icon>lock</v-icon>
                       </div>
                       <div
@@ -336,9 +376,59 @@
                         class="mt-4 mb-2"
                       >
                         <v-spacer />
-                        <div class="red--text caption">
-                          {{ $t('cancelSubscription') }}
-                        </div>
+
+                        <v-dialog
+                          v-model="payment.confirmCancelDialog"
+                          max-width="400px"
+                        >
+                          <template v-slot:activator="{ on }">
+                            <v-btn
+                              class="ma-0 red--text caption"
+                              small
+                              depressed
+                              flat
+                              v-on="on"
+                            >
+                              {{ $t('cancelSubscription') }}
+                            </v-btn>
+                          </template>
+                          <v-card>
+                            <v-card-title
+                              class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
+                            >
+                              <span class="cv-dialog-header headline">
+                                {{ $t('updatePaymentMethod') }}
+                              </span>
+                            </v-card-title>
+                            <v-card-text class="text-xs-center">
+                              <div class="mx-3">
+                                <div>{{ $t('areYouSureCancel') }}</div>
+                                <div class="mt-3">
+                                  <v-icon x-large
+                                    >sentiment_very_dissatisfied</v-icon
+                                  >
+                                </div>
+                              </div>
+                            </v-card-text>
+                            <v-card-actions class="justify-center pb-4">
+                              <v-btn
+                                :loading="payment.loading"
+                                :color="payment.success ? 'success' : 'error'"
+                                depressed
+                                @click="cancelSubscription"
+                              >
+                                <v-icon v-if="payment.success" class="mr-1"
+                                  >check_circle</v-icon
+                                >
+                                {{
+                                  payment.success
+                                    ? $t('subscriptionCancelled')
+                                    : $t('cancelSubscription')
+                                }}
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </v-dialog>
                       </div>
                     </v-container>
                   </v-tab-item>
@@ -356,29 +446,35 @@
                         >
                           <v-container class="open-sans">
                             <v-layout row justify-space-between align-center>
-                              <v-flex>
-                                <div class="grey--text">
-                                  <div class="caption" style="line-height: 1;">
-                                    {{ transaction.currencyIsoCode }}
-                                  </div>
-                                  <div class="title">
-                                    {{ transaction.amount }}
-                                  </div>
+                              <div>
+                                <div
+                                  class="caption grey--text text-uppercase"
+                                  style="line-height: 1;"
+                                >
+                                  {{ $t('date') }}
                                 </div>
-                              </v-flex>
-                              <v-flex>
                                 <div class="text-uppercase title">
-                                  {{ transaction.creditCard.cardType }}
-                                  {{ transaction.creditCard.last4 }}
+                                  {{ formatDate(transaction.createdAt) }}
                                 </div>
-                              </v-flex>
-                              <v-flex>
-                                <div class="text-uppercase title">
-                                  <!-- TODO: translate date -->
-                                  {{ transaction.createdAt }}
+                              </div>
+                              <div>
+                                <div
+                                  class="caption grey--text"
+                                  style="line-height: 1;"
+                                >
+                                  {{ transaction.currencyIsoCode }}
                                 </div>
-                              </v-flex>
-                              <v-flex>
+                                <div class="title">
+                                  {{ transaction.amount }}
+                                </div>
+                              </div>
+                              <div>
+                                <div
+                                  class="caption grey--text text-uppercase"
+                                  style="line-height: 1;"
+                                >
+                                  {{ $t('status') }}
+                                </div>
                                 <div
                                   :class="{
                                     bluegrass: transaction.processorResponseType.match(
@@ -395,7 +491,23 @@
                                       : $t('declined')
                                   }}
                                 </div>
-                              </v-flex>
+                              </div>
+                              <div class="text-uppercase title">
+                                <v-chip
+                                  class="text-uppercase font-weight-bold"
+                                  color="grey"
+                                  text-color="white"
+                                  label
+                                  disabled
+                                >
+                                  <span>{{
+                                    transaction.creditCard.cardType
+                                  }}</span>
+                                  <span class="ml-1">{{
+                                    transaction.creditCard.last4
+                                  }}</span>
+                                </v-chip>
+                              </div>
                             </v-layout>
                           </v-container>
                         </v-card>
@@ -428,9 +540,11 @@
 
 <script>
 import cvFooter from '~/components/Footer';
+import PaymentFields from '~/components/PaymentFields';
 export default {
   components: {
-    cvFooter
+    cvFooter,
+    PaymentFields
   },
   middleware: 'authenticated',
   data() {
@@ -450,7 +564,9 @@ export default {
       payment: {
         loading: false,
         subscription: null,
-        dialog: false,
+        method: {},
+        updatePaymentDialog: false,
+        confirmCancelDialog: false,
         tabs: null
       },
       email: {
@@ -492,6 +608,10 @@ export default {
       .dispatch('api/getSubscription')
       .then(subscription => {
         this.payment.subscription = subscription;
+      })
+      .then(() => this.$store.dispatch('api/getDefaultPaymentMethod'))
+      .then(method => {
+        this.payment.method = method;
       })
       .catch(error => {
         const status = ((error || {}).response || {}).status || 500;
@@ -548,9 +668,72 @@ export default {
           }, 2000);
         })
         .catch(error => {
+          // TODO
           console.error(error);
           this.password.loading = false;
         });
+    },
+    updatePaymentMethod() {
+      this.payment.loading = true;
+      this.$refs.paymentFields
+        .generateNonce()
+        .then(nonce => this.$store.dispatch('api/updatePaymentMethod', nonce))
+        .then(method => {
+          console.log('method:', JSON.stringify(method, null, 2));
+          this.payment.success = true;
+          this.payment.method = method;
+          setTimeout(() => {
+            this.payment.updatePaymentDialog = false;
+            this.payment.success = false;
+          }, 1500);
+        })
+        .catch(error => {
+          const status = ((error || {}).response || {}).status;
+          // TODO
+          console.error('updatePaymentMethod() error:', error);
+          if (status === 409) {
+            this.$store.dispatch('showSnackbar', {
+              color: 'red',
+              message: this.$t('cardTypeNotAccepted')
+            });
+          } else {
+            this.$store.dispatch('showSnackbar', {
+              color: 'red',
+              message: this.$t('errorUpdatingPayment')
+            });
+          }
+        })
+        .finally(() => {
+          this.payment.loading = false;
+        });
+    },
+    cancelSubscription() {
+      this.payment.loading = true;
+      this.$store
+        .dispatch('api/cancelSubscription')
+        .then(result => {
+          this.$store.dispatch('cognito/setSubscriptionState', '2');
+          this.payment.success = true;
+          setTimeout(() => {
+            this.payment.confirmCancelDialog = false;
+            this.payment.success = false;
+          }, 1500);
+        })
+        .catch(error => {
+          // TODO
+          console.error('cancelSubscription() error:', error);
+          this.$store.dispatch('showSnackbar', {
+            color: 'red',
+            message: this.$t('errorCancellingSubscription')
+          });
+        })
+        .finally(() => {
+          this.payment.loading = false;
+        });
+    },
+    formatDate(date) {
+      const d = new Date(date);
+      return d.toLocaleDateString(this.$i18n.locale);
     }
   }
 };

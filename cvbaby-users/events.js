@@ -32,21 +32,21 @@ export function createUser(event, context, callback) {
         return callback(error);
       }
 
-      const userID = event.request.userAttributes.sub;
-      const user = {
-        userID,
-        createdAt: new Date().toISOString(),
-        updatedAt: null,
-        resumes: []
-      };
+      // const userID = event.request.userAttributes.sub;
+      // const user = {
+      //   userID,
+      //   createdAt: new Date().toISOString(),
+      //   updatedAt: null,
+      //   resumes: []
+      // };
 
-      DynamoDB.put({
-        TableName: CVBABY_TABLE_USERS,
-        Item: user
-      })
-        .promise()
-        .then(() => callback(null, event))
-        .catch(error => callback(error));
+      // DynamoDB.put({
+      //   TableName: CVBABY_TABLE_USERS,
+      //   Item: user
+      // })
+      //   .promise()
+      //   .then(() => callback(null, event))
+      //   .catch(error => callback(error));
     }
   );
 }

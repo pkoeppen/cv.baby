@@ -5,7 +5,11 @@ import {
   SubscriptionQuery,
   CheckSlugAvailableQuery,
   SaveResumeMutation,
-  RemoveResumeMutation
+  RemoveResumeMutation,
+  StartSubscriptionMutation,
+  CancelSubscriptionMutation,
+  UpdatePaymentMethodMutation,
+  DefaultPaymentMethodQuery
 } from '~/assets/js/queries';
 
 export const state = () => ({
@@ -42,6 +46,39 @@ export const actions = {
         query: SubscriptionQuery
       })
       .then(({ data }) => data.getSubscription);
+  },
+  getDefaultPaymentMethod() {
+    return this.$axios
+      .post('/gql/private', {
+        query: DefaultPaymentMethodQuery
+      })
+      .then(({ data }) => data.getDefaultPaymentMethod);
+  },
+  startSubscription(context, { nonce, planID }) {
+    return this.$axios
+      .post('/gql/private', {
+        query: StartSubscriptionMutation,
+        vars: {
+          paymentMethodNonce: nonce,
+          planID
+        }
+      })
+      .then(({ data }) => data.startSubscription);
+  },
+  cancelSubscription() {
+    return this.$axios
+      .post('/gql/private', {
+        query: CancelSubscriptionMutation
+      })
+      .then(({ data }) => data.cancelSubscription);
+  },
+  updatePaymentMethod(context, nonce) {
+    return this.$axios
+      .post('/gql/private', {
+        query: UpdatePaymentMethodMutation,
+        vars: { paymentMethodNonce: nonce }
+      })
+      .then(({ data }) => data.updatePaymentMethod);
   },
   checkSlugAvailable(context, slug) {
     return this.$axios

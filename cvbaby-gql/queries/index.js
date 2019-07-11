@@ -8,6 +8,7 @@ export const queries = {
   getResume: UserQuery.getResume,
   getClientPaymentToken: PaymentQuery.getClientPaymentToken,
   getSubscription: PaymentQuery.getSubscription,
+  getDefaultPaymentMethod: PaymentQuery.getDefaultPaymentMethod,
   getUser: UserQuery.getUser,
   getResume: ResumeQuery.getResume,
   getResumes: ResumeQuery.getResumes,
@@ -17,6 +18,8 @@ export const queries = {
 
 export const mutations = {
   startSubscription: PaymentQuery.startSubscription,
+  cancelSubscription: PaymentQuery.cancelSubscription,
+  updatePaymentMethod: PaymentQuery.updatePaymentMethod,
   saveResume: ResumeQuery.saveResume,
   removeResume: ResumeQuery.removeResume
 };

@@ -181,6 +181,24 @@ module.exports = {
     en: 'Cancel subscription',
     de: 'Abo abbrechen'
   },
+  areYouSureCancel: {
+    en:
+      "Are you sure you'd like to cancel your subscription? Unemployment is really boring.",
+    de:
+      'Sind Sie sicher, Sie möchten Ihren Abo kündigen? Arbeitslosigkeit ist ja langweilig.'
+  },
+  subscriptionCancelled: {
+    en: 'Subscription cancelled',
+    de: 'Abo abgebrochen'
+  },
+  updateNow: {
+    en: 'Update Now',
+    de: 'Aktualisieren'
+  },
+  updated: {
+    en: 'Updated',
+    de: 'Aktualisiert'
+  },
   invoices: {
     en: 'Invoices',
     de: 'Rechnungen'
@@ -192,6 +210,14 @@ module.exports = {
   declined: {
     en: 'Declined',
     de: 'Abgelehnt'
+  },
+  date: {
+    en: 'Date',
+    de: 'Datum'
+  },
+  status: {
+    en: 'Status',
+    de: 'Status'
   },
   emailNotifications: {
     en: 'Email Notifications',
@@ -859,6 +885,16 @@ module.exports = {
     en: 'Error creating subscription. Please check your connection.',
     de:
       'Fehler beim Starten von Abonnement. Bitte überprüfen Sie Ihre Verbindung.'
+  },
+  errorCancellingSubscription: {
+    en: 'Error cancelling subscription. Please contact support immediately.',
+    de:
+      'Fehler beim Abbrechen von Abonnement. Bitte kontaktieren Sie sofort Support.'
+  },
+  errorUpdatingPayment: {
+    en: 'Error updating payment method. Please check your connection.',
+    de:
+      'Fehler beim Aktualisieren von Zahlungsmethode. Bitte überprüfen Sie Ihre Verbindung.'
   },
   cardTypeNotAccepted: {
     en: 'Card type not accepted. Please try another.',

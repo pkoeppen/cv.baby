@@ -155,6 +155,7 @@ export default {
     },
     clientCreatedCallback(error, client) {
       if (error) {
+        // TODO
         console.error(error);
       }
       braintree.hostedFields.create(

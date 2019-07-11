@@ -324,7 +324,7 @@ export const actions = {
       pool.signUp(email, password, attributes, null, (error, result) => {
         if (error) {
           // TODO
-          console.log(error.message);
+          console.error(error.message);
           reject(error);
         } else {
           const { user } = result;

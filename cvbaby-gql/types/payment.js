@@ -63,6 +63,18 @@ const TransactionType = new GraphQLObjectType({
   })
 });
 
+export const PaymentMethodType = new GraphQLObjectType({
+  name: 'PaymentMethodType',
+  fields: () => ({
+    cardType: {
+      type: GraphQLString
+    },
+    last4: {
+      type: GraphQLString
+    }
+  })
+});
+
 export const SubscriptionType = new GraphQLObjectType({
   name: 'SubscriptionType',
   fields: () => ({

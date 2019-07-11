@@ -249,7 +249,6 @@
 <script>
 import cvFooter from '~/components/Footer';
 import PaymentFields from '~/components/PaymentFields';
-import { StartSubscriptionMutation } from '~/assets/js/queries';
 export default {
   components: {
     cvFooter,
@@ -308,18 +307,15 @@ export default {
           }
         })
         .then(() => this.$refs.paymentFields.generateNonce())
-        .then(paymentMethodToken => {
-          return this.$axios.post('/gql/private', {
-            query: StartSubscriptionMutation,
-            vars: {
-              paymentMethodToken,
-              planID:
-                this.activeBillingCycleTab === 0
-                  ? 'cvbaby-monthly'
-                  : 'cvbaby-yearly'
-            }
-          });
-        })
+        .then(nonce =>
+          this.$store.dispatch('api/startSubscription', {
+            nonce,
+            planID:
+              this.activeBillingCycleTab === 0
+                ? 'cvbaby-monthly'
+                : 'cvbaby-yearly'
+          })
+        )
         .then(result => {
           this.$store.dispatch('cognito/getUserData', true);
           this.$store.dispatch('cognito/setSubscriptionState', '1');
