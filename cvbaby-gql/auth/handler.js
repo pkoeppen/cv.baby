@@ -9,6 +9,7 @@ const AWS_KEYS_URL = `${AWS_ISSUER}/.well-known/jwks.json`;
 
 function generatePolicy(claims, effect, resource) {
   const authResponse = {};
+  authResponse.context = claims;
   authResponse.principalId = claims.sub;
 
   if (effect && resource) {

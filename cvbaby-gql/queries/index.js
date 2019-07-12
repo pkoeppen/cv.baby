@@ -19,6 +19,7 @@ export const queries = {
 export const mutations = {
   startSubscription: PaymentQuery.startSubscription,
   cancelSubscription: PaymentQuery.cancelSubscription,
+  renewSubscription: PaymentQuery.renewSubscription,
   updatePaymentMethod: PaymentQuery.updatePaymentMethod,
   saveResume: ResumeQuery.saveResume,
   removeResume: ResumeQuery.removeResume

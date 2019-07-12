@@ -131,21 +131,145 @@ export async function getSubscription(username) {
 }
 
 export async function getDefaultPaymentMethod(userID) {
-  const paymentMethods = await new Promise((resolve, reject) => {
-    gateway.customer.find(userID, (error, result) => {
-      if (error) {
-        console.log('err:', JSON.stringify(error, null, 2));
-        return reject(error);
-      }
-      resolve(result.paymentMethods);
-    });
-  });
+  const customer = await getBraintreeCustomer(userID);
+  const paymentMethods = customer.paymentMethods;
   const defaultPaymentMethod = paymentMethods.find(method => method.default);
   return defaultPaymentMethod;
 }
 
-export async function updatePaymentMethod(userID, paymentMethodNonce) {
-  const paymentMethod = await new Promise((resolve, reject) => {
+export async function updatePaymentMethod(
+  userID,
+  username,
+  paymentMethodNonce
+) {
+  // Create a new default payment method.
+  const paymentMethod = await createBraintreePaymentMethod(
+    userID,
+    paymentMethodNonce
+  );
+
+  // Set subscription to use the new payment method.
+  const cognitoUser = await getCognitoUser(username);
+  const subscriptionID = cognitoUser.getSubscriptionID();
+  await updateBraintreeSubscription(subscriptionID, {
+    paymentMethodToken: paymentMethod.token
+  });
+
+  return paymentMethod;
+}
+
+export async function cancelSubscription(username) {
+  // Get subscriptionID from Cognito user.
+  const cognitoUser = await getCognitoUser(username);
+  const subscriptionID = cognitoUser.UserAttributes.find(
+    ({ Name }) => Name === 'custom:subscriptionID'
+  ).Value;
+  // Cancel the subscription.
+  const subscription = await cancelBraintreeSubscription(subscriptionID);
+  // Update Cognito attributes.
+  await updateCognitoAttributes(username, { 'custom:subscriptionState': '2' });
+  return subscription;
+}
+
+export async function renewSubscription(userID, username) {
+  // Get token from the customer's default payment method.
+  const customer = await getBraintreeCustomer(userID);
+  const paymentMethods = customer.paymentMethods;
+  const defaultPaymentMethod = paymentMethods.find(method => method.default);
+  const paymentMethodToken = defaultPaymentMethod.token;
+
+  // Get the last subscribed planID from the canceled subscription.
+  const cognitoUser = await getCognitoUser(username);
+  const oldSubscriptionID = cognitoUser.getSubscriptionID();
+  const oldSubscription = await getBraintreeSubscription(oldSubscriptionID);
+  const planID = oldSubscription.planId;
+
+  // Create a new subscription.
+  const newSubscription = await createBraintreeSubscription(
+    paymentMethodToken,
+    planID
+  );
+  const newSubscriptionID = newSubscription.id;
+
+  // Update Cognito attributes.
+  await updateCognitoAttributes(username, {
+    'custom:subscriptionState': '1',
+    'custom:subscriptionID': newSubscriptionID
+  });
+
+  return newSubscription;
+}
+
+function getBraintreeCustomer(userID) {
+  return new Promise((resolve, reject) => {
+    gateway.customer.find(userID, (error, customer) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(customer);
+      }
+    });
+  });
+}
+
+function getBraintreeSubscription(subscriptionID) {
+  return new Promise((resolve, reject) => {
+    gateway.subscription.find(subscriptionID, (error, subscription) => {
+      if (error) {
+        return reject(error);
+      }
+      resolve(subscription);
+    });
+  });
+}
+
+function createBraintreeSubscription(paymentMethodToken, planID) {
+  return new Promise((resolve, reject) => {
+    gateway.subscription.create(
+      {
+        paymentMethodToken,
+        planId: planID
+      },
+      (error, result) => {
+        if (error) {
+          return reject(error);
+        }
+        if (!result.success) {
+          return reject(new Error(result.message));
+        }
+        resolve(result.subscription);
+      }
+    );
+  });
+}
+
+function cancelBraintreeSubscription(subscriptionID) {
+  return new Promise((resolve, reject) => {
+    gateway.subscription.cancel(subscriptionID, (error, result) => {
+      if (error) {
+        return reject(error);
+      }
+      resolve(result.subscription);
+    });
+  });
+}
+
+function updateBraintreeSubscription(subscriptionID, updates) {
+  return new Promise((resolve, reject) => {
+    gateway.subscription.update(subscriptionID, updates, (error, result) => {
+      if (error) {
+        return reject(error);
+      }
+      if (!result.success) {
+        return reject(new Error(result.message));
+      }
+      resolve(result.subscription);
+    });
+  });
+}
+
+function createBraintreePaymentMethod(userID, paymentMethodNonce) {
+  return new Promise((resolve, reject) => {
     gateway.paymentMethod.create(
       {
         customerId: userID,
@@ -165,38 +289,10 @@ export async function updatePaymentMethod(userID, paymentMethodNonce) {
       }
     );
   });
-  return paymentMethod;
 }
 
-export async function cancelSubscription(username) {
-  // Get subscriptionID from Cognito user.
-  const cognitoUser = await getCognitoUser(username);
-  const subscriptionID = cognitoUser.UserAttributes.find(
-    ({ Name }) => Name === 'custom:subscriptionID'
-  ).Value;
-  // Cancel the subscription.
-  await new Promise((resolve, reject) => {
-    gateway.subscription.cancel(subscriptionID, (error, result) => {
-      if (error) {
-        return reject(error);
-      }
-      resolve(result.subscription);
-    });
-  });
-  // Update cognito attributes.
-  await updateCognitoAttributes(username, { 'custom:subscriptionState': '2' });
-  return true;
-}
-
-export async function renewSubscription() {
-  //
-  // TODO
-  // create new subscription
-  // update cognito user custom:subscriptionID and custom:subscriptionState = 1
-}
-
-function getCognitoUser(username) {
-  return new Promise((resolve, reject) => {
+async function getCognitoUser(username) {
+  const cognitoUser = await new Promise((resolve, reject) => {
     Cognito.adminGetUser(
       {
         UserPoolId: CVBABY_USER_POOL_ID,
@@ -205,6 +301,17 @@ function getCognitoUser(username) {
       (error, data) => (error ? reject(error) : resolve(data))
     );
   });
+  cognitoUser.getSubscriptionID = () => {
+    return cognitoUser.UserAttributes.find(
+      ({ Name }) => Name === 'custom:subscriptionID'
+    ).Value;
+  };
+  cognitoUser.getSubscriptionStatus = () => {
+    return cognitoUser.UserAttributes.find(
+      ({ Name }) => Name === 'custom:subscriptionStatus'
+    ).Value;
+  };
+  return cognitoUser;
 }
 
 function updateCognitoAttributes(username, attributes) {

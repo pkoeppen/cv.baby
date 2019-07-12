@@ -163,8 +163,19 @@ export const StartSubscriptionMutation = `
 `;
 export const CancelSubscriptionMutation = `
   mutation {
-    cancelSubscription
+    cancelSubscription {
+      ...SubscriptionFields
+    }
   }
+  ${SubscriptionFragment}
+`;
+export const RenewSubscriptionMutation = `
+  mutation {
+    renewSubscription {
+      ...SubscriptionFields
+    }
+  }
+  ${SubscriptionFragment}
 `;
 export const UpdatePaymentMethodMutation = `
   mutation ($paymentMethodNonce: String!) {

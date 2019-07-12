@@ -1,6 +1,7 @@
 {
   "AXIOS_BASE_URL": "http://localhost:3001",
   "CVBABY_ENV": "local",
+  "CVBABY_HOST_CLIENT": "localhost",
   "CVBABY_HOST_DATA": "dev-s3.cv.baby",
   "CVBABY_USER_POOL_ID": "us-east-1_dx0oPUVQK",
   "CVBABY_USER_POOL_CLIENT_ID": "1s2vlsod4odcgi0d0kceal1n80",

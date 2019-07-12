@@ -170,6 +170,7 @@ function uploadImage(userID, resumeID, base64Image) {
     base64Image
   };
   if (IS_OFFLINE) {
+    console.log(`IS_OFFLINE: ${IS_OFFLINE}, posting to localhost:3002`);
     return axios.post('http://localhost:3002/processImage', payload);
   } else {
     return invokeLambda(

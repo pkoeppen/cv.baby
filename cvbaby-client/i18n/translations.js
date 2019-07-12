@@ -141,8 +141,8 @@ module.exports = {
     en: 'Active',
     de: 'Aktiv'
   },
-  cancelled: {
-    en: 'Cancelled',
+  canceled: {
+    en: 'Canceled',
     de: 'Abgebrochen'
   },
   billing: {
@@ -187,8 +187,8 @@ module.exports = {
     de:
       'Sind Sie sicher, Sie möchten Ihren Abo kündigen? Arbeitslosigkeit ist ja langweilig.'
   },
-  subscriptionCancelled: {
-    en: 'Subscription cancelled',
+  subscriptionCanceled: {
+    en: 'Subscription canceled',
     de: 'Abo abgebrochen'
   },
   updateNow: {
@@ -886,10 +886,15 @@ module.exports = {
     de:
       'Fehler beim Starten von Abonnement. Bitte überprüfen Sie Ihre Verbindung.'
   },
-  errorCancellingSubscription: {
-    en: 'Error cancelling subscription. Please contact support immediately.',
+  errorCancelingSubscription: {
+    en: 'Error canceling subscription. Please contact support immediately.',
     de:
       'Fehler beim Abbrechen von Abonnement. Bitte kontaktieren Sie sofort Support.'
+  },
+  errorRenewingSubscription: {
+    en: 'Error renewing subscription. Please check your connection.',
+    de:
+      'Fehler beim Erneuern von Abonnement. Bitte überprüfen Sie Ihre Verbindung.'
   },
   errorUpdatingPayment: {
     en: 'Error updating payment method. Please check your connection.',

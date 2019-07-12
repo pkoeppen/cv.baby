@@ -8,6 +8,7 @@ import {
   RemoveResumeMutation,
   StartSubscriptionMutation,
   CancelSubscriptionMutation,
+  RenewSubscriptionMutation,
   UpdatePaymentMethodMutation,
   DefaultPaymentMethodQuery
 } from '~/assets/js/queries';
@@ -71,6 +72,13 @@ export const actions = {
         query: CancelSubscriptionMutation
       })
       .then(({ data }) => data.cancelSubscription);
+  },
+  renewSubscription() {
+    return this.$axios
+      .post('/gql/private', {
+        query: RenewSubscriptionMutation
+      })
+      .then(({ data }) => data.renewSubscription);
   },
   updatePaymentMethod(context, nonce) {
     return this.$axios

@@ -383,9 +383,12 @@ export default {
           // Attach base64 image string if present.
           ...(hasImage && { base64Image: resumeImageSource.split(',')[1] })
         })
-        .catch(({ response }) => {
+        .catch(error => {
+          // TODO
+          console.error(error);
+          const status = ((error || {}).response || {}).status;
           const message =
-            response.status === 409
+            status === 409
               ? this.$t('errorSavingResumeSlugUnavailable')
               : this.$t('errorSavingResume');
           this.$store.dispatch('showSnackbar', {

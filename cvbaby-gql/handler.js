@@ -9,7 +9,8 @@ export const handlerPrivate = generateHandler(true);
 
 function generateHandler(authenticated = false) {
   const HEADERS = {
-    'Access-Control-Allow-Origin': '*'
+    'Access-Control-Allow-Origin': '*', // TODO: Change this
+    'Access-Control-Allow-Credentials': true
   };
   const ERROR_REGEX = /(?:\[)([0-9]{3})(?:\]\s)(.*)/g;
   const ErrorMessages = {
@@ -40,7 +41,7 @@ function generateHandler(authenticated = false) {
 
     if (authenticated) {
       ctx.userID = event.requestContext.authorizer.principalId;
-      ctx.username = event.requestContext.authorizer.claims.username;
+      ctx.username = event.requestContext.authorizer.username;
     }
 
     // Disallow query depth over ten levels.
@@ -48,7 +49,7 @@ function generateHandler(authenticated = false) {
       checkQueryDepth(parse(query), 10);
     } catch (error) {
       console.error(error);
-      console.log(`[depthLimit] IP: ${ctx.ipAddress}`);
+      console.log(`[depthLimit] IP: ${ctx.ipAddress}`); // TODO: Make this more accurate
       return callback(null, {
         headers: HEADERS,
         statusCode: 400,
@@ -68,15 +69,12 @@ function generateHandler(authenticated = false) {
             const [match, statusCode, message] = ERROR_REGEX.exec(
               error.message
             );
-
-            console.log('returning callback 1');
             return callback(null, {
               headers: HEADERS,
               statusCode,
               body: message
             });
           } else {
-            console.log('returning callback 2');
             console.error(
               `[handler:${authenticated ? 'private' : 'public'}] Error: ${
                 error.message
@@ -89,7 +87,6 @@ function generateHandler(authenticated = false) {
             });
           }
         } else {
-          console.log('returning callback 3');
           return callback(null, {
             headers: HEADERS,
             statusCode: StatusCodes.OK,
@@ -98,7 +95,6 @@ function generateHandler(authenticated = false) {
         }
       })
       .catch(error => {
-        console.log('returning callback 4');
         console.error(
           `[handler:${authenticated ? 'private' : 'public'}] GQL Error: ${
             error.message

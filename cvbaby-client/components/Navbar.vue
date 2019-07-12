@@ -15,13 +15,14 @@
             <v-spacer />
             <template v-if="authenticated">
               <v-btn
-                v-if="subscriptionAction"
-                :to="subscriptionAction.link"
+                v-if="subscriptionStatusButton"
+                :loading="subscriptionStatusButtonLoading"
                 class="mr-3"
                 color="primary"
                 outline
                 small
-                >{{ subscriptionAction.text }}</v-btn
+                @click="subscriptionStatusButton.action"
+                >{{ subscriptionStatusButton.text }}</v-btn
               >
               <v-menu bottom left :nudge-width="200" offset-x>
                 <template v-slot:activator="{ on }">
@@ -86,7 +87,7 @@
                       </v-list-tile-avatar>
                       <v-list-tile-title>{{ $t('help') }}</v-list-tile-title>
                     </v-list-tile>
-                    <v-list-tile @click="signout">
+                    <v-list-tile @click="signOut">
                       <v-list-tile-avatar>
                         <v-icon>exit_to_app</v-icon>
                       </v-list-tile-avatar>
@@ -235,7 +236,8 @@ export default {
         password: null,
         loading: false,
         success: false
-      }
+      },
+      subscriptionStatusButtonLoading: false
     };
   },
   computed: {
@@ -258,29 +260,21 @@ export default {
       return (this.$store.state.cognito.authenticated || {}).signInUserSession
         .idToken.payload.email;
     },
-    subscriptionAction() {
+    subscriptionStatusButton() {
       const authenticated = this.$store.state.cognito.authenticated;
       if (authenticated) {
-        const state = // eslint-disable-next-line
-          authenticated.signInUserSession.idToken.payload[
-            'custom:subscriptionState'
-          ];
+        const payload = authenticated.signInUserSession.idToken.payload;
+        const state = payload['custom:subscriptionState'];
         switch (state) {
           case SubscriptionState.NOT_STARTED:
             return {
               text: this.$t('startSubscription'),
-              link: this.localePath({
-                name: 'payment',
-                query: { cycle: 'yearly' }
-              })
+              action: this.pushToPaymentPage
             };
-          case SubscriptionState.STARTED:
-            return null;
           case SubscriptionState.STOPPED:
-            // TODO: Clicking this button should simply restart their subscription.
             return {
               text: this.$t('renewSubscription'),
-              link: this.localePath('account')
+              action: this.renewSubscription
             };
         }
       }
@@ -288,6 +282,14 @@ export default {
     }
   },
   methods: {
+    pushToPaymentPage() {
+      this.$router.push({
+        path: this.localePath({
+          name: 'payment',
+          query: { cycle: 'yearly' }
+        })
+      });
+    },
     getAvatarSource() {
       if (process.client && this.$store.state.cognito.authenticated) {
         return `https://${process.env.CVBABY_HOST_DATA}/users/${
@@ -366,12 +368,32 @@ export default {
           this.signUpData.loading = false;
         });
     },
-    signout() {
+    signOut() {
       this.$store.dispatch('cognito/signOut').then(() => {
         this.$router.push({
           path: this.localePath('index')
         });
       });
+    },
+    renewSubscription() {
+      this.subscriptionStatusButtonLoading = true;
+      this.$store
+        .dispatch('api/renewSubscription')
+        .then(() => {
+          this.$store.dispatch('cognito/setSubscriptionState', '1');
+          this.$store.dispatch('cognito/getUserData', true);
+        })
+        .catch(error => {
+          // TODO
+          console.error('renewSubscription() error:', error);
+          this.$store.dispatch('showSnackbar', {
+            color: 'red',
+            message: this.$t('errorRenewingSubscription')
+          });
+        })
+        .finally(() => {
+          this.subscriptionStatusButtonLoading = false;
+        });
     }
   }
 };

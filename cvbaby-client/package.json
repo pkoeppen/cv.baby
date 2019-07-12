@@ -5,8 +5,8 @@
   "author": "Peter Koeppen",
   "private": true,
   "scripts": {
-    "deploy:dev": "make env=dev package && make env=dev deploy",
-    "deploy:prod": "make env=prod package && make env=prod deploy",
+    "deploy:dev": "cross-env NODE_ENV=development nuxt build && make env=dev package && make env=dev deploy",
+    "deploy:prod": "cross-env NODE_ENV=production nuxt build && make env=prod package && make env=prod deploy",
     "local": "cross-env NODE_ENV=local nodemon server/index.js --watch server",
     "build:dev": "cross-env NODE_ENV=development nuxt build",
     "build:prod": "cross-env NODE_ENV=production nuxt build",

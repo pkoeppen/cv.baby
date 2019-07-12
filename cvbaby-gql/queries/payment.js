@@ -5,6 +5,7 @@ import {
   getClientPaymentToken,
   startSubscription,
   cancelSubscription,
+  renewSubscription,
   getSubscription,
   getDefaultPaymentMethod,
   updatePaymentMethod
@@ -50,10 +51,17 @@ export default {
     })
   },
   cancelSubscription: {
-    type: GraphQLBoolean,
+    type: SubscriptionType,
     resolve: authorize((root, args, ctx) => {
       const { username } = ctx;
       return cancelSubscription(username);
+    })
+  },
+  renewSubscription: {
+    type: SubscriptionType,
+    resolve: authorize((root, args, ctx) => {
+      const { userID, username } = ctx;
+      return renewSubscription(userID, username);
     })
   },
   updatePaymentMethod: {
@@ -66,8 +74,8 @@ export default {
     },
     resolve: authorize((root, args, ctx) => {
       const { paymentMethodNonce } = args;
-      const { userID } = ctx;
-      return updatePaymentMethod(userID, paymentMethodNonce);
+      const { userID, username } = ctx;
+      return updatePaymentMethod(userID, username, paymentMethodNonce);
     })
   }
 };

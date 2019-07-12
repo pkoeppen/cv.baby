@@ -234,8 +234,7 @@
                           "
                           class="text-uppercase font-weight-black"
                         >
-                          <!-- TODO: translate this -->
-                          {{ payment.subscription.status }}
+                          {{ subscriptionStatus }}
                         </div>
                       </div>
                       <div class="mt-5">
@@ -249,7 +248,6 @@
                         <div class="open-sans">{{ $t('amount') }}</div>
                         <div v-if="payment.subscription">
                           USD
-                          <!-- TODO: Fix in Braintree (change from 32 to 36 yearly) -->
                           {{ parseInt(payment.subscription.nextBillAmount) }}
                         </div>
                       </div>
@@ -397,7 +395,7 @@
                               class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
                             >
                               <span class="cv-dialog-header headline">
-                                {{ $t('updatePaymentMethod') }}
+                                {{ $t('cancelSubscription') }}
                               </span>
                             </v-card-title>
                             <v-card-text class="text-xs-center">
@@ -422,7 +420,7 @@
                                 >
                                 {{
                                   payment.success
-                                    ? $t('subscriptionCancelled')
+                                    ? $t('subscriptionCanceled')
                                     : $t('cancelSubscription')
                                 }}
                               </v-btn>
@@ -433,12 +431,11 @@
                     </v-container>
                   </v-tab-item>
                   <v-tab-item>
-                    <v-container
-                      class="pa-5"
-                      style="margin: 0; max-width: 600px;"
-                    >
+                    <v-container class="pa-5 ma-0">
                       <h2>{{ $t('invoices') }}</h2>
-                      <v-list v-if="payment.subscription" two-line>
+                      <v-list v-if="payment.subscription">
+                        <!-- TODO: Get transactions from ALL CARDS, not just this subscription -->
+
                         <v-card
                           v-for="(transaction, index) in payment.subscription
                             .transactions"
@@ -574,6 +571,18 @@ export default {
       },
       CVBABY_HOST_DATA: process.env.CVBABY_HOST_DATA
     };
+  },
+  computed: {
+    subscriptionStatus() {
+      switch (this.payment.subscription.status) {
+        case 'Active':
+          return this.$t('active');
+        case 'Canceled':
+          return this.$t('canceled');
+        default:
+          return this.payment.subscription.status;
+      }
+    }
   },
   mounted() {
     // Fetch resumes.
@@ -711,9 +720,10 @@ export default {
       this.payment.loading = true;
       this.$store
         .dispatch('api/cancelSubscription')
-        .then(result => {
+        .then(subscription => {
           this.$store.dispatch('cognito/setSubscriptionState', '2');
           this.payment.success = true;
+          this.payment.subscription = subscription;
           setTimeout(() => {
             this.payment.confirmCancelDialog = false;
             this.payment.success = false;
@@ -724,7 +734,7 @@ export default {
           console.error('cancelSubscription() error:', error);
           this.$store.dispatch('showSnackbar', {
             color: 'red',
-            message: this.$t('errorCancellingSubscription')
+            message: this.$t('errorCancelingSubscription')
           });
         })
         .finally(() => {

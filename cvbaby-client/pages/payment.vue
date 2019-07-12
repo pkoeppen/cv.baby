@@ -317,8 +317,8 @@ export default {
           })
         )
         .then(result => {
-          this.$store.dispatch('cognito/getUserData', true);
           this.$store.dispatch('cognito/setSubscriptionState', '1');
+          this.$store.dispatch('cognito/getUserData', true);
           this.signUpData.loading = false;
           this.signUpData.success = true;
           setTimeout(() => {

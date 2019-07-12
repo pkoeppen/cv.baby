@@ -30,6 +30,10 @@ provider:
       Action:
         - 'ses:SendEmail'
       Resource: '*'
+    - Effect: Allow
+      Action:
+        - cognito-idp:* # TODO - Make this more specific
+      Resource: arn:aws:cognito-idp:${self:provider.region}:*:userpool/* # TODO - change this to specific user pool
 
 custom:
   serverless-offline:

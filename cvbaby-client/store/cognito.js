@@ -9,13 +9,14 @@ import * as cookie from 'cookie';
 
 /* eslint-disable */
 const CVBABY_ENV = process.env.CVBABY_ENV;
+const CVBABY_HOST_CLIENT = process.env.CVBABY_HOST_CLIENT;
 const AWS_COGNITO_USER_POOL_ID = process.env.CVBABY_USER_POOL_ID;
 const AWS_COGNITO_CLIENT_ID = process.env.CVBABY_USER_POOL_CLIENT_ID;
 /* eslint-enable */
 
 const storage = new CookieStorage({
-  domain: 'localhost',
-  secure: CVBABY_ENV === 'prod'
+  domain: CVBABY_HOST_CLIENT,
+  secure: CVBABY_ENV !== 'local'
 });
 const pool = new CognitoUserPool({
   UserPoolId: AWS_COGNITO_USER_POOL_ID,
@@ -36,8 +37,13 @@ export const actions = {
   serverInit(context, request) {
     if (request && request.headers.cookie) {
       try {
+        // Set authenticated from cookie.
         const parsed = cookie.parse(request.headers.cookie);
         const usernameField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.LastAuthUser`;
+        // If username field hasn't been set, the other fields will not have been set.
+        if (!usernameField) {
+          return;
+        }
         const username = parsed[usernameField].replace('@', '%40');
         const accessTokenField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.${username}.accessToken`;
         const jwtToken = parsed[accessTokenField];
@@ -45,7 +51,12 @@ export const actions = {
           return;
         }
         const userDataField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.${username}.userData`;
-        const userData = JSON.parse(parsed[userDataField]);
+        let userData;
+        try {
+          userData = JSON.parse(parsed[userDataField]);
+        } catch (error) {
+          console.error('Error parsing JSON:', error);
+        }
         const idTokenPayload = userData.UserAttributes.reduce(
           (payload, attribute) => {
             payload[attribute.Name] = attribute.Value;
@@ -67,7 +78,7 @@ export const actions = {
         };
         context.commit('setAuthenticated', user);
       } catch (error) {
-        // Ignore.
+        console.error('serverInit error:', error);
       }
     }
   },
@@ -170,6 +181,7 @@ export const actions = {
                 if (error1) {
                   reject(error1);
                 } else {
+                  console.log('userData:', JSON.stringify(data, null, 2));
                   resolve(data);
                 }
               },
