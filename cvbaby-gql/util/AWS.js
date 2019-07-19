@@ -1,13 +1,10 @@
 import * as AWS from 'aws-sdk';
 
-const IS_OFFLINE = process.env.IS_OFFLINE;
-
 AWS.config.update({ region: 'us-east-1' });
 
 export const Lambda = new AWS.Lambda({
   apiVersion: '2015-03-31',
-  region: 'us-east-1',
-  endpoint: IS_OFFLINE ? 'http://localhost:3001' : null
+  region: 'us-east-1'
 });
 export const DynamoDB = new AWS.DynamoDB.DocumentClient();
 export const S3 = new AWS.S3({

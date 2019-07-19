@@ -1,5 +1,5 @@
 {
-  "AXIOS_BASE_URL": "https://66h8cfhrae.execute-api.us-east-1.amazonaws.com/dev",
+  "AXIOS_BASE_URL": "https://dev-api.cv.baby",
   "CVBABY_ENV": "dev",
   "CVBABY_HOST_CLIENT": "dev.cv.baby",
   "CVBABY_HOST_DATA": "dev-s3.cv.baby",

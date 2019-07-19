@@ -60,7 +60,6 @@ function generateHandler(authenticated = false) {
     // Execute the query.
     graphql(schema, query, null, ctx, vars)
       .then(({ data, errors }) => {
-        console.log('in graphql');
         if (errors) {
           const error = errors[0];
 
@@ -87,10 +86,11 @@ function generateHandler(authenticated = false) {
             });
           }
         } else {
+          const body = JSON.stringify(data);
           return callback(null, {
             headers: HEADERS,
             statusCode: StatusCodes.OK,
-            body: JSON.stringify(data)
+            body
           });
         }
       })

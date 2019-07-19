@@ -1,6 +1,2 @@
 processImage:
-  handler: docker.handler
-  events:
-    - http:
-        path: /processImage
-        method: post
+  handler: handler.processImage

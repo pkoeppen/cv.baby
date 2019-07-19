@@ -1,4 +1,4 @@
 {
-  "IS_OFFLINE": false,
+  "CVBABY_ENV": "dev",
   "CVBABY_HOST_DATA": "dev-s3.cv.baby"
 }

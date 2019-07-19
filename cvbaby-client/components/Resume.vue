@@ -14,13 +14,13 @@
         />
       </v-flex>
       <v-flex class="py-3" xs12>
-        <div class="d-flex justify-center" style="position: relative;">
+        <div class="mx-auto" style="position: relative; max-width: 270px;">
           <v-img
             :src="resumeImageSource"
             :lazy-src="resumeImageSource"
             aspect-ratio="1"
             class="cv-avatar"
-            style="border-radius: 50%; max-width: 270px;"
+            style="border-radius: 50%;"
             @error="setImagePlaceholder"
           >
             <template v-slot:placeholder>

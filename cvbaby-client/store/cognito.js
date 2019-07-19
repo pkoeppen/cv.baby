@@ -41,7 +41,7 @@ export const actions = {
         const parsed = cookie.parse(request.headers.cookie);
         const usernameField = `CognitoIdentityServiceProvider.${AWS_COGNITO_CLIENT_ID}.LastAuthUser`;
         // If username field hasn't been set, the other fields will not have been set.
-        if (!usernameField) {
+        if (!parsed[usernameField]) {
           return;
         }
         const username = parsed[usernameField].replace('@', '%40');

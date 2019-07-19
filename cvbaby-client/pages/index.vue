@@ -1,25 +1,52 @@
 <template>
   <div>
-    <v-layout column>
-      <v-flex style="position: relative;" xs12 md8>
-        <div class="cv-header font-weight-black text-xs-center px-4 mt-4">
-          {{ $t('onlineResumesSimplified') }}
-        </div>
-        <div class="cv-subheader font-weight-light text-xs-center px-4 mt-3">
-          {{ $t('anAllInOneSolution') }}
-        </div>
-        <div class="cv-ribbon">
-          <div class="cv-ribbon-text white--text text-xs-right">
-            <div class="body-1">{{ $t('summerSale') }}</div>
-            <div class="rate font-weight-black">
-              $3 / {{ $t('abbreviationMonth') }}
+    <v-container class="pa-0">
+      <v-layout column>
+        <v-flex class="hidden-lg-and-up pt-5 pb-4">
+          <div
+            class="cv-ribbon d-flex align-center mx-auto"
+            style="position: relative; width: 260px;"
+          >
+            <div class="cv-ribbon-text white--text text-xs-center px-4">
+              <div class="body-1">{{ $t('summerSale') }}</div>
+              <div class="rate font-weight-black">
+                $3 / {{ $t('abbreviationMonth') }}
+              </div>
+              <div class="caption">{{ $t('forALimitedTime') }}</div>
             </div>
-            <div class="caption">{{ $t('forALimitedTime') }}</div>
+            <img class="ribbon-left" src="~/assets/images/ribbonLeft.svg" />
+            <img class="ribbon-right" src="~/assets/images/ribbonRight.svg" />
           </div>
-          <img src="~/assets/images/ribbon.svg" />
-        </div>
-      </v-flex>
-    </v-layout>
+        </v-flex>
+        <v-flex style="position: relative;" xs12 md8>
+          <div class="cv-header font-weight-black text-xs-center px-4 mt-4">
+            {{ $t('onlineResumesSimplified') }}
+          </div>
+          <div class="cv-subheader font-weight-light text-xs-center px-4 mt-3">
+            {{ $t('anAllInOneSolution') }}
+          </div>
+          <div class="cv-ribbon-wrapper hidden-md-and-down">
+            <div
+              class="cv-ribbon d-flex align-center"
+              style="position: absolute;"
+            >
+              <div class="cv-ribbon-text white--text text-xs-right px-4">
+                <div class="body-1">{{ $t('summerSale') }}</div>
+                <div class="rate font-weight-black">
+                  $3 / {{ $t('abbreviationMonth') }}
+                </div>
+                <div class="caption">{{ $t('forALimitedTime') }}</div>
+              </div>
+              <img
+                class="ribbon-bottom"
+                src="~/assets/images/ribbonBottom.svg"
+              />
+              <img class="ribbon-left" src="~/assets/images/ribbonLeft.svg" />
+            </div>
+          </div>
+        </v-flex>
+      </v-layout>
+    </v-container>
     <resume :resume="demoResume" is-demo />
     <v-flex style="background: white" xs12>
       <v-divider class="my-5" />
@@ -92,23 +119,39 @@ export default {
 .cv-subheader
   font-size: 20px
   font-family: 'Open Sans', sans-serif !important
+.cv-ribbon-wrapper
+  position absolute
+  left: -140px
+  width: 300px
+  height: 300px
+  top: 230px
 .cv-ribbon
-  position: absolute
-  left: 0
-  top: 300px
-  width: 200px
+  right: 0
+  top: 0
+  min-width: 200px
+  height: 100px
+  background-color: #f7931e
   .cv-ribbon-text
     font-family: 'Open Sans', sans-serif !important
-    position: absolute
-    left: 50px
-    top: 20px
-    transform: rotate(8deg)
     .rate
       font-size: 34px
       font-weight: 900
       line-height: 36px
-  img
-    width: 100%
+  img.ribbon-left
+    height: 100%
+    width: 32px
+    position: absolute
+    left: -30px
+  img.ribbon-right
+    height: 100%
+    width: 32px
+    position: absolute
+    right: -30px
+  img.ribbon-bottom
+    width: 70%
+    position: absolute
+    top: 100px
+    right: 0
 .cv-dialog-header *
   font-size: 24px !important
   font-weight: 900 !important

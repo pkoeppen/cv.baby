@@ -118,10 +118,7 @@ export async function getSubscription(username) {
     });
     return subscription;
   } catch (error) {
-    console.error(
-      'Error in getSubscription():',
-      JSON.stringify(error, null, 2)
-    );
+    console.error('Error in getSubscription():', error);
     if (error.name === 'notFoundError') {
       return new Error(`![406] Subscription not found`);
     } else {

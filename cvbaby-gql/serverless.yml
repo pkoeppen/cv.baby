@@ -34,6 +34,10 @@ provider:
       Action:
         - cognito-idp:* # TODO - Make this more specific
       Resource: arn:aws:cognito-idp:${self:provider.region}:*:userpool/* # TODO - change this to specific user pool
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+      Resource: arn:aws:lambda:${self:provider.region}:*:function:* # TODO - change this to specific functions
 
 custom:
   serverless-offline:

@@ -1,0 +1,1062 @@
+[
+  {
+    "name": "onlineResumesSimplified",
+    "en": "Online resumes, simplified.",
+    "de": "Online Lebensläufe, vereinfacht."
+  },
+  {
+    "name": "anAllInOneSolution",
+    "en": "An all-in-one solution for CV and resume hosting.",
+    "de": "Die all-in-one Lösung für den modernen Lebenslauf."
+  },
+  {
+    "name": "summerSale",
+    "en": "Summer sale!",
+    "de": "Sommerschlussverkauf!"
+  },
+  {
+    "name": "abbreviationMonth",
+    "en": "mo",
+    "de": "mo"
+  },
+  {
+    "name": "forALimitedTime",
+    "en": "For a limited time",
+    "de": "Für eine begrenzte Zeit"
+  },
+  {
+    "name": "resume",
+    "en": "Resume",
+    "de": "Lebenslauf"
+  },
+  {
+    "name": "employment",
+    "en": "Employment",
+    "de": "Karriere"
+  },
+  {
+    "name": "education",
+    "en": "Education",
+    "de": "Ausbildung"
+  },
+  {
+    "name": "references",
+    "en": "References",
+    "de": "Referenzen"
+  },
+  {
+    "name": "personal",
+    "en": "Personal",
+    "de": "Interessen"
+  },
+  {
+    "name": "contact",
+    "en": "Contact",
+    "de": "Kontakt"
+  },
+  {
+    "name": "present",
+    "en": "present",
+    "de": "jetzt"
+  },
+  {
+    "name": "account",
+    "en": "Account",
+    "de": "Konto"
+  },
+  {
+    "name": "help",
+    "en": "Help",
+    "de": "Hilfe"
+  },
+  {
+    "name": "login",
+    "en": "Login",
+    "de": "Anmelden"
+  },
+  {
+    "name": "logout",
+    "en": "Logout",
+    "de": "Abmelden"
+  },
+  {
+    "name": "email",
+    "en": "Email",
+    "de": "E-Mail-Adresse"
+  },
+  {
+    "name": "emailIsRequired",
+    "en": "Email is required",
+    "de": "E-Mail-Adresse ist erforderlich"
+  },
+  {
+    "name": "password",
+    "en": "Password",
+    "de": "Kennwort"
+  },
+  {
+    "name": "passwordIsRequired",
+    "en": "Password is required",
+    "de": "Kennwort ist erforderlich"
+  },
+  {
+    "name": "oldPassword",
+    "en": "Old password",
+    "de": "Aktuelles Kennwort"
+  },
+  {
+    "name": "newPassword",
+    "en": "New password",
+    "de": "Neues Kennwort"
+  },
+  {
+    "name": "repeatPassword",
+    "en": "Repeat password",
+    "de": "Kennwort erneut eingeben"
+  },
+  {
+    "name": "changePassword",
+    "en": "Change password",
+    "de": "Kennwort ändern"
+  },
+  {
+    "name": "passwordChanged",
+    "en": "Password changed",
+    "de": "Kennwort geändert"
+  },
+  {
+    "name": "resumes",
+    "en": "Resumes",
+    "de": "Lebensläufe"
+  },
+  {
+    "name": "youHaventSavedAnyResumesYet",
+    "en": "You haven't saved any resumes yet.",
+    "de": "Sie haben noch keine Lebensläufe erstellt."
+  },
+  {
+    "name": "clickHereToLaunchTheEditor",
+    "en": "<a href=\"/account/editor\">Click here</a> to launch the editor.",
+    "de": "<a href=\"/de/account/editor\">Klicken Sie hier</a>, um den Editor zu öffnen."
+  },
+  {
+    "name": "launchEditor",
+    "en": "Launch Editor",
+    "de": "Editor Öffnen"
+  },
+  {
+    "name": "billingAndSubscription",
+    "en": "Billing & Subscription",
+    "de": "Abrechnung & Abonnement"
+  },
+  {
+    "name": "subscription",
+    "en": "Subscription",
+    "de": "Abo"
+  },
+  {
+    "name": "trial",
+    "en": "trial",
+    "de": "Testphase"
+  },
+  {
+    "name": "active",
+    "en": "Active",
+    "de": "Aktiv"
+  },
+  {
+    "name": "canceled",
+    "en": "Canceled",
+    "de": "Abgebrochen"
+  },
+  {
+    "name": "billing",
+    "en": "Billing",
+    "de": "Abrechnung"
+  },
+  {
+    "name": "amount",
+    "en": "Amount",
+    "de": "Betrag"
+  },
+  {
+    "name": "billingCycle",
+    "en": "Billing cycle",
+    "de": "Abrechnungszyklus"
+  },
+  {
+    "name": "paymentMethod",
+    "en": "Payment method",
+    "de": "Zahlungsmethode"
+  },
+  {
+    "name": "updatePaymentMethod",
+    "en": "Update payment method",
+    "de": "Zahlungsmethode ändern"
+  },
+  {
+    "name": "change",
+    "en": "Change",
+    "de": "Ändern"
+  },
+  {
+    "name": "renewSubscription",
+    "en": "Renew Subscription",
+    "de": "Abo erneuern"
+  },
+  {
+    "name": "startSubscription",
+    "en": "Start Subscription",
+    "de": "Abo starten"
+  },
+  {
+    "name": "cancelSubscription",
+    "en": "Cancel subscription",
+    "de": "Abo abbrechen"
+  },
+  {
+    "name": "areYouSureCancel",
+    "en": "Are you sure you'd like to cancel your subscription? Unemployment is really boring.",
+    "de": "Sind Sie sicher, Sie möchten Ihren Abo kündigen? Arbeitslosigkeit ist ja langweilig."
+  },
+  {
+    "name": "subscriptionCanceled",
+    "en": "Subscription canceled",
+    "de": "Abo abgebrochen"
+  },
+  {
+    "name": "updateNow",
+    "en": "Update Now",
+    "de": "Aktualisieren"
+  },
+  {
+    "name": "updated",
+    "en": "Updated",
+    "de": "Aktualisiert"
+  },
+  {
+    "name": "invoices",
+    "en": "Invoices",
+    "de": "Rechnungen"
+  },
+  {
+    "name": "approved",
+    "en": "Approved",
+    "de": "Genehmigt"
+  },
+  {
+    "name": "declined",
+    "en": "Declined",
+    "de": "Abgelehnt"
+  },
+  {
+    "name": "date",
+    "en": "Date",
+    "de": "Datum"
+  },
+  {
+    "name": "status",
+    "en": "Status",
+    "de": "Status"
+  },
+  {
+    "name": "emailNotifications",
+    "en": "Email Notifications",
+    "de": "E-Mail-Benachrichtigungen"
+  },
+  {
+    "name": "backToAccount",
+    "en": "Back to account",
+    "de": "Zurück zum Konto"
+  },
+  {
+    "name": "view",
+    "en": "View",
+    "de": "Live-View"
+  },
+  {
+    "name": "edit",
+    "en": "Edit",
+    "de": "Bearbeiten"
+  },
+  {
+    "name": "save",
+    "en": "Save",
+    "de": "Speichern"
+  },
+  {
+    "name": "editing",
+    "en": "Editing",
+    "de": "Bearbeiten"
+  },
+  {
+    "name": "clone",
+    "en": "Clone",
+    "de": "Duplizieren"
+  },
+  {
+    "name": "editDraft",
+    "en": "Edit draft",
+    "de": "Entwurf bearbeiten"
+  },
+  {
+    "name": "editingDraft",
+    "en": "Editing draft",
+    "de": "Entwurf bearbeiten"
+  },
+  {
+    "name": "newResume",
+    "en": "New resume",
+    "de": "Lebenslauf erstellen"
+  },
+  {
+    "name": "saveResume",
+    "en": "Save resume",
+    "de": "Lebenslauf speichern"
+  },
+  {
+    "name": "saveChanges",
+    "en": "Save changes",
+    "de": "Änderungen speichern"
+  },
+  {
+    "name": "discardChanges",
+    "en": "Discard changes",
+    "de": "Änderungen verwerfen"
+  },
+  {
+    "name": "resumeAlias",
+    "en": "Resume alias",
+    "de": "Lebenslauf-Alias"
+  },
+  {
+    "name": "resumeAliasIsRequired",
+    "en": "Resume alias is required",
+    "de": "Lebenslauf-Alias ist erforderlich"
+  },
+  {
+    "name": "giveYourResumeAName",
+    "en": "Give your resume a name",
+    "de": "Geben Sie Ihren Lebenslauf einen Namen"
+  },
+  {
+    "name": "resumeSlug",
+    "en": "Resume slug",
+    "de": "Lebenslauf-Slug"
+  },
+  {
+    "name": "resumeSlugIsRequired",
+    "en": "Resume slug is required",
+    "de": "Lebenslauf-Slug ist erforderlich"
+  },
+  {
+    "name": "slugIsTaken",
+    "en": "Slug is taken",
+    "de": "Lebenslauf-Slug ist vergeben"
+  },
+  {
+    "name": "yourSlugHere",
+    "en": "your-slug-here",
+    "de": "ihr-slug-hier"
+  },
+  {
+    "name": "name",
+    "en": "Name",
+    "de": "Name"
+  },
+  {
+    "name": "title",
+    "en": "Title",
+    "de": "Berufsbezeichnung"
+  },
+  {
+    "name": "phone",
+    "en": "Phone",
+    "de": "Telefonnummer"
+  },
+  {
+    "name": "website",
+    "en": "Website",
+    "de": "Website"
+  },
+  {
+    "name": "skills",
+    "en": "Skills",
+    "de": "Kenntnisse"
+  },
+  {
+    "name": "enterAMaximumOf10Skills",
+    "en": "Enter a maximum of 10 skills",
+    "de": "Geben Sie maximal 10 Kenntnisse ein"
+  },
+  {
+    "name": "profile",
+    "en": "Profile",
+    "de": "Überblick"
+  },
+  {
+    "name": "aBriefSynopsisOfWhoYouAre",
+    "en": "A brief synopsis of who you are",
+    "de": "Eine kurze Zusammenfassung von wer Sie sind"
+  },
+  {
+    "name": "removeResume",
+    "en": "Remove resume",
+    "de": "Lebenslauf löschen"
+  },
+  {
+    "name": "areYouSureYouWantToRemove",
+    "en": "Are you sure you want to remove this resume?",
+    "de": "Sind Sie sicher, Sie möchten diesen Lebenslauf entfernen?"
+  },
+  {
+    "name": "cancel",
+    "en": "Cancel",
+    "de": "Abbrechen"
+  },
+  {
+    "name": "remove",
+    "en": "Remove",
+    "de": "Löschen"
+  },
+  {
+    "name": "addEducation",
+    "en": "Add education",
+    "de": "Ausbildung hinzufügen"
+  },
+  {
+    "name": "editEducation",
+    "en": "Edit education",
+    "de": "Ausbildung bearbeiten"
+  },
+  {
+    "name": "dateFrom",
+    "en": "Date from",
+    "de": "Von-Datum"
+  },
+  {
+    "name": "dateTo",
+    "en": "Date to",
+    "de": "Bis-Datum"
+  },
+  {
+    "name": "dateIsRequired",
+    "en": "Date is required",
+    "de": "Datum ist erforderlich"
+  },
+  {
+    "name": "mmddyyyy",
+    "en": "mm/dd/yyyy",
+    "de": "mm/tt/jjjj"
+  },
+  {
+    "name": "university",
+    "en": "University",
+    "de": "Universität"
+  },
+  {
+    "name": "universityIsRequired",
+    "en": "University is required",
+    "de": "Universität ist erforderlich"
+  },
+  {
+    "name": "degree",
+    "en": "Degree",
+    "de": "Abschluss"
+  },
+  {
+    "name": "degreeIsRequired",
+    "en": "Degree is required",
+    "de": "Abschluss ist erforderlich"
+  },
+  {
+    "name": "description",
+    "en": "Description",
+    "de": "Beschreibung"
+  },
+  {
+    "name": "descriptionIsRequired",
+    "en": "Description is required",
+    "de": "Beschreibung ist erforderlich"
+  },
+  {
+    "name": "removeEducationItem",
+    "en": "Remove education item",
+    "de": "Ausbildungsartikel löschen"
+  },
+  {
+    "name": "areYouSureYouWantToRemoveThisItem",
+    "en": "Are you sure you want to remove this item?",
+    "de": "Sind Sie sicher, Sie möchten diesen Artikel entfernen?"
+  },
+  {
+    "name": "addEmployment",
+    "en": "Add employment",
+    "de": "Karriereartikel hinzufügen"
+  },
+  {
+    "name": "editEmployment",
+    "en": "Edit employment",
+    "de": "Karriereartikel bearbeiten"
+  },
+  {
+    "name": "company",
+    "en": "Company",
+    "de": "Firma"
+  },
+  {
+    "name": "companyIsRequired",
+    "en": "Company is required",
+    "de": "Firma ist erforderlich"
+  },
+  {
+    "name": "titleIsRequired",
+    "en": "Title is required",
+    "de": "Berufsbezeichnung ist erforderlich"
+  },
+  {
+    "name": "leaveBlankIfYouStillWorkHere",
+    "en": "Leave blank if you still work here",
+    "de": "Leer lassen wenn Sie hier noch arbeiten"
+  },
+  {
+    "name": "removeEmploymentItem",
+    "en": "Remove employment item",
+    "de": "Karriereartikel löschen"
+  },
+  {
+    "name": "addReference",
+    "en": "Add reference",
+    "de": "Referenz hinzufügen"
+  },
+  {
+    "name": "editReference",
+    "en": "Edit reference",
+    "de": "Referenz bearbeiten"
+  },
+  {
+    "name": "yearsKnown",
+    "en": "Years known",
+    "de": "Jahre gekannt"
+  },
+  {
+    "name": "yearsKnownIsRequired",
+    "en": "Years known is required",
+    "de": "Jahre gekannt ist erforderlich"
+  },
+  {
+    "name": "removeReferenceItem",
+    "en": "Remove reference item",
+    "de": "Referenzartikel löschen"
+  },
+  {
+    "name": "nameIsRequired",
+    "en": "Name is required",
+    "de": "Name ist erforderlich"
+  },
+  {
+    "name": "mustBeANumber",
+    "en": "Must be a number",
+    "de": "Geben Sie eine Nummer ein"
+  },
+  {
+    "name": "addHobby",
+    "en": "Add hobby",
+    "de": "Hobby hinzufügen"
+  },
+  {
+    "name": "editHobby",
+    "en": "Edit hobby",
+    "de": "Hobby bearbeiten"
+  },
+  {
+    "name": "hobbyTitle",
+    "en": "Title",
+    "de": "Titel"
+  },
+  {
+    "name": "hobbyTitleIsRequired",
+    "en": "Hobby title is required",
+    "de": "Hobby-Titel ist erforderlich"
+  },
+  {
+    "name": "addSocialLink",
+    "en": "Add social link",
+    "de": "Social-Link hinzufügen"
+  },
+  {
+    "name": "editSocialLink",
+    "en": "Edit social link",
+    "de": "Social-Link bearbeiten"
+  },
+  {
+    "name": "linkTitle",
+    "en": "Link title",
+    "de": "Link-Titel"
+  },
+  {
+    "name": "linkTitleIsRequired",
+    "en": "Link title is required",
+    "de": "Link-Titel ist erforderlich"
+  },
+  {
+    "name": "url",
+    "en": "URL",
+    "de": "URL"
+  },
+  {
+    "name": "urlIsRequired",
+    "en": "URL is required",
+    "de": "URL ist erforderlich"
+  },
+  {
+    "name": "viewAnalytics",
+    "en": "View",
+    "de": "Anzeigen"
+  },
+  {
+    "name": "viewingAnalytics",
+    "en": "Viewing",
+    "de": "Angezeigt"
+  },
+  {
+    "name": "noDataToShow",
+    "en": "No data to show.",
+    "de": "Keine Daten vorhanden."
+  },
+  {
+    "name": "additionalEvent",
+    "en": "additional event",
+    "de": "ausgeblendetes Ereignis"
+  },
+  {
+    "name": "additionalEvents",
+    "en": "additional events",
+    "de": "ausgeblendete Ereignisse"
+  },
+  {
+    "name": "city",
+    "en": "City",
+    "de": "Stadt"
+  },
+  {
+    "name": "country",
+    "en": "Country",
+    "de": "Land"
+  },
+  {
+    "name": "accessGraph",
+    "en": "Access Graph — Two Weeks",
+    "de": "Zugriffsdiagramm — Zwei Wochen"
+  },
+  {
+    "name": "freeTrial",
+    "en": "Free Trial",
+    "de": "Gratis Testen"
+  },
+  {
+    "name": "tryCvBabyForFree",
+    "en": "Try <div class=\"cv-logo\"><span>cv</span><span>baby</span><span>pro</span></div> for free",
+    "de": "<div class=\"cv-logo\"><span>cv</span><span>baby</span><span>pro</span></div> gratis testen"
+  },
+  {
+    "name": "accountCreated",
+    "en": " Account Created",
+    "de": " Konto erstellt"
+  },
+  {
+    "name": "startFreeTrial",
+    "en": "Start Free Trial",
+    "de": "Gratistest starten"
+  },
+  {
+    "name": "free14DayTrialForCvBabyPro",
+    "en": "Free 14-day trial for <div class=\"cv-logo\" style=\"font-size: 32px;\"><span>cv</span><span>baby</span><span>pro</span></div>",
+    "de": "14-Tage-Gratistest für <div class=\"cv-logo\" style=\"font-size: 32px;\"><span>cv</span><span>baby</span><span>pro</span></div>"
+  },
+  {
+    "name": "monthly",
+    "en": "Monthly",
+    "de": "Monatlich"
+  },
+  {
+    "name": "yearly",
+    "en": "Yearly",
+    "de": "Jährlich"
+  },
+  {
+    "name": "perMonth",
+    "en": "per month",
+    "de": "pro Monat"
+  },
+  {
+    "name": "cancelAnyTime",
+    "en": "Cancel any time",
+    "de": "Jederzeit kündbar"
+  },
+  {
+    "name": "unlimitedUsage",
+    "en": "Unlimited usage",
+    "de": "Unbegrenzte Nutzung"
+  },
+  {
+    "name": "twentyFourSevenSupport",
+    "en": "24/7 support",
+    "de": "24/7 Support"
+  },
+  {
+    "name": "noAds",
+    "en": "No ads",
+    "de": "Keine Werbung"
+  },
+  {
+    "name": "shorterLicense",
+    "en": "Shorter license",
+    "de": "Kürzere Lizenz"
+  },
+  {
+    "name": "moreExpensive",
+    "en": "More expensive",
+    "de": "Teurer"
+  },
+  {
+    "name": "mostPopular",
+    "en": "Most Popular",
+    "de": "Beliebteste"
+  },
+  {
+    "name": "extendedLicense",
+    "en": "Extended license",
+    "de": "Erweiterte Lizenz"
+  },
+  {
+    "name": "lessExpensive",
+    "en": "Less expensive",
+    "de": "Günstiger"
+  },
+  {
+    "name": "trustedByOver20ThousandUsers",
+    "en": "Trusted by over 20 thousand users every month",
+    "de": "Über Zwanzigtausend Benutzer vertrauen monatlich darauf"
+  },
+  {
+    "name": "whatsIncludedWithYourProSubscription",
+    "en": "What's included with your pro subscription",
+    "de": "Was in einem Pro-Abonnement enthalten ist"
+  },
+  {
+    "name": "featureUnlimitedAccess",
+    "en": "Unlimited Access",
+    "de": ""
+  },
+  {
+    "name": "featureDescriptionUnlimitedAccess",
+    "en": "Draft, save, and share as many resumes as you like with 24/7 availability, guaranteed. No data limits or throttling.",
+    "de": ""
+  },
+  {
+    "name": "featureMultipleResumes",
+    "en": "Multiple Resumes",
+    "de": ""
+  },
+  {
+    "name": "featureDescriptionMultipleResumes",
+    "en": "Save multiple resumes for multiple employers. Fine-tune each resume for impressive customized applications.",
+    "de": ""
+  },
+  {
+    "name": "featureNoAds",
+    "en": "No Ads",
+    "de": ""
+  },
+  {
+    "name": "featureDescriptionNoAds",
+    "en": "Premium or bust: Stay focused on the job hunt and enjoy our streamlined, distraction-free experience.",
+    "de": ""
+  },
+  {
+    "name": "featureSaveAsPDF",
+    "en": "Save As PDF",
+    "de": ""
+  },
+  {
+    "name": "featureDescriptionSaveAsPDF",
+    "en": "Allow employer downloads and export your resumes to a high quality PDF format to do with as you please.",
+    "de": ""
+  },
+  {
+    "name": "featureAnalytics",
+    "en": "Resume Analytics",
+    "de": ""
+  },
+  {
+    "name": "featureDescriptionAnalytics",
+    "en": "Use our powerful analytics suite to keep track of who views your resumes, when, from where, and how often.",
+    "de": ""
+  },
+  {
+    "name": "featureCustomEndpoint",
+    "en": "Custom Endpoint",
+    "de": ""
+  },
+  {
+    "name": "featureDescriptionCustomEndpoint",
+    "en": "Claim your own personal vanity URL for each resume to send to employers. Change it as often as you like.",
+    "de": ""
+  },
+  {
+    "name": "faq",
+    "en": "Frequently asked questions:",
+    "de": "Häufig gestellte Fragen:"
+  },
+  {
+    "name": "faqAutomaticRenewal",
+    "en": "Will my plan be automatically renewed?",
+    "de": ""
+  },
+  {
+    "name": "faqAnswerAutomaticRenewal",
+    "en": "Yes. Your subscription will be automatically renewed every month or year, depending which subscription plan you choose.",
+    "de": ""
+  },
+  {
+    "name": "faqHowCanIPay",
+    "en": "How can I pay?",
+    "de": ""
+  },
+  {
+    "name": "faqAnswerHowCanIPay",
+    "en": "We currently support Visa, Mastercard, American Express, Maestro, JCB, Discover, and Paypal. Support for Venmo and other third-party providers is in the works.",
+    "de": ""
+  },
+  {
+    "name": "faqHowCanICancel",
+    "en": "How can I cancel my subscription?",
+    "de": ""
+  },
+  {
+    "name": "faqAnswerHowCanICancel",
+    "en": "You can easily cancel your subscription at any time by visiting your account page, under the subscription section. We hope you got the job!",
+    "de": ""
+  },
+  {
+    "name": "faqPrivateResume",
+    "en": "Can I make my resumes private?",
+    "de": ""
+  },
+  {
+    "name": "faqAnswerPrivateResume",
+    "en": "Yes. In the resume editor, simply deselect the \"Live\" switch to take your resume offline. To permanently delete your resume, click the \"Remove\" button.",
+    "de": ""
+  },
+  {
+    "name": "faqFeatureRequests",
+    "en": "Where can I submit feature requests?",
+    "de": ""
+  },
+  {
+    "name": "faqAnswerFeatureRequests",
+    "en": "Send bugs and feature requests to <a href=\"mailto:dev@cv.baby\">dev@cv.baby</a>. We'd love to hear your ideas!",
+    "de": ""
+  },
+  {
+    "name": "subscribeToCvBabyPro",
+    "en": "Subscribe to <div class=\"cv-logo\" style=\"font-size: 30px;\"><span>cv</span><span>baby</span><span>pro</span></div>",
+    "de": "<div class=\"cv-logo\" style=\"font-size: 30px;\"><span>cv</span><span>baby</span><span>pro</span></div> abbonieren"
+  },
+  {
+    "name": "getStarted",
+    "en": "Get started",
+    "de": "Loslegen"
+  },
+  {
+    "name": "stillHaveQuestions",
+    "en": "Still have questions?",
+    "de": "Sie haben noch Fragen?"
+  },
+  {
+    "name": "cardNumber",
+    "en": "Card number",
+    "de": "Kartennummer"
+  },
+  {
+    "name": "cvv",
+    "en": "CVV",
+    "de": "Kartenprüfnummer"
+  },
+  {
+    "name": "expirationDate",
+    "en": "Expiration date",
+    "de": "Auslaufdatum"
+  },
+  {
+    "name": "chooseABillingCycle",
+    "en": "Choose a billing cycle",
+    "de": "Abrechnungsrhythmus wählen"
+  },
+  {
+    "name": "first14Days",
+    "en": "First 14 days",
+    "de": "Erste 14 Tage"
+  },
+  {
+    "name": "free",
+    "en": "Free",
+    "de": "Gratis"
+  },
+  {
+    "name": "pricePerMonth",
+    "en": "Price per month",
+    "de": "Monatsbetrag"
+  },
+  {
+    "name": "month",
+    "en": "month",
+    "de": "Monat"
+  },
+  {
+    "name": "billedMonthly",
+    "en": "Billed monthly",
+    "de": "Monatlich abgerechnet"
+  },
+  {
+    "name": "billedYearly",
+    "en": "Billed yearly",
+    "de": "Jährlich abgerechnet"
+  },
+  {
+    "name": "createYourAccount",
+    "en": "Create your account",
+    "de": "Ihr Konto erstellen"
+  },
+  {
+    "name": "choosePayment",
+    "en": "Choose payment",
+    "de": "Zahlungsmethode wählen"
+  },
+  {
+    "name": "debitCreditCard",
+    "en": "Debit/Credit Card",
+    "de": "Debit-/Kreditkarte"
+  },
+  {
+    "name": "youWillBeRedirectedToPayPal",
+    "en": "You will be redirected to PayPal to finish your payment.",
+    "de": "Für die Zahlung werden Sie an PayPal weitergeleitet."
+  },
+  {
+    "name": "youWontBeChargedToday",
+    "en": "You won't be charged today",
+    "de": "Ihre Kreditkarte wird heute nicht belastet"
+  },
+  {
+    "name": "cancelAnyTimeBefore",
+    "en": "Cancel your trial any time before",
+    "de": "Jederzeit kündbar bis"
+  },
+  {
+    "name": "freeTrialStarted",
+    "en": "Free trial started",
+    "de": "Gratisttest gestartet"
+  },
+  {
+    "name": "allTransactionsAreSecuredWithSSL",
+    "en": "All transactions are secured with SSL encryption",
+    "de": "Alle Transaktionen sind durch SSL-Verschlüsselung abgesichert"
+  },
+  {
+    "name": "renewsAutomatically",
+    "en": "Renews automatically.",
+    "de": "Verlängert sich automatisch."
+  },
+  {
+    "name": "havingTrouble",
+    "en": "Having trouble?",
+    "de": "Probleme?"
+  },
+  {
+    "name": "contactUs",
+    "en": "Contact us",
+    "de": "Kontaktieren Sie uns"
+  },
+  {
+    "name": "createYourOwnResume",
+    "en": "<a href=\"/pricing\" style=\"color: inherit; text-decoration: none;\">Impressed? Create your own resume with <span class=\"font-weight-bold\">cvbaby pro</span></a>",
+    "de": "<a href=\"/de/pricing\" style=\"color: inherit; text-decoration: none;\">Beeindruckt? Erstellen Sie Ihren eigenen Lebenslauf mit <span class=\"font-weight-bold\">cvbaby pro</span></a>"
+  },
+  {
+    "name": "errorSigningIn",
+    "en": "Error signing in. Please check your connection.",
+    "de": "Fehler beim Anmelden. Bitte überprüfen Sie Ihre Verbindung."
+  },
+  {
+    "name": "errorSigningUp",
+    "en": "Error signing up. Please check your connection.",
+    "de": "Fehler beim Registrieren. Bitte überprüfen Sie Ihre Verbindung."
+  },
+  {
+    "name": "errorFetchingResumes",
+    "en": "Error fetching resumes. Please check your connection.",
+    "de": "Fehler beim Holen von Lebensläufen. Bitte überprüfen Sie Ihre Verbindung."
+  },
+  {
+    "name": "errorFetchingAnalytics",
+    "en": "Error fetching analytics. Please check your connection.",
+    "de": "Fehler beim Holen von Analysedaten. Bitte überprüfen Sie Ihre Verbindung."
+  },
+  {
+    "name": "errorDownloadingPDF",
+    "en": "Error downloading PDF. Please check your connection.",
+    "de": "Fehler beim Herunterladen von PDF-Datei. Bitte überprüfen Sie Ihre Verbindung."
+  },
+  {
+    "name": "errorCreatingSubscription",
+    "en": "Error creating subscription. Please check your connection.",
+    "de": "Fehler beim Starten von Abonnement. Bitte überprüfen Sie Ihre Verbindung."
+  },
+  {
+    "name": "errorCancelingSubscription",
+    "en": "Error canceling subscription. Please contact support immediately.",
+    "de": "Fehler beim Abbrechen von Abonnement. Bitte kontaktieren Sie sofort Support."
+  },
+  {
+    "name": "errorRenewingSubscription",
+    "en": "Error renewing subscription. Please check your connection.",
+    "de": "Fehler beim Erneuern von Abonnement. Bitte überprüfen Sie Ihre Verbindung."
+  },
+  {
+    "name": "errorUpdatingPayment",
+    "en": "Error updating payment method. Please check your connection.",
+    "de": "Fehler beim Aktualisieren von Zahlungsmethode. Bitte überprüfen Sie Ihre Verbindung."
+  },
+  {
+    "name": "cardTypeNotAccepted",
+    "en": "Card type not accepted. Please try another.",
+    "de": "Kartentyp ungültig. Bitte versuchen Sie es mit einer anderen Karte."
+  },
+  {
+    "name": "errorFetchingSubscription",
+    "en": "Error fetching subscription. Please check your connection.",
+    "de": "Fehler beim Holen von Abrechnungsdaten. Bitte überprüfen Sie Ihre Verbindung."
+  },
+  {
+    "name": "errorRemovingResume",
+    "en": "Error removing resume. Please check your connection.",
+    "de": "Fehler beim Löschen von Lebenslauf. Bitte überprüfen Sie Ihre Verbindung."
+  },
+  {
+    "name": "errorSavingResume",
+    "en": "Error saving resume. Please check your connection.",
+    "de": "Fehler beim Speichern von Lebenslauf. Bitte überprüfen Sie Ihre Verbindung."
+  },
+  {
+    "name": "errorSavingResumeSlugUnavailable",
+    "en": "Error saving resume: Slug is unavailable.",
+    "de": "Fehler beim Speichern von Lebenslauf: Slug ist nicht verfügbar."
+  },
+  {
+    "name": "errorCheckingSlugAvailability",
+    "en": "Error checking slug availability. Please check your connection.",
+    "de": "Fehler beim Prüfen von Slug-Verfügbarkeit. Bitte überprüfen Sie Ihre Verbindung."
+  }
+]

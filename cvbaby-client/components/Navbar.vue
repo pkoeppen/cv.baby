@@ -226,13 +226,13 @@ export default {
       clientID: process.env.CVBABY_USER_POOL_CLIENT_ID,
       signInData: {
         dialog: false,
-        email: 'p.hartzog.koeppen@gmail.com',
+        email: null,
         password: null,
         loading: false
       },
       signUpData: {
         dialog: false,
-        email: 'p.hartzog.koeppen@gmail.com',
+        email: null,
         password: null,
         loading: false,
         success: false

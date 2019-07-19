@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
-const translations = require('./i18n/translations');
+const translations = require('./i18n/translations.json');
 
 const env = (() => {
   switch (process.env.NODE_ENV) {
@@ -82,8 +82,14 @@ module.exports = {
         vueI18n: {
           fallbackLocale: 'en',
           messages: {
-            en: _.mapValues(translations, ({ en }) => en),
-            de: _.mapValues(translations, ({ de }) => de)
+            en: _.chain(translations)
+              .keyBy('name')
+              .mapValues('en')
+              .value(),
+            de: _.chain(translations)
+              .keyBy('name')
+              .mapValues('de')
+              .value()
           }
         },
         // Set 'seo' to false because otherwise it breaks Vuetify styles.

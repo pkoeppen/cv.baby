@@ -4,8 +4,7 @@ import { _, invokeLambda, DynamoDB } from '../util';
 import { createSlug, deleteSlug, getSlug } from './slug';
 import { getAnalytics, submitAnalyticsEvent } from './analytics';
 
-const IS_OFFLINE = process.env.IS_OFFLINE;
-const CVBABY_ENV = process.env.CVBABY_ENV === 'prod' ? 'prod' : 'dev';
+const CVBABY_ENV = process.env.CVBABY_ENV;
 const CVBABY_TABLE_RESUMES = process.env.CVBABY_TABLE_RESUMES;
 
 export async function getResume(slug, analyticsData) {
@@ -80,7 +79,7 @@ export async function saveResume(userID, resume, base64Image) {
     slug: resume.slug,
     path: `users/${userID}/${savedResume.resumeID}`
   });
-  if (IS_OFFLINE) {
+  if (CVBABY_ENV === 'local') {
     axios.post('http://127.0.0.1:3003/renderPDF', payload);
   } else {
     invokeLambda(
@@ -169,8 +168,7 @@ function uploadImage(userID, resumeID, base64Image) {
     resumeID,
     base64Image
   };
-  if (IS_OFFLINE) {
-    console.log(`IS_OFFLINE: ${IS_OFFLINE}, posting to localhost:3002`);
+  if (CVBABY_ENV === 'local') {
     return axios.post('http://localhost:3002/processImage', payload);
   } else {
     return invokeLambda(

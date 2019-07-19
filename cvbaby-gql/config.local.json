@@ -1,5 +1,4 @@
 {
-  "IS_OFFLINE": true,
   "CVBABY_ENV": "local",
   "CVBABY_HOST_GQL": "dev-api.cv.baby",
   "CVBABY_HOST_CLIENT": "http://localhost:3000",

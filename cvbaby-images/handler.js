@@ -8,7 +8,7 @@ const S3 = new AWS.S3({
   endpoint: 'https://s3.amazonaws.com'
 });
 
-const IS_OFFLINE = process.env.IS_OFFLINE;
+const CVBABY_ENV = process.env.CVBABY_ENV;
 const CVBABY_HOST_DATA = process.env.CVBABY_HOST_DATA;
 
 module.exports = { processImage };
@@ -19,7 +19,7 @@ module.exports = { processImage };
 async function processImage({ userID, resumeID, base64Image }, context) {
   context.callbackWaitsForEmptyEventLoop = false;
 
-  if (IS_OFFLINE) {
+  if (CVBABY_ENV === 'local') {
     const fs = require('fs');
     const file = fs.readFileSync('./image');
     base64Image = new Buffer(file).toString('base64');

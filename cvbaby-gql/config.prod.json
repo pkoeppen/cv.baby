@@ -1,5 +1,4 @@
 {
-  "IS_OFFLINE": false,
   "CVBABY_ENV": "prod",
   "CVBABY_HOST_GQL": "dev-api.cv.baby",
   "CVBABY_HOST_CLIENT": "dev.cv.baby",
