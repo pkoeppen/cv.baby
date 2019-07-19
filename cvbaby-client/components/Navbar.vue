@@ -182,7 +182,24 @@
                           <v-flex xs12>
                             <v-text-field
                               v-model="signUpData.password"
-                              :rules="[v => !!v || $t('passwordIsRequired')]"
+                              :rules="[
+                                v => !!v || $t('passwordIsRequired'),
+                                v =>
+                                  passwordRegexLower.test(v) ||
+                                  $t('passwordMustContainLower'),
+                                v =>
+                                  passwordRegexUpper.test(v) ||
+                                  $t('passwordMustContainUpper'),
+                                v =>
+                                  passwordRegexNumber.test(v) ||
+                                  $t('passwordMustContainNumber'),
+                                v =>
+                                  passwordRegexSpecial.test(v) ||
+                                  $t('passwordMustContainSpecial'),
+                                v =>
+                                  (v && v.length > 7) ||
+                                  $t('passwordMustBeLonger')
+                              ]"
                               :label="$t('password')"
                               type="password"
                               required
@@ -241,6 +258,22 @@ export default {
     };
   },
   computed: {
+    passwordRegexLower() {
+      const re = /(?=.*[a-z])/;
+      return re;
+    },
+    passwordRegexUpper() {
+      const re = /(?=.*[A-Z])/;
+      return re;
+    },
+    passwordRegexNumber() {
+      const re = /(?=.*[0-9])/;
+      return re;
+    },
+    passwordRegexSpecial() {
+      const re = /(?=.*[()!@#$%^&])/;
+      return re;
+    },
     showNavbar() {
       return !/^(_slug)/.test(this.$route.name);
     },

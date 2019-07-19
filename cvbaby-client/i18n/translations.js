@@ -88,6 +88,26 @@ module.exports = {
     en: 'Password is required',
     de: 'Kennwort ist erforderlich'
   },
+  passwordMustContainLower: {
+    en: 'Password must contain a lowercase character',
+    de: 'Kennwort muss Kleinschrift enthalten'
+  },
+  passwordMustContainUpper: {
+    en: 'Password must contain an uppercase character',
+    de: 'Kennwort muss Großschrift enthalten'
+  },
+  passwordMustContainNumber: {
+    en: 'Password must contain a number',
+    de: 'Kennwort muss eine Nummer enthalten'
+  },
+  passwordMustContainSpecial: {
+    en: 'Password must contain a special character',
+    de: 'Kennwort muss ein Sonderzeichen enthalten'
+  },
+  passwordMustBeLonger: {
+    en: 'Password must be longer than 8 characters',
+    de: 'Kennwort muss mindestens 8 Buchstaben enthalten'
+  },
   oldPassword: {
     en: 'Old password',
     de: 'Aktuelles Kennwort'
