@@ -1,6 +1,7 @@
 <template>
   <no-ssr>
     <div>
+      <navbar />
       <v-layout justify-center align-center wrap>
         <v-flex xs12>
           <v-divider />
@@ -176,7 +177,10 @@
                 <v-card class="cv-confirmation elevation-0">
                   <v-container class="pa-5">
                     <h4 style="font-size: 18px">
-                      <div class="cv-logo" style="display: inline;">
+                      <div
+                        class="cv-logo"
+                        style="font-size: 18px; display: inline;"
+                      >
                         <span>cv</span><span>baby</span>
                       </div>
                       pro
@@ -237,7 +241,7 @@
             style="font-family: 'Open Sans', sans-serif; font-size: 16px"
           >
             {{ $t('havingTrouble') }}
-            <a href="mailto:support@cv.baby">{{ $t('contactUs') }}</a>
+            <a href="mailto:help@cv.baby">{{ $t('contactUs') }}</a>
           </div>
         </v-flex>
       </v-layout>
@@ -247,10 +251,12 @@
 </template>
 
 <script>
+import Navbar from '~/components/Navbar';
 import cvFooter from '~/components/Footer';
 import PaymentFields from '~/components/PaymentFields';
 export default {
   components: {
+    Navbar,
     cvFooter,
     PaymentFields
   },

@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <v-content>
-      <navbar />
       <nuxt />
     </v-content>
     <v-snackbar v-model="showSnackbar" :color="snackbar.color" :timeout="3000">
@@ -14,11 +13,7 @@
 </template>
 
 <script>
-import Navbar from '~/components/Navbar';
 export default {
-  components: {
-    Navbar
-  },
   data() {
     return {
       showSnackbar: false

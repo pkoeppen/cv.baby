@@ -57,15 +57,21 @@
                             class="cv-logo font-weight-black"
                             style="font-size: 16px; display: inline;"
                           >
-                            <!-- eslint-disable-next-line -->
-                    <span>cv</span><span>baby&nbsp;</span>pro
+                            <span>cv</span><span>baby&nbsp;</span>pro
                           </div>
-                          &ndash; 135 days remaining
+                          <span class="caption text-uppercase">
+                            &mdash;
+                            {{ subscriptionState }}
+                          </span>
                         </v-list-tile-sub-title>
                       </v-list-tile-content>
 
                       <v-list-tile-action>
-                        <v-btn class="red--text" icon>
+                        <v-btn
+                          href="mailto:feedback@cv.baby"
+                          class="red--text"
+                          icon
+                        >
                           <v-icon>favorite</v-icon>
                         </v-btn>
                       </v-list-tile-action>
@@ -79,9 +85,7 @@
                       </v-list-tile-avatar>
                       <v-list-tile-title>{{ $t('account') }}</v-list-tile-title>
                     </v-list-tile>
-                    <v-list-tile
-                      @click="$router.push({ path: localePath('help') })"
-                    >
+                    <v-list-tile href="mailto:help@cv.baby">
                       <v-list-tile-avatar>
                         <v-icon>assignment_late</v-icon>
                       </v-list-tile-avatar>
@@ -234,6 +238,7 @@
 </template>
 
 <script>
+import { get } from 'lodash';
 import { SubscriptionState } from '~/assets/js/util';
 export default {
   name: 'Navbar',
@@ -258,6 +263,23 @@ export default {
     };
   },
   computed: {
+    subscriptionState() {
+      const state = get(
+        this,
+        '$store.state.cognito.authenticated.signInUserSession.idToken.payload.custom:subscriptionState',
+        '0'
+      );
+      switch (state) {
+        case '0':
+          return 'pending';
+        case '1':
+          return 'active';
+        case '2':
+          return 'inactive';
+        default:
+          return 'pending';
+      }
+    },
     passwordRegexLower() {
       const re = /(?=.*[a-z])/;
       return re;
@@ -275,7 +297,7 @@ export default {
       return re;
     },
     showNavbar() {
-      return !/^(_slug)/.test(this.$route.name);
+      return !/^slug/.test(this.$route.name);
     },
     showButtons() {
       return !/^(payment|pricing)/.test(this.$route.name);

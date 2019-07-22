@@ -168,7 +168,7 @@ export const actions = {
   },
 
   /* Fetch latest user data. */
-  getUserData(bypassCache = false) {
+  getUserData(context, bypassCache = false) {
     return new Promise((resolve, reject) => {
       const user = pool.getCurrentUser();
       if (user !== null) {
@@ -181,7 +181,6 @@ export const actions = {
                 if (error1) {
                   reject(error1);
                 } else {
-                  console.log('userData:', JSON.stringify(data, null, 2));
                   resolve(data);
                 }
               },

@@ -1,6 +1,7 @@
 <template>
   <no-ssr>
     <div>
+      <navbar />
       <v-layout style="min-height: 100vh;" column>
         <v-flex xs12>
           <v-divider />
@@ -217,11 +218,13 @@
 
 <script>
 import { cloneDeep, isEqual, omit } from 'lodash';
+import Navbar from '~/components/Navbar';
 import cvFooter from '~/components/Footer';
 import ResumeEditor from '~/components/ResumeEditor';
 import { getDefaultResume } from '~/assets/js/util';
 export default {
   components: {
+    Navbar,
     cvFooter,
     ResumeEditor
   },

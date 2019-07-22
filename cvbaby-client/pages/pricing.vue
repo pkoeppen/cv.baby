@@ -1,5 +1,8 @@
 <template>
   <div>
+    <no-ssr>
+      <navbar />
+    </no-ssr>
     <v-layout class="cv-background-grey" justify-center align-center wrap>
       <v-flex xs12>
         <v-divider />
@@ -329,7 +332,7 @@
           >
           <div class="questions">
             {{ $t('stillHaveQuestions') }}
-            <a href="mailto:support@cv.baby">{{ $t('contactUs') }}</a>
+            <a href="mailto:help@cv.baby">{{ $t('contactUs') }}</a>
           </div>
         </div>
         <div class="mb-5" />
@@ -340,10 +343,12 @@
 </template>
 
 <script>
+import Navbar from '~/components/Navbar';
 import Ribbon from '~/components/Ribbon';
 import cvFooter from '~/components/Footer';
 export default {
   components: {
+    Navbar,
     Ribbon,
     cvFooter
   }

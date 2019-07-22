@@ -1,5 +1,6 @@
 <template>
   <div>
+    <navbar />
     <v-container class="pa-0">
       <v-layout column>
         <v-flex class="hidden-lg-and-up pt-5 pb-4">
@@ -69,7 +70,7 @@
         >
         <div class="questions">
           {{ $t('stillHaveQuestions') }}
-          <a href="mailto:support@cv.baby">{{ $t('contactUs') }}</a>
+          <a href="mailto:help@cv.baby">{{ $t('contactUs') }}</a>
         </div>
       </div>
       <div class="mb-5" />
@@ -79,11 +80,13 @@
 </template>
 
 <script>
+import Navbar from '~/components/Navbar';
 import cvFooter from '~/components/Footer';
 import Resume from '~/components/Resume';
 import { getDemoResume } from '~/assets/js/util';
 export default {
   components: {
+    Navbar,
     cvFooter,
     Resume
   },

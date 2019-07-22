@@ -1,6 +1,7 @@
 <template>
   <no-ssr>
     <div>
+      <navbar />
       <v-layout column wrap>
         <v-flex xs12>
           <v-divider />
@@ -237,6 +238,18 @@
                           {{ subscriptionStatus }}
                         </div>
                       </div>
+                      <div class="text-xs-center">
+                        <v-btn
+                          v-if="subscriptionState === '2'"
+                          :loading="payment.loading"
+                          color="primary"
+                          class="mt-5 mb-0"
+                          depressed
+                          @click="renewSubscription"
+                        >
+                          {{ $t('renewSubscription') }}
+                        </v-btn>
+                      </div>
                       <div class="mt-5">
                         <h2>{{ $t('billing') }}</h2>
                       </div>
@@ -347,7 +360,7 @@
                         class="mb-2"
                       >
                         <v-chip
-                          class="text-uppercase font-weight-bold"
+                          class="text-uppercase font-weight-bold ma-0"
                           color="grey"
                           text-color="white"
                           label
@@ -369,13 +382,11 @@
                         </v-chip>
                         <v-icon>lock</v-icon>
                       </div>
-                      <div
-                        style="display: flex; align-items: center; justify-content: space-between;"
-                        class="mt-4 mb-2"
-                      >
+                      <div class="mt-4 text-xs-center">
                         <v-spacer />
 
                         <v-dialog
+                          v-if="subscriptionState === '1'"
                           v-model="payment.confirmCancelDialog"
                           max-width="400px"
                         >
@@ -409,6 +420,12 @@
                               </div>
                             </v-card-text>
                             <v-card-actions class="justify-center pb-4">
+                              <v-btn
+                                depressed
+                                @click="payment.confirmCancelDialog = false"
+                              >
+                                Back
+                              </v-btn>
                               <v-btn
                                 :loading="payment.loading"
                                 :color="payment.success ? 'success' : 'error'"
@@ -519,7 +536,7 @@
                       <h2>{{ $t('emailNotifications') }}</h2>
                       <v-switch
                         v-model="email.switch"
-                        :label="`Switch 1: foobar`"
+                        :label="`Email notifications`"
                         color="primary"
                       ></v-switch>
                     </v-container>
@@ -536,10 +553,13 @@
 </template>
 
 <script>
+import { get } from 'lodash';
+import Navbar from '~/components/Navbar';
 import cvFooter from '~/components/Footer';
 import PaymentFields from '~/components/PaymentFields';
 export default {
   components: {
+    Navbar,
     cvFooter,
     PaymentFields
   },
@@ -582,6 +602,14 @@ export default {
         default:
           return this.payment.subscription.status;
       }
+    },
+    subscriptionState() {
+      const state = get(
+        this,
+        '$store.state.cognito.authenticated.signInUserSession.idToken.payload.custom:subscriptionState',
+        '0'
+      );
+      return state;
     }
   },
   mounted() {
@@ -722,6 +750,7 @@ export default {
         .dispatch('api/cancelSubscription')
         .then(subscription => {
           this.$store.dispatch('cognito/setSubscriptionState', '2');
+          this.$store.dispatch('cognito/getUserData', true);
           this.payment.success = true;
           this.payment.subscription = subscription;
           setTimeout(() => {
@@ -735,6 +764,27 @@ export default {
           this.$store.dispatch('showSnackbar', {
             color: 'red',
             message: this.$t('errorCancelingSubscription')
+          });
+        })
+        .finally(() => {
+          this.payment.loading = false;
+        });
+    },
+    renewSubscription() {
+      this.payment.loading = true;
+      this.$store
+        .dispatch('api/renewSubscription')
+        .then(subscription => {
+          this.$store.dispatch('cognito/setSubscriptionState', '1');
+          this.$store.dispatch('cognito/getUserData', true);
+          this.payment.subscription = subscription;
+        })
+        .catch(error => {
+          // TODO
+          console.error('renewSubscription() error:', error);
+          this.$store.dispatch('showSnackbar', {
+            color: 'red',
+            message: this.$t('errorRenewingSubscription')
           });
         })
         .finally(() => {

@@ -1,6 +1,7 @@
 <template>
   <no-ssr>
     <div>
+      <navbar />
       <v-layout style="min-height: 100vh;" column>
         <v-flex xs12>
           <v-divider />
@@ -153,10 +154,12 @@
 
 <script>
 import { cloneDeep } from 'lodash';
+import Navbar from '~/components/Navbar';
 import cvFooter from '~/components/Footer';
 import AnalyticsViewer from '~/components/AnalyticsViewer';
 export default {
   components: {
+    Navbar,
     cvFooter,
     AnalyticsViewer
   },

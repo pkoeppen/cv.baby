@@ -55,6 +55,16 @@
     "de": "Kontakt"
   },
   {
+    "name": "pricing",
+    "en": "Pricing",
+    "de": "Preise"
+  },
+  {
+    "name": "legal",
+    "en": "Legal",
+    "de": "Rechtliches"
+  },
+  {
     "name": "present",
     "en": "present",
     "de": "jetzt"
@@ -80,6 +90,11 @@
     "de": "Abmelden"
   },
   {
+    "name": "back",
+    "en": "Back",
+    "de": "Zurück"
+  },
+  {
     "name": "email",
     "en": "Email",
     "de": "E-Mail-Adresse"
@@ -98,6 +113,31 @@
     "name": "passwordIsRequired",
     "en": "Password is required",
     "de": "Kennwort ist erforderlich"
+  },
+  {
+    "name": "passwordMustContainLower",
+    "en": "Password must contain a lowercase character",
+    "de": "Kennwort muss Kleinschrift enthalten"
+  },
+  {
+    "name": "passwordMustContainUpper",
+    "en": "Password must contain an uppercase character",
+    "de": "Kennwort muss Großschrift enthalten"
+  },
+  {
+    "name": "passwordMustContainNumber",
+    "en": "Password must contain a number",
+    "de": "Kennwort muss eine Nummer enthalten"
+  },
+  {
+    "name": "passwordMustContainSpecial",
+    "en": "Password must contain a special character",
+    "de": "Kennwort muss ein Sonderzeichen enthalten"
+  },
+  {
+    "name": "passwordMustBeLonger",
+    "en": "Password must be longer than 8 characters",
+    "de": "Kennwort muss mindestens 8 Buchstaben enthalten"
   },
   {
     "name": "oldPassword",
@@ -492,12 +532,12 @@
   {
     "name": "addEmployment",
     "en": "Add employment",
-    "de": "Karriereartikel hinzufügen"
+    "de": "Karriere hinzufügen"
   },
   {
     "name": "editEmployment",
     "en": "Edit employment",
-    "de": "Karriereartikel bearbeiten"
+    "de": "Karriere bearbeiten"
   },
   {
     "name": "company",
@@ -856,7 +896,7 @@
   },
   {
     "name": "faqAnswerFeatureRequests",
-    "en": "Send bugs and feature requests to <a href=\"mailto:dev@cv.baby\">dev@cv.baby</a>. We'd love to hear your ideas!",
+    "en": "Send bugs and feature requests to <a href=\"mailto:feedback@cv.baby\">feedback@cv.baby</a>. We'd love to hear your ideas!",
     "de": ""
   },
   {

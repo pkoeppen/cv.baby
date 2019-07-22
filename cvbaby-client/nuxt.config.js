@@ -16,6 +16,14 @@ const config = require(`./config.${env}.json`);
 
 module.exports = {
   mode: 'universal',
+  loading: false,
+  router: {
+    // Always scroll to top on route change.
+    scrollBehavior: function(to, from, savedPosition) {
+      const position = { x: 0, y: 0 };
+      return position;
+    }
+  },
 
   /*
    ** Headers of the page
@@ -43,10 +51,10 @@ module.exports = {
 
   env: { ...config },
 
-  /*
-   ** Customize the progress-bar color
-   */
-  loading: { color: '#2196f3' },
+  // /*
+  //  ** Customize the progress-bar color
+  //  */
+  // loading: { color: '#2196f3' },
 
   /*
    ** Global CSS
