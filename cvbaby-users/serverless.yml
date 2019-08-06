@@ -49,25 +49,14 @@ custom:
   output:
     handler: output.handler
 
-functions:
-  # Cognito pre-signup hook
-  confirmUser:
-    handler: events.confirmUser
-    events:
-      - cognitoUserPool:
-          pool: ${self:provider.environment.CVBABY_USER_POOL_NAME}
-          trigger: PreSignUp
-
-  # Cognito post-confirmation hook
-  createUser:
-    handler: events.createUser
-    events:
-      - cognitoUserPool:
-          pool: ${self:provider.environment.CVBABY_USER_POOL_NAME}
-          trigger: PostConfirmation
-
 resources:
   Resources:
+    CognitoUserPoolCvbabyuserpooldev:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:provider.environment.CVBABY_USER_POOL_NAME}
+        AutoVerifiedAttributes:
+          - email
     CognitoUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
@@ -85,3 +74,20 @@ resources:
     UserPoolClientId:
       Value:
         Ref: CognitoUserPoolClient
+
+functions:
+  # Cognito pre-signup hook
+  confirmUser:
+    handler: events.confirmUser
+    events:
+      - cognitoUserPool:
+          pool: ${self:provider.environment.CVBABY_USER_POOL_NAME}
+          trigger: PreSignUp
+
+  # Cognito post-confirmation hook
+  createUser:
+    handler: events.createUser
+    events:
+      - cognitoUserPool:
+          pool: ${self:provider.environment.CVBABY_USER_POOL_NAME}
+          trigger: PostConfirmation

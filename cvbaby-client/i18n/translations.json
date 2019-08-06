@@ -110,6 +110,26 @@
     "de": "Kennwort"
   },
   {
+    "name": "resetPassword",
+    "en": "Reset password",
+    "de": "Kennwort zurücksetzen"
+  },
+  {
+    "name": "forgotYourPassword",
+    "en": "Forgot your password?",
+    "de": "Haben Sie Ihr Kennwort vergessen?"
+  },
+  {
+    "name": "sendResetLink",
+    "en": "Send reset link",
+    "de": "Kennwort-Link absenden"
+  },
+  {
+    "name": "resetLinkSent",
+    "en": "Reset link sent",
+    "de": "Kennwort-Link abgesendet"
+  },
+  {
     "name": "passwordIsRequired",
     "en": "Password is required",
     "de": "Kennwort ist erforderlich"

@@ -142,6 +142,11 @@
                               required
                             />
                           </v-flex>
+                          <v-flex class="caption text-xs-center py-0" xs12>
+                            <a @click="showForgotPasswordDialog">{{
+                              $t('forgotYourPassword')
+                            }}</a>
+                          </v-flex>
                         </v-layout>
                       </v-container>
                     </v-card-text>
@@ -150,7 +155,51 @@
                         :loading="signInData.loading"
                         color="primary"
                         type="submit"
+                        depressed
                         >{{ $t('login') }}</v-btn
+                      >
+                    </v-card-actions>
+                  </v-card>
+                </v-form>
+              </v-dialog>
+              <v-dialog v-model="forgotPasswordData.dialog" max-width="400px">
+                <v-form ref="formForgotPassword" @submit="forgotPassword">
+                  <v-card>
+                    <v-card-title
+                      class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
+                    >
+                      <span class="cv-dialog-header headline">{{
+                        $t('resetPassword')
+                      }}</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container class="py-0" grid-list-md>
+                        <v-layout wrap>
+                          <v-flex xs12>
+                            <v-text-field
+                              v-model="forgotPasswordData.email"
+                              :rules="[v => !!v || $t('emailIsRequired')]"
+                              :label="$t('email')"
+                              required
+                            />
+                          </v-flex>
+                        </v-layout>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions class="justify-center pb-4">
+                      <v-btn
+                        :loading="forgotPasswordData.loading"
+                        color="primary"
+                        type="submit"
+                        depressed
+                      >
+                        <v-icon v-if="forgotPasswordData.success"
+                          >check_circle</v-icon
+                        >{{
+                          forgotPasswordData.success
+                            ? `&nbsp;${$t('resetLinkSent')}`
+                            : $t('sendResetLink')
+                        }}</v-btn
                       >
                     </v-card-actions>
                   </v-card>
@@ -217,6 +266,7 @@
                         :loading="signUpData.loading"
                         :color="signUpData.success ? 'success' : 'primary'"
                         type="submit"
+                        depressed
                       >
                         <v-icon v-if="signUpData.success">check_circle</v-icon>
                         {{
@@ -257,6 +307,12 @@ export default {
         email: null,
         password: null,
         loading: false,
+        success: false
+      },
+      forgotPasswordData: {
+        dialog: false,
+        loading: false,
+        email: null,
         success: false
       },
       subscriptionStatusButtonLoading: false
@@ -448,6 +504,29 @@ export default {
         })
         .finally(() => {
           this.subscriptionStatusButtonLoading = false;
+        });
+    },
+    showForgotPasswordDialog(event) {
+      event.preventDefault();
+      this.signInData.dialog = false;
+      this.forgotPasswordData.dialog = true;
+    },
+    forgotPassword(event) {
+      event.preventDefault();
+      if (!this.$refs.formForgotPassword.validate()) {
+        return;
+      }
+      this.$store
+        .dispatch('cognito/forgotPassword', {
+          email: this.forgotPasswordData.email
+        })
+        .then(() => {
+          this.forgotPasswordData.loading = false;
+          this.forgotPasswordData.success = true;
+          setTimeout(() => {
+            this.forgotPasswordData.dialog = false;
+            this.forgotPasswordData.success = false;
+          }, 1500);
         });
     }
   }

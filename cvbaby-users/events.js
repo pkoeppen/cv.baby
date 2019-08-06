@@ -1,12 +1,10 @@
-import { Cognito, DynamoDB } from './util';
-
-const CVBABY_TABLE_USERS = process.env.CVBABY_TABLE_USERS;
+import { Cognito } from './util';
 
 /*
  *  Pre-signup hook to automatically confirm users.
  */
 export function confirmUser(event, context, callback) {
-  event.response.autoConfirmUser = true;
+  //event.response.autoConfirmUser = true;
   callback(null, event);
 }
 
@@ -29,24 +27,10 @@ export function createUser(event, context, callback) {
     },
     error => {
       if (error) {
-        return callback(error);
+        callback(error);
+      } else {
+        callback(null, event);
       }
-
-      // const userID = event.request.userAttributes.sub;
-      // const user = {
-      //   userID,
-      //   createdAt: new Date().toISOString(),
-      //   updatedAt: null,
-      //   resumes: []
-      // };
-
-      // DynamoDB.put({
-      //   TableName: CVBABY_TABLE_USERS,
-      //   Item: user
-      // })
-      //   .promise()
-      //   .then(() => callback(null, event))
-      //   .catch(error => callback(error));
     }
   );
 }
