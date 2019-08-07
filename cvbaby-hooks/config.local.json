@@ -1,0 +1,15 @@
+{
+  "CVBABY_ENV": "local",
+  "CVBABY_HOST_HOOKS": "dev-hooks.cv.baby",
+  "CVBABY_HOST_CLIENT": "http://localhost:3000",
+  "CVBABY_HOST_DATA": "dev-s3.cv.baby",
+  "CVBABY_TABLE_USERS": "cvbaby-table-users-dev",
+  "CVBABY_TABLE_RESUMES": "cvbaby-table-resumes-dev",
+  "CVBABY_TABLE_SLUGS": "cvbaby-table-slugs-dev",
+  "CVBABY_TABLE_ANALYTICS": "cvbaby-table-analytics-dev",
+  "PAYMENT_MERCHANT_ID": "zdrjbzj2jxwpp3wj",
+  "PAYMENT_PUBLIC_KEY": "bs3r39m78xjmzyfx",
+  "PAYMENT_PRIVATE_KEY": "80ef8d9684a427364ba5fb3b6fdeb47c",
+  "CVBABY_USER_POOL_ID": "us-east-1_bzmrCpPkz",
+  "CVBABY_USER_POOL_CLIENT_ID": "6hr5u2msoh1bkqfr6tilunsot6"
+}

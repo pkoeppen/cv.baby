@@ -14,8 +14,7 @@ export default function({ store, redirect, app }) {
     ) {
       redirect(
         app.localePath({
-          name: 'payment',
-          query: { cycle: 'yearly' }
+          name: 'pricing'
         })
       );
     }

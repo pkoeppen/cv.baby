@@ -21,7 +21,7 @@ export const state = () => ({
 export const actions = {
   getResume(context, { slug, isAuthorized, submitAnalyticsEvent }) {
     return this.$axios
-      .post(`/gql/${isAuthorized ? 'private' : 'public'}`, {
+      .post(`/${isAuthorized ? 'private' : 'public'}`, {
         query: ResumeQuery,
         vars: { slug, submitAnalyticsEvent }
       })
@@ -29,35 +29,35 @@ export const actions = {
   },
   getResumes() {
     return this.$axios
-      .post('/gql/private', {
+      .post('/private', {
         query: ResumesQuery
       })
       .then(({ data }) => data.getResumes);
   },
   getAnalytics() {
     return this.$axios
-      .post('/gql/private', {
+      .post('/private', {
         query: AnalyticsQuery
       })
       .then(({ data }) => data.getAnalytics);
   },
   getSubscription() {
     return this.$axios
-      .post('/gql/private', {
+      .post('/private', {
         query: SubscriptionQuery
       })
       .then(({ data }) => data.getSubscription);
   },
   getDefaultPaymentMethod() {
     return this.$axios
-      .post('/gql/private', {
+      .post('/private', {
         query: DefaultPaymentMethodQuery
       })
       .then(({ data }) => data.getDefaultPaymentMethod);
   },
   startSubscription(context, { nonce, planID }) {
     return this.$axios
-      .post('/gql/private', {
+      .post('/private', {
         query: StartSubscriptionMutation,
         vars: {
           paymentMethodNonce: nonce,
@@ -68,21 +68,21 @@ export const actions = {
   },
   cancelSubscription() {
     return this.$axios
-      .post('/gql/private', {
+      .post('/private', {
         query: CancelSubscriptionMutation
       })
       .then(({ data }) => data.cancelSubscription);
   },
   renewSubscription() {
     return this.$axios
-      .post('/gql/private', {
+      .post('/private', {
         query: RenewSubscriptionMutation
       })
       .then(({ data }) => data.renewSubscription);
   },
   updatePaymentMethod(context, nonce) {
     return this.$axios
-      .post('/gql/private', {
+      .post('/private', {
         query: UpdatePaymentMethodMutation,
         vars: { paymentMethodNonce: nonce }
       })
@@ -90,7 +90,7 @@ export const actions = {
   },
   checkSlugAvailable(context, slug) {
     return this.$axios
-      .post('/gql/private', {
+      .post('/private', {
         query: CheckSlugAvailableQuery,
         vars: { slug }
       })
@@ -98,7 +98,7 @@ export const actions = {
   },
   saveResume(context, { resume, base64Image }) {
     return this.$axios
-      .post('/gql/private', {
+      .post('/private', {
         query: SaveResumeMutation,
         vars: {
           resume,
@@ -109,7 +109,7 @@ export const actions = {
   },
   removeResume(context, resumeID) {
     return this.$axios
-      .post('/gql/private', {
+      .post('/private', {
         query: RemoveResumeMutation,
         vars: { resumeID }
       })

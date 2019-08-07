@@ -380,6 +380,34 @@ export const actions = {
     });
   },
 
+  /* Verify an attribute for an authenticated user. */
+  verifyAttribute(context, { email, attributeName, confirmationCode }) {
+    return new Promise((resolve, reject) => {
+      const user = pool.getCurrentUser();
+      user.getSession((error, session) => {
+        context.commit('setAuthenticating', false);
+        if (error) {
+          context.commit('setAuthenticated', null);
+          context.commit('setUserID', null);
+          context.commit('setEmail', null);
+          reject(error);
+        } else {
+          context.commit('setAuthenticated', user);
+          context.commit(
+            'setUserID',
+            user.signInUserSession.accessToken.payload.sub
+          );
+          context.commit('setEmail', user.username);
+          context.commit('setAccessToken', session.accessToken);
+          user.verifyAttribute(attributeName, confirmationCode, {
+            onSuccess: result => resolve(result),
+            onFailure: error => reject(error)
+          });
+        }
+      });
+    });
+  },
+
   /* Sign out user. */
   signOut(context) {
     const user = pool.getCurrentUser();

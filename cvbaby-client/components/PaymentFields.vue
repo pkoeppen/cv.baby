@@ -135,7 +135,7 @@ export default {
   methods: {
     getClientPaymentToken() {
       return this.$axios
-        .post('/gql/public', {
+        .post('/public', {
           query: `
             query { getClientPaymentToken }
           `

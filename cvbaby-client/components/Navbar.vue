@@ -189,7 +189,9 @@
                     <v-card-actions class="justify-center pb-4">
                       <v-btn
                         :loading="forgotPasswordData.loading"
-                        color="primary"
+                        :color="
+                          forgotPasswordData.success ? 'success' : 'primary'
+                        "
                         type="submit"
                         depressed
                       >
@@ -353,10 +355,10 @@ export default {
       return re;
     },
     showNavbar() {
-      return !/^slug/.test(this.$route.name);
+      return !/^(slug)/.test(this.$route.name);
     },
     showButtons() {
-      return !/^(payment|pricing)/.test(this.$route.name);
+      return !/^(payment|pricing|verify)/.test(this.$route.name);
     },
     navbarStyle() {
       const style = /^(pricing)/.test(this.$route.name)
@@ -516,17 +518,28 @@ export default {
       if (!this.$refs.formForgotPassword.validate()) {
         return;
       }
+      this.forgotPasswordData.loading = true;
       this.$store
         .dispatch('cognito/forgotPassword', {
           email: this.forgotPasswordData.email
         })
         .then(() => {
-          this.forgotPasswordData.loading = false;
           this.forgotPasswordData.success = true;
           setTimeout(() => {
             this.forgotPasswordData.dialog = false;
             this.forgotPasswordData.success = false;
           }, 1500);
+        })
+        .catch(error => {
+          // TODO
+          console.error('forgotPassword() error:', error);
+          this.$store.dispatch('showSnackbar', {
+            color: 'red',
+            message: this.$t('errorResettingPassword')
+          });
+        })
+        .finally(() => {
+          this.forgotPasswordData.loading = false;
         });
     }
   }

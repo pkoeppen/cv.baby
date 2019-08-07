@@ -4,7 +4,8 @@ import { Cognito } from './util';
  *  Pre-signup hook to automatically confirm users.
  */
 export function confirmUser(event, context, callback) {
-  //event.response.autoConfirmUser = true;
+  event.response.autoConfirmUser = true;
+  event.response.autoVerifyEmail = true;
   callback(null, event);
 }
 

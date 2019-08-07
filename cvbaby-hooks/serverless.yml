@@ -1,0 +1,67 @@
+service: cvbaby-hooks
+
+plugins:
+  - serverless-offline
+  - serverless-webpack
+  - serverless-s3-remover
+  - serverless-domain-manager
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: us-east-1
+  stage: ${opt:stage, "dev"}
+  environment: ${file(./config.${opt:stage, "dev"}.json)}
+  timeout: 30
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:*
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_HOST_DATA}
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: arn:aws:s3:::${self:provider.environment.CVBABY_HOST_DATA}/*
+    - Effect: Allow
+      Action:
+        - 'ses:SendEmail'
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - cognito-idp:* # TODO - Make this more specific
+      Resource: arn:aws:cognito-idp:${self:provider.region}:*:userpool/* # TODO - change this to specific user pool
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+      Resource: arn:aws:lambda:${self:provider.region}:*:function:* # TODO - change this to specific functions
+
+custom:
+  serverless-offline:
+    port: 3005
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules:
+      forceExclude:
+        - aws-sdk
+  remover:
+     buckets:
+       - ${self:provider.environment.CVBABY_HOST_DATA}
+  customDomain:
+    domainName: ${self:provider.environment.CVBABY_HOST_HOOKS}
+    certificateName: 'cv.baby'
+    stage: ${opt:stage, "dev"}
+    createRoute53Record: true
+
+functions:
+  # Braintree
+  braintree:
+    handler: handler.handlerBraintree
+    events:
+      - http:
+          path: /braintree
+          method: post
+          cors: true
