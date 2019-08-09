@@ -212,12 +212,43 @@
         </v-flex>
       </v-layout>
       <cv-footer />
+      <v-dialog v-model="subscriptionInactive" max-width="400px" persistent>
+        <v-card>
+          <v-card-title
+            class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
+          >
+            <span class="cv-dialog-header headline">
+              {{ $t('subscriptionRequired') }}
+            </span>
+          </v-card-title>
+          <v-card-text>
+            {{ $t('anActiveSubscriptionIsRequired') }}
+          </v-card-text>
+          <v-card-actions class="justify-center pb-4">
+            <v-btn
+              :loading="subscription.loading"
+              :color="subscription.success ? 'success' : 'primary'"
+              depressed
+              @click="renewSubscription"
+            >
+              <v-icon v-if="subscription.success" class="mr-1"
+                >check_circle</v-icon
+              >
+              {{
+                subscription.success
+                  ? $t('subscriptionRenewed')
+                  : $t('renewSubscription')
+              }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
   </no-ssr>
 </template>
 
 <script>
-import { cloneDeep, isEqual, omit } from 'lodash';
+import { cloneDeep, isEqual, omit, get } from 'lodash';
 import Navbar from '~/components/Navbar';
 import cvFooter from '~/components/Footer';
 import ResumeEditor from '~/components/ResumeEditor';
@@ -236,6 +267,11 @@ export default {
       activeIndex: -1,
       loading: false,
       userID: this.$store.state.cognito.userID,
+      subscriptionInactive: true,
+      subscription: {
+        loading: false,
+        success: false
+      },
       CVBABY_HOST_DATA: process.env.CVBABY_HOST_DATA
     };
   },
@@ -257,7 +293,24 @@ export default {
     }
   },
   created() {
-    if (process.client) {
+    const subscriptionState = get(
+      this.$store.state.cognito,
+      'authenticated.signInUserSession.idToken.payload.custom:subscriptionState'
+    );
+    this.subscriptionInactive = subscriptionState !== '1';
+
+    if (!this.subscriptionInactive && process.client) {
+      this.fetchResumes();
+    }
+  },
+  destroyed() {
+    //
+    // TODO: Add 'confirm discard changes?' before leave route
+    //
+    window.removeEventListener('beforeunload', this.beforeUnloadHandler);
+  },
+  methods: {
+    fetchResumes() {
       // Add beforeunload handler to prevent
       // accidentally discarding unsaved changes.
       // eslint-disable-next-line nuxt/no-globals-in-created
@@ -304,15 +357,7 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    }
-  },
-  destroyed() {
-    //
-    // TODO: Add 'confirm discard changes?' before leave route
-    //
-    window.removeEventListener('beforeunload', this.beforeUnloadHandler);
-  },
-  methods: {
+    },
     /*
      * Loads a resume into the editor.
      */
@@ -351,10 +396,15 @@ export default {
           this.resumesLastSaved.splice(index, 1);
           this.loadResume({ index: -1, ...this.draftResume });
         })
-        .catch(() => {
+        .catch(error => {
+          const status = ((error || {}).response || {}).status;
+          let message = this.$t('errorRemovingResume');
+          if (status === 403) {
+            message = this.$t('actionRequiresActiveSubscription');
+          }
           this.$store.dispatch('showSnackbar', {
             color: 'red',
-            message: this.$t('errorRemovingResume')
+            message
           });
         });
     },
@@ -387,13 +437,18 @@ export default {
           ...(hasImage && { base64Image: resumeImageSource.split(',')[1] })
         })
         .catch(error => {
-          // TODO
-          console.error(error);
           const status = ((error || {}).response || {}).status;
-          const message =
-            status === 409
-              ? this.$t('errorSavingResumeSlugUnavailable')
-              : this.$t('errorSavingResume');
+          let message = this.$t('errorSavingResume');
+          if (status === 409) {
+            message = this.$t('errorSavingResumeSlugUnavailable');
+          }
+          if (status === 403) {
+            message = this.$t('actionRequiresActiveSubscription');
+          }
+          this.$store.dispatch('showSnackbar', {
+            color: 'red',
+            message
+          });
           this.$store.dispatch('showSnackbar', {
             color: 'red',
             message
@@ -497,6 +552,33 @@ export default {
           event.preventDefault();
         }
       }
+    },
+
+    renewSubscription() {
+      this.subscription.loading = true;
+      this.$store
+        .dispatch('api/renewSubscription')
+        .then(() => {
+          this.subscription.success = true;
+          this.$store.dispatch('cognito/setSubscriptionState', '1');
+          this.$store.dispatch('cognito/getUserData', true);
+          this.fetchResumes();
+          setTimeout(() => {
+            this.subscriptionInactive = false;
+            this.subscription.success = false;
+          }, 1500);
+        })
+        .catch(error => {
+          // TODO
+          console.error('renewSubscription() error:', error);
+          this.$store.dispatch('showSnackbar', {
+            color: 'red',
+            message: this.$t('errorRenewingSubscription')
+          });
+        })
+        .finally(() => {
+          this.subscription.loading = false;
+        });
     }
   }
 };

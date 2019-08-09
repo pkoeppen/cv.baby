@@ -1,6 +1,7 @@
-import { DynamoDB } from '../util';
+import { createLogger, DynamoDB } from '../../cvbaby-common';
 
 const CVBABY_TABLE_SLUGS = process.env.CVBABY_TABLE_SLUGS;
+const logger = createLogger('cvbaby-gql');
 
 export async function getSlug(slug) {
   const _slug = await DynamoDB.get({
@@ -28,6 +29,9 @@ export async function createSlug(slug, userID, resumeID) {
   if (!(await checkSlugAvailable(slug))) {
     throw new Error('![409] Slug is taken');
   }
+  logger.info(`Creating slug '${slug}' for user '${userID}'`, {
+    fn: 'createSlug'
+  });
   return DynamoDB.put({
     TableName: CVBABY_TABLE_SLUGS,
     Item: {
@@ -42,6 +46,9 @@ export async function createSlug(slug, userID, resumeID) {
 }
 
 export function deleteSlug(slug, userID) {
+  logger.info(`Deleting slug '${slug}' for user '${userID}'`, {
+    fn: 'deleteSlug'
+  });
   return DynamoDB.delete({
     TableName: CVBABY_TABLE_SLUGS,
     Key: { slug },
@@ -53,5 +60,9 @@ export function deleteSlug(slug, userID) {
     ReturnValues: 'ALL_OLD'
   })
     .promise()
-    .then(({ Attributes }) => Attributes);
+    .then(({ Attributes }) => Attributes)
+    .catch(error => {
+      logger.error(error, { fn: 'deleteSlug' });
+      throw error;
+    });
 }

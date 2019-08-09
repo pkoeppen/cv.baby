@@ -1,337 +1,195 @@
-import braintree from 'braintree';
-import { Cognito } from '../util';
+import {
+  createLogger,
+  getCognitoUser,
+  updateCognitoAttributes,
+  generateBraintreeClientPaymentToken,
+  getBraintreeCustomer,
+  createBraintreeCustomer,
+  deleteBraintreeCustomer,
+  getBraintreeSubscription,
+  createBraintreeSubscription,
+  updateBraintreeSubscription,
+  cancelBraintreeSubscription,
+  createBraintreePaymentMethod
+} from '../../cvbaby-common';
 
-const CVBABY_USER_POOL_ID = process.env.CVBABY_USER_POOL_ID;
-const gateway = braintree.connect({
-  environment: braintree.Environment.Sandbox,
-  merchantId: process.env.PAYMENT_MERCHANT_ID,
-  publicKey: process.env.PAYMENT_PUBLIC_KEY,
-  privateKey: process.env.PAYMENT_PRIVATE_KEY
-});
+const logger = createLogger('cvbaby-gql');
 
 export async function getClientPaymentToken() {
   try {
-    const token = await new Promise((resolve, reject) => {
-      gateway.clientToken.generate({}, (error, response) => {
-        if (error) {
-          return reject(error);
-        }
-        resolve(response.clientToken);
-      });
-    });
+    const token = await generateBraintreeClientPaymentToken();
     return token;
   } catch (error) {
-    return error;
+    return new Error('![500] Error generating client payment token');
   }
 }
 
 export async function startSubscription(
   userID,
-  username,
+  email,
   paymentMethodNonce,
   planID
 ) {
+  logger.info(`Starting subscription for user with email '${email}'`, {
+    fn: 'startSubscription'
+  });
   try {
     // Create a new customer.
     // TODO - handle case in which customer signs up but card is
     // rejected, leaving an orphaned customer object with no cards.
-    const customer = await new Promise((resolve, reject) => {
-      gateway.customer.create(
-        {
-          id: userID,
-          paymentMethodNonce
-        },
-        (error, result) => {
-          if (error) {
-            return reject(error);
-          }
-          if (!result.success) {
-            return reject(new Error(result.message));
-          }
-          resolve(result.customer);
-        }
-      );
-    });
+    const customer = await createBraintreeCustomer(
+      userID,
+      email,
+      paymentMethodNonce
+    );
+    // Ensure at least one payment method is present.
     const paymentMethods = customer.paymentMethods;
     if (!paymentMethods || !paymentMethods.length) {
       return new Error('![404] Payment method not found');
     }
     const paymentMethodToken = paymentMethods[0].token;
     // Create a new subscription.
-    const subscription = await new Promise((resolve, reject) => {
-      gateway.subscription.create(
-        {
-          paymentMethodToken,
-          planId: planID
-        },
-        (error, result) => {
-          if (error) {
-            return reject(error);
-          }
-          if (!result.success) {
-            return reject(new Error(result.message));
-          }
-          resolve(result.subscription);
-        }
-      );
-    });
+    const subscription = await createBraintreeSubscription(
+      paymentMethodToken,
+      planID
+    );
     // Set 'custom:subscriptionState' attribute to '1'.
-    await updateCognitoAttributes(username, {
+    await updateCognitoAttributes(email, {
       'custom:subscriptionState': '1',
       'custom:subscriptionID': subscription.id
     });
   } catch (error) {
     // Rollback.
-    gateway.customer.delete(userID, (error, data) => {
-      if (error || !data.success) {
-        console.error('Error deleting customer:', error || data.message);
-      }
+    logger.error(`Error starting subscription. Rolling back. ${error}`, {
+      fn: 'startSubscription'
     });
-    gateway.subscription.cancel(userID, (error, data) => {
-      if (error || !data.success) {
-        console.error('Error cancelling subscription:', error || data.message);
-      }
-    });
-    // TODO: Make this more accurate instead of matching by error message string
-    return error.message ===
+    // Don't wait for delete to finish.
+    deleteBraintreeCustomer(userID);
+    // Customize error message.
+    let message = '![500] Internal server error.';
+    if (
+      error.message ===
       'Payment method token payment instrument type is not accepted by this merchant account.'
-      ? new Error(
-          `![409] Payment method not accepted. Please try another card.`
-        )
-      : error;
+    ) {
+      message = '![409] Payment method not accepted. Please try another card.';
+    }
+
+    return new Error(message);
   }
 }
 
-export async function getSubscription(username) {
+export async function getSubscription(email) {
+  logger.debug(`Getting subscription for user with email '${email}'`, {
+    fn: 'getSubscription'
+  });
   try {
-    const cognitoUser = await getCognitoUser(username);
+    const cognitoUser = await getCognitoUser(email);
     const subscriptionID = cognitoUser.UserAttributes.find(
       ({ Name }) => Name === 'custom:subscriptionID'
     ).Value;
-    const subscription = await new Promise((resolve, reject) => {
-      gateway.subscription.find(subscriptionID, (error, subscription) => {
-        if (error) {
-          return reject(error);
-        }
-        resolve(subscription);
-      });
-    });
+    const subscription = await getBraintreeSubscription(subscriptionID);
     return subscription;
   } catch (error) {
-    console.error('Error in getSubscription():', error);
+    // Customize error message.
+    let message = '![500] Internal server error.';
     if (error.name === 'notFoundError') {
-      return new Error(`![406] Subscription not found`);
-    } else {
-      return new Error(error.message);
+      message = '![406] Subscription not found.';
     }
+
+    return new Error(message);
   }
 }
 
 export async function getDefaultPaymentMethod(userID) {
-  const customer = await getBraintreeCustomer(userID);
-  const paymentMethods = customer.paymentMethods;
-  const defaultPaymentMethod = paymentMethods.find(method => method.default);
-  return defaultPaymentMethod;
-}
-
-export async function updatePaymentMethod(
-  userID,
-  username,
-  paymentMethodNonce
-) {
-  // Create a new default payment method.
-  const paymentMethod = await createBraintreePaymentMethod(
-    userID,
-    paymentMethodNonce
-  );
-
-  // Set subscription to use the new payment method.
-  const cognitoUser = await getCognitoUser(username);
-  const subscriptionID = cognitoUser.getSubscriptionID();
-  await updateBraintreeSubscription(subscriptionID, {
-    paymentMethodToken: paymentMethod.token
+  logger.debug(`Getting default payment method for user '${userID}'`, {
+    fn: 'getDefaultPaymentMethod'
   });
-
-  return paymentMethod;
+  try {
+    const customer = await getBraintreeCustomer(userID);
+    const paymentMethods = customer.paymentMethods;
+    const defaultPaymentMethod = paymentMethods.find(method => method.default);
+    return defaultPaymentMethod;
+  } catch (error) {
+    const message = '![500] Internal server error.';
+    return new Error(message);
+  }
 }
 
-export async function cancelSubscription(username) {
-  // Get subscriptionID from Cognito user.
-  const cognitoUser = await getCognitoUser(username);
-  const subscriptionID = cognitoUser.UserAttributes.find(
-    ({ Name }) => Name === 'custom:subscriptionID'
-  ).Value;
-  // Cancel the subscription.
-  const subscription = await cancelBraintreeSubscription(subscriptionID);
-  // Update Cognito attributes.
-  await updateCognitoAttributes(username, { 'custom:subscriptionState': '2' });
-  return subscription;
-}
-
-export async function renewSubscription(userID, username) {
-  // Get token from the customer's default payment method.
-  const customer = await getBraintreeCustomer(userID);
-  const paymentMethods = customer.paymentMethods;
-  const defaultPaymentMethod = paymentMethods.find(method => method.default);
-  const paymentMethodToken = defaultPaymentMethod.token;
-
-  // Get the last subscribed planID from the canceled subscription.
-  const cognitoUser = await getCognitoUser(username);
-  const oldSubscriptionID = cognitoUser.getSubscriptionID();
-  const oldSubscription = await getBraintreeSubscription(oldSubscriptionID);
-  const planID = oldSubscription.planId;
-
-  // Create a new subscription.
-  const newSubscription = await createBraintreeSubscription(
-    paymentMethodToken,
-    planID
-  );
-  const newSubscriptionID = newSubscription.id;
-
-  // Update Cognito attributes.
-  await updateCognitoAttributes(username, {
-    'custom:subscriptionState': '1',
-    'custom:subscriptionID': newSubscriptionID
+export async function updatePaymentMethod(userID, email, paymentMethodNonce) {
+  logger.info(`Updating payment method for user '${userID}'`, {
+    fn: 'updatePaymentMethod'
   });
-
-  return newSubscription;
-}
-
-function getBraintreeCustomer(userID) {
-  return new Promise((resolve, reject) => {
-    gateway.customer.find(userID, (error, customer) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(customer);
-      }
-    });
-  });
-}
-
-function getBraintreeSubscription(subscriptionID) {
-  return new Promise((resolve, reject) => {
-    gateway.subscription.find(subscriptionID, (error, subscription) => {
-      if (error) {
-        return reject(error);
-      }
-      resolve(subscription);
-    });
-  });
-}
-
-function createBraintreeSubscription(paymentMethodToken, planID) {
-  return new Promise((resolve, reject) => {
-    gateway.subscription.create(
-      {
-        paymentMethodToken,
-        planId: planID
-      },
-      (error, result) => {
-        if (error) {
-          return reject(error);
-        }
-        if (!result.success) {
-          return reject(new Error(result.message));
-        }
-        resolve(result.subscription);
-      }
+  try {
+    // Create a new default payment method.
+    const paymentMethod = await createBraintreePaymentMethod(
+      userID,
+      paymentMethodNonce
     );
-  });
-}
-
-function cancelBraintreeSubscription(subscriptionID) {
-  return new Promise((resolve, reject) => {
-    gateway.subscription.cancel(subscriptionID, (error, result) => {
-      if (error) {
-        return reject(error);
-      }
-      resolve(result.subscription);
+    // Set subscription to use the new payment method.
+    const cognitoUser = await getCognitoUser(email);
+    const subscriptionID = cognitoUser.getSubscriptionID();
+    await updateBraintreeSubscription(subscriptionID, {
+      paymentMethodToken: paymentMethod.token
     });
-  });
+    return paymentMethod;
+  } catch (error) {
+    const message = '![500] Internal server error.';
+    return new Error(message);
+  }
 }
 
-function updateBraintreeSubscription(subscriptionID, updates) {
-  return new Promise((resolve, reject) => {
-    gateway.subscription.update(subscriptionID, updates, (error, result) => {
-      if (error) {
-        return reject(error);
-      }
-      if (!result.success) {
-        return reject(new Error(result.message));
-      }
-      resolve(result.subscription);
-    });
+export async function cancelSubscription(email) {
+  logger.info(`Canceling subscription for user with email '${email}'`, {
+    fn: 'cancelSubscription'
   });
-}
-
-function createBraintreePaymentMethod(userID, paymentMethodNonce) {
-  return new Promise((resolve, reject) => {
-    gateway.paymentMethod.create(
-      {
-        customerId: userID,
-        paymentMethodNonce,
-        options: {
-          makeDefault: true
-        }
-      },
-      (error, result) => {
-        if (error) {
-          return reject(error);
-        }
-        if (!result.success) {
-          return reject(new Error(result.message));
-        }
-        resolve(result.paymentMethod);
-      }
-    );
-  });
-}
-
-async function getCognitoUser(username) {
-  const cognitoUser = await new Promise((resolve, reject) => {
-    Cognito.adminGetUser(
-      {
-        UserPoolId: CVBABY_USER_POOL_ID,
-        Username: username
-      },
-      (error, data) => (error ? reject(error) : resolve(data))
-    );
-  });
-  cognitoUser.getSubscriptionID = () => {
-    return cognitoUser.UserAttributes.find(
+  try {
+    // Get subscriptionID from Cognito user.
+    const cognitoUser = await getCognitoUser(email);
+    const subscriptionID = cognitoUser.UserAttributes.find(
       ({ Name }) => Name === 'custom:subscriptionID'
     ).Value;
-  };
-  cognitoUser.getSubscriptionStatus = () => {
-    return cognitoUser.UserAttributes.find(
-      ({ Name }) => Name === 'custom:subscriptionStatus'
-    ).Value;
-  };
-  return cognitoUser;
+    // Cancel the subscription.
+    const subscription = await cancelBraintreeSubscription(subscriptionID);
+    // Update Cognito attributes.
+    await updateCognitoAttributes(email, {
+      'custom:subscriptionState': '2'
+    });
+    return subscription;
+  } catch (error) {
+    const message = '![500] Internal server error.';
+    return new Error(message);
+  }
 }
 
-function updateCognitoAttributes(username, attributes) {
-  return new Promise((resolve, reject) => {
-    const updates = Object.keys(attributes).map(key => {
-      return {
-        Name: key,
-        Value: attributes[key]
-      };
-    });
-    Cognito.adminUpdateUserAttributes(
-      {
-        UserAttributes: updates,
-        UserPoolId: CVBABY_USER_POOL_ID,
-        Username: username
-      },
-      (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result);
-        }
-      }
-    );
+export async function renewSubscription(userID, email) {
+  logger.info(`Renewing subscription for user with email '${email}'`, {
+    fn: 'renewSubscription'
   });
+  try {
+    // Get token from the customer's default payment method.
+    const customer = await getBraintreeCustomer(userID);
+    const paymentMethods = customer.paymentMethods;
+    const defaultPaymentMethod = paymentMethods.find(method => method.default);
+    const paymentMethodToken = defaultPaymentMethod.token;
+    // Get the last subscribed planID from the canceled subscription.
+    const cognitoUser = await getCognitoUser(email);
+    const oldSubscriptionID = cognitoUser.getSubscriptionID();
+    const oldSubscription = await getBraintreeSubscription(oldSubscriptionID);
+    const planID = oldSubscription.planId;
+    // Create a new subscription.
+    const newSubscription = await createBraintreeSubscription(
+      paymentMethodToken,
+      planID
+    );
+    const newSubscriptionID = newSubscription.id;
+    // Update Cognito attributes.
+    await updateCognitoAttributes(email, {
+      'custom:subscriptionState': '1',
+      'custom:subscriptionID': newSubscriptionID
+    });
+    return newSubscription;
+  } catch (error) {
+    const message = '![500] Internal server error.';
+    return new Error(message);
+  }
 }

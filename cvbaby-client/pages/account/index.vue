@@ -276,6 +276,21 @@
                           }}
                         </div>
                       </div>
+                      <!-- TODO -->
+                      <!-- <div
+                        style="display: flex; align-items: center; justify-content: space-between;"
+                      >
+                        <div class="open-sans">
+                          {{ $t('renewAutomatically') }}
+                        </div>
+                        <div>
+                          <v-switch
+                            v-model="payment.renewAutomatically"
+                            color="primary"
+                            class="ma-0"
+                          ></v-switch>
+                        </div>
+                      </div> -->
                       <div
                         class="mt-5"
                         style="display: flex; align-items: center; justify-content: space-between;"
@@ -411,12 +426,7 @@
                             </v-card-title>
                             <v-card-text class="text-xs-center">
                               <div class="mx-3">
-                                <div>{{ $t('areYouSureCancel') }}</div>
-                                <div class="mt-3">
-                                  <v-icon x-large
-                                    >sentiment_very_dissatisfied</v-icon
-                                  >
-                                </div>
+                                {{ $t('areYouSureCancel') }}
                               </div>
                             </v-card-text>
                             <v-card-actions class="justify-center pb-4">

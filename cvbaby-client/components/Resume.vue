@@ -683,7 +683,12 @@ export default {
       return lightColors.indexOf(this.resume.color) > -1 ? 'black' : 'white';
     },
     pdfDownloadFilename() {
-      return `${this.$t('resume')}_${this.resume.name.replace(/\s+/g, '')}.pdf`;
+      let filename = this.$t('resume');
+      if (this.resume.name) {
+        filename += `_${this.resume.name.replace(/\s+/g, '')}`;
+      }
+      filename += '.pdf';
+      return filename;
     }
   },
   methods: {

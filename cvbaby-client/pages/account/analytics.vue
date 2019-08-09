@@ -148,12 +148,43 @@
         </v-flex>
       </v-layout>
       <cv-footer />
+      <v-dialog v-model="subscriptionInactive" max-width="400px" persistent>
+        <v-card>
+          <v-card-title
+            class="cv-dialog-header text-xs-center justify-center pb-0 pt-4"
+          >
+            <span class="cv-dialog-header headline">
+              {{ $t('subscriptionRequired') }}
+            </span>
+          </v-card-title>
+          <v-card-text>
+            {{ $t('anActiveSubscriptionIsRequired') }}
+          </v-card-text>
+          <v-card-actions class="justify-center pb-4">
+            <v-btn
+              :loading="subscription.loading"
+              :color="subscription.success ? 'success' : 'primary'"
+              depressed
+              @click="renewSubscription"
+            >
+              <v-icon v-if="subscription.success" class="mr-1"
+                >check_circle</v-icon
+              >
+              {{
+                subscription.success
+                  ? $t('subscriptionRenewed')
+                  : $t('renewSubscription')
+              }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
   </no-ssr>
 </template>
 
 <script>
-import { cloneDeep } from 'lodash';
+import { cloneDeep, get } from 'lodash';
 import Navbar from '~/components/Navbar';
 import cvFooter from '~/components/Footer';
 import AnalyticsViewer from '~/components/AnalyticsViewer';
@@ -170,11 +201,27 @@ export default {
       activeIndex: null,
       userID: this.$store.state.cognito.userID,
       uploadHost: process.env.CVBABY_HOST_DATA,
-      googleMapsAPIKey: process.env.GOOGLE_MAPS_API_KEY
+      googleMapsAPIKey: process.env.GOOGLE_MAPS_API_KEY,
+      subscriptionInactive: true,
+      subscription: {
+        loading: false,
+        success: false
+      }
     };
   },
   created() {
-    if (process.client) {
+    const subscriptionState = get(
+      this.$store.state.cognito,
+      'authenticated.signInUserSession.idToken.payload.custom:subscriptionState'
+    );
+    this.subscriptionInactive = subscriptionState !== '1';
+
+    if (!this.subscriptionInactive && process.client) {
+      this.fetchAnalytics();
+    }
+  },
+  methods: {
+    fetchAnalytics() {
       // Fetch analytics from the database.
       this.loading = true;
       this.$store
@@ -210,9 +257,7 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    }
-  },
-  methods: {
+    },
     /*
      * Loads analytics data into the viewer.
      */
@@ -238,6 +283,33 @@ export default {
       const _resumes = cloneDeep(this.resumes);
       _resumes[index] = cloneDeep(resume);
       this.resumes = _resumes;
+    },
+
+    renewSubscription() {
+      this.subscription.loading = true;
+      this.$store
+        .dispatch('api/renewSubscription')
+        .then(() => {
+          this.subscription.success = true;
+          this.$store.dispatch('cognito/setSubscriptionState', '1');
+          this.$store.dispatch('cognito/getUserData', true);
+          this.fetchAnalytics();
+          setTimeout(() => {
+            this.subscriptionInactive = false;
+            this.subscription.success = false;
+          }, 1500);
+        })
+        .catch(error => {
+          // TODO
+          console.error('renewSubscription() error:', error);
+          this.$store.dispatch('showSnackbar', {
+            color: 'red',
+            message: this.$t('errorRenewingSubscription')
+          });
+        })
+        .finally(() => {
+          this.subscription.loading = false;
+        });
     }
   }
 };

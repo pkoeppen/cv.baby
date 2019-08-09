@@ -49,8 +49,8 @@ export default {
     },
     resolve: authorize((root, args, ctx) => {
       const { resume, base64Image } = args;
-      const { userID } = ctx;
-      return saveResume(userID, resume, base64Image);
+      const { userID, username } = ctx;
+      return saveResume(username, userID, resume, base64Image);
     })
   },
   removeResume: {
@@ -63,8 +63,8 @@ export default {
     },
     resolve: authorize((root, args, ctx) => {
       const { resumeID } = args;
-      const { userID } = ctx;
-      return removeResume(userID, resumeID);
+      const { userID, username } = ctx;
+      return removeResume(username, userID, resumeID);
     })
   }
 };

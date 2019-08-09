@@ -41,7 +41,7 @@ provider:
 
 custom:
   serverless-offline:
-    port: 3005
+    port: 3004
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules:

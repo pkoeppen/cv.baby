@@ -5,7 +5,9 @@ module.exports = {
     node: true
   },
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: 'babel-eslint',
+    sourceType: 'module',
+    ecmaVersion: 2018
   },
   extends: [
     '@nuxtjs',
@@ -15,6 +17,10 @@ module.exports = {
     'prettier/vue'
   ],
   plugins: [
+    'import',
+    'node',
+    'promise',
+    'standard',
     'prettier'
   ],
   rules: {

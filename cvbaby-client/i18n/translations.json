@@ -265,6 +265,26 @@
     "de": "Abo erneuern"
   },
   {
+    "name": "renewAutomatically",
+    "en": "Renew automatically",
+    "de": "Abo automatisch erneuern"
+  },
+  {
+    "name": "subscriptionRequired",
+    "en": "Subscription required",
+    "de": "Abo erforderlich"
+  },
+  {
+    "name": "anActiveSubscriptionIsRequired",
+    "en": "An active subscription is required to view this page. Please renew your subscription to continue.",
+    "de": "Ein aktiver Abonnement ist erforderlich, um diese Seite anzusehen. Bitte erneuern Sie zuerst Ihr Abo."
+  },
+  {
+    "name": "subscriptionRenewed",
+    "en": "Subscription Renewed",
+    "de": "Abo erneuert"
+  },
+  {
     "name": "startSubscription",
     "en": "Start Subscription",
     "de": "Abo starten"
@@ -277,7 +297,7 @@
   {
     "name": "areYouSureCancel",
     "en": "Are you sure you'd like to cancel your subscription? Unemployment is really boring.",
-    "de": "Sind Sie sicher, Sie möchten Ihren Abo kündigen? Arbeitslosigkeit ist ja langweilig."
+    "de": "Sind Sie sicher, dass Sie Ihr Abo beenden möchten? Arbeitslosigkeit kann ziemlich langweilig sein."
   },
   {
     "name": "subscriptionCanceled",
@@ -397,7 +417,7 @@
   {
     "name": "giveYourResumeAName",
     "en": "Give your resume a name",
-    "de": "Geben Sie Ihren Lebenslauf einen Namen"
+    "de": "Geben Sie Ihrem Lebenslauf einen Namen"
   },
   {
     "name": "resumeSlug",
@@ -457,7 +477,7 @@
   {
     "name": "aBriefSynopsisOfWhoYouAre",
     "en": "A brief synopsis of who you are",
-    "de": "Eine kurze Zusammenfassung von wer Sie sind"
+    "de": "Eine kurze Zusammenfassung ihrer Person"
   },
   {
     "name": "removeResume",
@@ -467,7 +487,7 @@
   {
     "name": "areYouSureYouWantToRemove",
     "en": "Are you sure you want to remove this resume?",
-    "de": "Sind Sie sicher, Sie möchten diesen Lebenslauf entfernen?"
+    "de": "Sind Sie sicher, dass Sie diesen Lebenslauf entfernen möchten?"
   },
   {
     "name": "cancel",
@@ -482,12 +502,12 @@
   {
     "name": "addEducation",
     "en": "Add education",
-    "de": "Ausbildung hinzufügen"
+    "de": "Ausbildungsbezeichnung hinzufügen"
   },
   {
     "name": "editEducation",
     "en": "Edit education",
-    "de": "Ausbildung bearbeiten"
+    "de": "Ausbildungsbezeichnung bearbeiten"
   },
   {
     "name": "dateFrom",
@@ -547,17 +567,17 @@
   {
     "name": "areYouSureYouWantToRemoveThisItem",
     "en": "Are you sure you want to remove this item?",
-    "de": "Sind Sie sicher, Sie möchten diesen Artikel entfernen?"
+    "de": "Sind Sie sicher, dass Sie diese Bezeichnung entfernen möchten?"
   },
   {
     "name": "addEmployment",
     "en": "Add employment",
-    "de": "Karriere hinzufügen"
+    "de": "Beschäftigung hinzufügen"
   },
   {
     "name": "editEmployment",
     "en": "Edit employment",
-    "de": "Karriere bearbeiten"
+    "de": "Beschäftigung bearbeiten"
   },
   {
     "name": "company",
@@ -582,7 +602,7 @@
   {
     "name": "removeEmploymentItem",
     "en": "Remove employment item",
-    "de": "Karriereartikel löschen"
+    "de": "Beschäftigung löschen"
   },
   {
     "name": "addReference",
@@ -637,7 +657,7 @@
   {
     "name": "hobbyTitleIsRequired",
     "en": "Hobby title is required",
-    "de": "Hobby-Titel ist erforderlich"
+    "de": "Hobbybezeichnung ist erforderlich"
   },
   {
     "name": "addSocialLink",
@@ -807,62 +827,62 @@
   {
     "name": "featureUnlimitedAccess",
     "en": "Unlimited Access",
-    "de": ""
+    "de": "Uneingeschränkter Zugang"
   },
   {
     "name": "featureDescriptionUnlimitedAccess",
     "en": "Draft, save, and share as many resumes as you like with 24/7 availability, guaranteed. No data limits or throttling.",
-    "de": ""
+    "de": "Erstellen, speichern und teilen Sie so viele Lebensläufe wie Sie möchten. Rund um die Uhr verfügbar. Ohne Datenlimitierung oder Drosselung."
   },
   {
     "name": "featureMultipleResumes",
     "en": "Multiple Resumes",
-    "de": ""
+    "de": "Zahlreiche Lebensläufe"
   },
   {
     "name": "featureDescriptionMultipleResumes",
     "en": "Save multiple resumes for multiple employers. Fine-tune each resume for impressive customized applications.",
-    "de": ""
+    "de": "Speichern Sie mehrere Lebensläufe für mehrere Arbeitgeber. Stimmen Sie jeden Lebenslauf individuell ab für eindrucksvolle, aussagekräftige Bewerbungen."
   },
   {
     "name": "featureNoAds",
     "en": "No Ads",
-    "de": ""
+    "de": "Keine Werbung"
   },
   {
     "name": "featureDescriptionNoAds",
     "en": "Premium or bust: Stay focused on the job hunt and enjoy our streamlined, distraction-free experience.",
-    "de": ""
+    "de": "Premium oder Pleite. Mit unserem schlichten, effektiven Programm bleiben Sie fokussiert bei der Jobsuche. "
   },
   {
     "name": "featureSaveAsPDF",
     "en": "Save As PDF",
-    "de": ""
+    "de": "Als PDF speichern"
   },
   {
     "name": "featureDescriptionSaveAsPDF",
     "en": "Allow employer downloads and export your resumes to a high quality PDF format to do with as you please.",
-    "de": ""
+    "de": "Gestatten Sie Arbeitgebern Ihre Lebensläufe herunterzuladen und exportieren Sie Ihre Lebensläufe in ein qualitativ hohes PDF Format."
   },
   {
     "name": "featureAnalytics",
     "en": "Resume Analytics",
-    "de": ""
+    "de": "Lebenslaufanalyse"
   },
   {
     "name": "featureDescriptionAnalytics",
     "en": "Use our powerful analytics suite to keep track of who views your resumes, when, from where, and how often.",
-    "de": ""
+    "de": "Wer, wann, von wo, und wie häufig. Mit unserem Analysetool bekommen Sie einen genauen Überblick wer sich Ihre Lebensläufe ansieht."
   },
   {
     "name": "featureCustomEndpoint",
     "en": "Custom Endpoint",
-    "de": ""
+    "de": "Benutzer Endpunkt"
   },
   {
     "name": "featureDescriptionCustomEndpoint",
     "en": "Claim your own personal vanity URL for each resume to send to employers. Change it as often as you like.",
-    "de": ""
+    "de": "Beantragen Sie Ihr eigenes persönliches Vanity-URL. Ändern Sie es so oft wie Sie mögen."
   },
   {
     "name": "faq",
@@ -872,52 +892,52 @@
   {
     "name": "faqAutomaticRenewal",
     "en": "Will my plan be automatically renewed?",
-    "de": ""
+    "de": "Wird mein Abo automatisch erneuert?"
   },
   {
     "name": "faqAnswerAutomaticRenewal",
     "en": "Yes. Your subscription will be automatically renewed every month or year, depending which subscription plan you choose.",
-    "de": ""
+    "de": "Ja, Ihre Mitgliedschaft wird automatisch erneuert, je nachdem für welches Abo Sie sich entschieden haben, entweder monatlich oder jährlich."
   },
   {
     "name": "faqHowCanIPay",
     "en": "How can I pay?",
-    "de": ""
+    "de": "Wie kann ich bezahlen?"
   },
   {
     "name": "faqAnswerHowCanIPay",
     "en": "We currently support Visa, Mastercard, American Express, Maestro, JCB, Discover, and Paypal. Support for Venmo and other third-party providers is in the works.",
-    "de": ""
+    "de": "Momentan unterstützen wir folgende Zahlungsmittel: Visa, Mastercard, American Express, Maestro, JCB, Discover und Paypal."
   },
   {
     "name": "faqHowCanICancel",
     "en": "How can I cancel my subscription?",
-    "de": ""
+    "de": "Wie kann ich mein Abo beenden?"
   },
   {
     "name": "faqAnswerHowCanICancel",
     "en": "You can easily cancel your subscription at any time by visiting your account page, under the subscription section. We hope you got the job!",
-    "de": ""
+    "de": "Im Abschnitt Mitgliedschaft auf Ihrer Accountseite können Sie Ihre Mitgliedschaft jederzeit ganz einfach kündigen."
   },
   {
     "name": "faqPrivateResume",
     "en": "Can I make my resumes private?",
-    "de": ""
+    "de": "Kann ich meinen Lebenslauf auch nicht veröffentlichen?"
   },
   {
     "name": "faqAnswerPrivateResume",
     "en": "Yes. In the resume editor, simply deselect the \"Live\" switch to take your resume offline. To permanently delete your resume, click the \"Remove\" button.",
-    "de": ""
+    "de": "Ja. Dafür deaktivieren Sie im Lebenslauf Editor einfach die Live Funktion. Um Ihren Lebenslauf dauerhaft zu entfernen, klicken Sie auf den \"Löschen\" Button."
   },
   {
     "name": "faqFeatureRequests",
     "en": "Where can I submit feature requests?",
-    "de": ""
+    "de": "Wo kann ich Vorschläge für weitere Funktionen einreichen?"
   },
   {
     "name": "faqAnswerFeatureRequests",
     "en": "Send bugs and feature requests to <a href=\"mailto:feedback@cv.baby\">feedback@cv.baby</a>. We'd love to hear your ideas!",
-    "de": ""
+    "de": "Schicken Sie Bugs und Vorschläge an <a href=\"mailto:feedback@cv.baby\">feedback@cv.baby</a>. Wir freuen uns auf Ihre Ideen!"
   },
   {
     "name": "subscribeToCvBabyPro",
@@ -952,7 +972,7 @@
   {
     "name": "chooseABillingCycle",
     "en": "Choose a billing cycle",
-    "de": "Abrechnungsrhythmus wählen"
+    "de": "Abrechnungszyklus wählen"
   },
   {
     "name": "first14Days",
@@ -1057,37 +1077,37 @@
   {
     "name": "errorFetchingResumes",
     "en": "Error fetching resumes. Please check your connection.",
-    "de": "Fehler beim Holen von Lebensläufen. Bitte überprüfen Sie Ihre Verbindung."
+    "de": "Fehler beim Abrufen von Lebensläufen. Bitte überprüfen Sie Ihre Verbindung."
   },
   {
     "name": "errorFetchingAnalytics",
     "en": "Error fetching analytics. Please check your connection.",
-    "de": "Fehler beim Holen von Analysedaten. Bitte überprüfen Sie Ihre Verbindung."
+    "de": "Fehler beim Abrufen von Analysedaten. Bitte überprüfen Sie Ihre Verbindung."
   },
   {
     "name": "errorDownloadingPDF",
     "en": "Error downloading PDF. Please check your connection.",
-    "de": "Fehler beim Herunterladen von PDF-Datei. Bitte überprüfen Sie Ihre Verbindung."
+    "de": "Fehler beim Herunterladen der PDF-Datei. Bitte überprüfen Sie Ihre Verbindung."
   },
   {
     "name": "errorCreatingSubscription",
     "en": "Error creating subscription. Please check your connection.",
-    "de": "Fehler beim Starten von Abonnement. Bitte überprüfen Sie Ihre Verbindung."
+    "de": "Fehler beim Starten des Abonnements. Bitte überprüfen Sie Ihre Verbindung."
   },
   {
     "name": "errorCancelingSubscription",
     "en": "Error canceling subscription. Please contact support immediately.",
-    "de": "Fehler beim Abbrechen von Abonnement. Bitte kontaktieren Sie sofort Support."
+    "de": "Fehler beim Abbrechen des Abonnements. Bitte kontaktieren Sie umgehend den Support."
   },
   {
     "name": "errorRenewingSubscription",
     "en": "Error renewing subscription. Please check your connection.",
-    "de": "Fehler beim Erneuern von Abonnement. Bitte überprüfen Sie Ihre Verbindung."
+    "de": "Fehler beim Erneuern des Abonnements. Bitte überprüfen Sie Ihre Verbindung."
   },
   {
     "name": "errorUpdatingPayment",
     "en": "Error updating payment method. Please check your connection.",
-    "de": "Fehler beim Aktualisieren von Zahlungsmethode. Bitte überprüfen Sie Ihre Verbindung."
+    "de": "Fehler beim Aktualisieren der Zahlungsmethode. Bitte überprüfen Sie Ihre Verbindung."
   },
   {
     "name": "cardTypeNotAccepted",
@@ -1097,26 +1117,26 @@
   {
     "name": "errorFetchingSubscription",
     "en": "Error fetching subscription. Please check your connection.",
-    "de": "Fehler beim Holen von Abrechnungsdaten. Bitte überprüfen Sie Ihre Verbindung."
+    "de": "Fehler beim Abrufen der Abrechnungsdaten. Bitte überprüfen Sie Ihre Verbindung."
   },
   {
     "name": "errorRemovingResume",
     "en": "Error removing resume. Please check your connection.",
-    "de": "Fehler beim Löschen von Lebenslauf. Bitte überprüfen Sie Ihre Verbindung."
+    "de": "Fehler beim Löschen des Lebenslaufs. Bitte überprüfen Sie Ihre Verbindung."
   },
   {
     "name": "errorSavingResume",
     "en": "Error saving resume. Please check your connection.",
-    "de": "Fehler beim Speichern von Lebenslauf. Bitte überprüfen Sie Ihre Verbindung."
+    "de": "Fehler beim Speichern des Lebenslaufs. Bitte überprüfen Sie Ihre Verbindung."
   },
   {
     "name": "errorSavingResumeSlugUnavailable",
     "en": "Error saving resume: Slug is unavailable.",
-    "de": "Fehler beim Speichern von Lebenslauf: Slug ist nicht verfügbar."
+    "de": "Fehler beim Speichern des Lebenslaufs: Slug ist nicht verfügbar."
   },
   {
     "name": "errorCheckingSlugAvailability",
     "en": "Error checking slug availability. Please check your connection.",
-    "de": "Fehler beim Prüfen von Slug-Verfügbarkeit. Bitte überprüfen Sie Ihre Verbindung."
+    "de": "Fehler beim Prüfen der Slug-Verfügbarkeit. Bitte überprüfen Sie Ihre Verbindung."
   }
 ]
